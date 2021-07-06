@@ -1,0 +1,7 @@
+{
+  "name": "momentum",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
