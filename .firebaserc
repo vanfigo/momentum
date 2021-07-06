@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "momentum-bucketdev": {
+      "hosting": {
+        "app": [
+          "momentum-bucketdev"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "momentum-bucketdev"
+  }
+}
