@@ -1,4 +1,4 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar color="medium">
     <ion-buttons slot="start">
       <ion-button>
@@ -9,22 +9,28 @@
       Momentum
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button color="danger" (click)="signOut()">
+      <ion-button (click)="signOut()">
         <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+<ion-content>
+  <ion-tabs>
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button tab="dashboard">
+        <ion-icon name="pie-chart-outline"></ion-icon>
+        <ion-label>Dashboard</ion-label>
+        <ion-badge>6</ion-badge>
+      </ion-tab-button>
+      <ion-tab-button tab="room">
+        <ion-icon name="stopwatch-outline"></ion-icon>
+        <ion-label>Entrenar</ion-label>
+      </ion-tab-button>
+      <ion-tab-button tab="play">
+        <ion-icon name="earth-outline"></ion-icon>
+        <ion-label>Jugar</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
 </ion-content>

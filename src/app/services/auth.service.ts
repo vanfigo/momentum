@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import firebase from 'firebase/app';
+import { NavController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,9 @@ export class AuthService {
   $userRetrieved = new ReplaySubject<boolean>(1);
 
   constructor(private afAuth: AngularFireAuth,
-              private router: Router
+              private router: Router,
+              private route: ActivatedRoute,
+              private navController: NavController
               // private storageService: StorageService,
               // private modalController: ModalController,
               // private platform: Platform
@@ -22,14 +25,12 @@ export class AuthService {
       this.user = user;
       if (user) {
         if (this.router.url.startsWith('/login')) {
-          this.router.navigate(['/home']).then(() => this.$userRetrieved.next(true));
+          this.navController.navigateForward(['/home'], {relativeTo: route}).then(() => this.$userRetrieved.next(true));
         } else {
           this.$userRetrieved.next(true);
         }
       } else {
-        router.navigateByUrl('login').then(() => {
-            this.$userRetrieved.next(true);
-        });
+        this.navController.navigateRoot(['/login'], {relativeTo: route}).then(() => this.$userRetrieved.next(true));
       }
     });
   }

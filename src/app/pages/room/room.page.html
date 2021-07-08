@@ -1,0 +1,26 @@
+
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button>
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Session name</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon slot="icon-only" name="cube-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+<ion-content>
+  <ion-item>
+    <div class="room-scramble">
+      {{scramble}}
+    </div>
+    <ion-button slot="end" fill="clear" (click)="updateScramble()">
+      <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+    </ion-button>
+  </ion-item>
+  <app-timer (timeObtained)='timeObtained($event)'></app-timer>
+</ion-content>

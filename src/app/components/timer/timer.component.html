@@ -1,0 +1,22 @@
+<ion-card>
+  <ion-card-content>
+    <div class="timer-time-container" #timer>
+      <ion-text [color]="getColor()">{{getDisplayTime()}}</ion-text>
+    </div>
+    <ion-grid *ngIf="finished && !running">
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" color="warning">+2</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" color="light">DNF</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" color="danger">
+            <ion-icon slot="icon-only" name="trash-bin-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+</ion-card>
