@@ -44,11 +44,13 @@ export class RoomService {
     return new Record(id);
   }
 
-  getRecordsOrderById = () => this.category.records.sort((a, b) => a.id - b.id);
+  // getRecordsOrderById = () => this.category.records.sort((a, b) => a.id - b.id);
+
+  getRecordsOrderByCreation = () => this.category.records.sort((a, b) => b.creation - a.creation);
 
   getRecordsOrderByTime = () => this.category.records.sort((a, b) => a.time - b.time);
 
-  getLastRecord = () => this.getRecordsOrderById()[this.category.records.length - 1];
+  getLastRecord = () => this.getRecordsOrderByCreation()[0];
 
   getBestRecordByTime = () => this.getRecordsOrderByTime()[0];
   
@@ -57,9 +59,17 @@ export class RoomService {
     this.persistRoomChanges();
   }
 
-  deleteTimeFromCurrentCategory(record: Record) {
+  deleteRecordFromCurrentCategory(record: Record) {
     this.category.records = this.category.records.filter(_record => _record.id !== record.id);
     this.persistRoomChanges();    
+  }
+  updateRecordFromCurrentCategory(record: Record) {
+    let recordFound = this.category.records.find(_record => _record.id === record.id);
+    if (recordFound) {
+      let index = this.category.records.indexOf(recordFound);
+      this.category.records[index] = record;
+      this.persistRoomChanges();
+    }
   }
 
   persistRoomChanges = () => {

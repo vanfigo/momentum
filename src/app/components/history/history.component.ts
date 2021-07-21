@@ -13,6 +13,7 @@ import { Session } from 'src/app/models/session.class';
 export class HistoryComponent implements OnInit {
 
   loading: boolean;
+  records: Record[];
 
   constructor(public roomSvc: RoomService,
               public modalCtrl: ModalController) {

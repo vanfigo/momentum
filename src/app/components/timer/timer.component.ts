@@ -22,6 +22,7 @@ export class TimerComponent implements AfterViewInit {
   inspectionTime: number = 0;
   dnf: boolean;
   plus: boolean;
+  editable: boolean;
 
   ready: boolean;
   pressed: boolean;
@@ -45,6 +46,7 @@ export class TimerComponent implements AfterViewInit {
     this.running = false;
     this.dnf = false;
     this.plus = false;
+    this.editable = false;
   }
 
   ngAfterViewInit(): void {
@@ -111,6 +113,7 @@ export class TimerComponent implements AfterViewInit {
             this.onHold = true;
             this.dnf = false;
             this.plus = false;
+            this.editable = false;
             this.record = this.roomSvc.initRecord();
           }, 400);
         }
@@ -151,17 +154,43 @@ export class TimerComponent implements AfterViewInit {
   }
 
   deleteRecord = () => {
-    this.alertCtrl.create({
-      header: 'Borrar tiempo',
-      message: `En realidad quieres borrar el tiempo de ${this.timeDisplayPipe.transform(this.record)}`,
-      buttons: ['Cancelar', {
-        text: 'Borrar',
-        handler: () => {
-          this.recordDeleted.emit(this.record);
-          this.record = undefined;
-        }
-      }]
-    }).then(alert => alert.present());
+    if (this.record) {
+      this.alertCtrl.create({
+        header: 'Borrar tiempo',
+        message: `En realidad quieres borrar el tiempo de ${this.timeDisplayPipe.transform(this.record)}`,
+        buttons: ['Cancelar', {
+          text: 'Borrar',
+          handler: () => {
+            this.recordDeleted.emit(this.record);
+            this.record = undefined;
+          }
+        }]
+      }).then(alert => alert.present());
+    }
+  }
+
+  updatePlusRecord = (plus: boolean) => {
+    if (this.record) {
+      this.editable = true;
+      this.plus = plus;
+      this.record.plus = plus;
+      plus ? this.record.time += 2000 : this.record.time -= 2000;
+      this.recordUpdated.emit(this.record);
+    }
+  }
+
+  updateDNFRecord = (dnf: boolean) => {
+    if (this.record) {
+      if (dnf && this.plus) {
+        this.plus = false;
+        this.record.plus = false;
+        this.record.time -= 2000;
+      }
+      this.editable = true;
+      this.dnf = dnf;
+      this.record.dnf = dnf;
+      this.recordUpdated.emit(this.record);
+    }
   }
 
   getColor = () => {

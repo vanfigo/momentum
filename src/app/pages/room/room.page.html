@@ -13,7 +13,8 @@
     </ion-toolbar>
     <app-scrambler></app-scrambler>
     <app-timer  (recordObtained)="recordObtained($event)"
-                (recordDeleted)="recordDeleted($event)"></app-timer>
+                (recordDeleted)="recordDeleted($event)"
+                (recordUpdated)="recordUpdated($event)"></app-timer>
     <app-average></app-average>
   </ng-template>
 </ion-content>

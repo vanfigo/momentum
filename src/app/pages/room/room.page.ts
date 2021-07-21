@@ -33,8 +33,12 @@ export class RoomPage {
 
   recordDeleted = (record: Record) => {
     if (record !== undefined) {
-      this.roomSvc.deleteTimeFromCurrentCategory(record);
+      this.roomSvc.deleteRecordFromCurrentCategory(record);
     }
+  }
+
+  recordUpdated = (record: Record) => {
+    this.roomSvc.updateRecordFromCurrentCategory(record);
   }
 
 }

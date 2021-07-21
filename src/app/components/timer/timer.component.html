@@ -1,20 +1,26 @@
 <ion-card color="light">
   <ion-card-header class="ion-no-padding">
     <ion-toolbar color="light">
-      <ion-chip slot="end" color="medium" outline *ngIf="dnf">DNF</ion-chip>
-      <ion-chip slot="end" color="medium" outline *ngIf="plus">+2</ion-chip>
+      <ion-chip slot="end" color="medium" outline *ngIf="plus">
+        <ion-label>+2</ion-label>
+        <ion-icon *ngIf="editable" name="close-circle" (click)="updatePlusRecord(false)"></ion-icon>
+      </ion-chip>
+      <ion-chip slot="end" color="medium" outline *ngIf="dnf">
+        <ion-label>DNF</ion-label>
+        <ion-icon *ngIf="editable" name="close-circle" (click)="updateDNFRecord(false)"></ion-icon>
+      </ion-chip>
     </ion-toolbar>
   </ion-card-header>
   <ion-card-content class="ion-no-padding">
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="ready">
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="ready && record">
       <ion-fab-button size="small">
         <ion-icon name="cog-outline"></ion-icon>
       </ion-fab-button>
       <ion-fab-list side="top" *ngIf="!dnf">
-        <ion-fab-button color="light" *ngIf="!plus">
+        <ion-fab-button color="light" *ngIf="!plus" (click)="updatePlusRecord(true)">
           <ion-icon name="duplicate-outline"></ion-icon>
         </ion-fab-button>
-        <ion-fab-button color="warning">
+        <ion-fab-button color="warning" (click)="updateDNFRecord(true)">
           <ion-icon name="flag-outline"></ion-icon>
         </ion-fab-button>
       </ion-fab-list>
