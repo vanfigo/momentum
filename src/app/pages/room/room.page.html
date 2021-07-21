@@ -1,26 +1,19 @@
-
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-button>
-        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Session name</ion-title>
-    <ion-buttons slot="end">
-      <ion-button>
-        <ion-icon slot="icon-only" name="cube-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-
 <ion-content>
-  <ion-item>
-    <div class="room-scramble">
-      {{scramble}}
-    </div>
-    <ion-button slot="end" fill="clear" (click)="updateScramble()">
-      <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
-    </ion-button>
-  </ion-item>
-  <app-timer (timeObtained)='timeObtained($event)'></app-timer>
+  <ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else roomContent"></ion-progress-bar>
+  <ng-template #roomContent>
+    <ion-toolbar color="light">
+      <ion-buttons slot="start">
+        <ion-button>
+          <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-select [interfaceOptions]="popOverOptions" interface="action-sheet" [(ngModel)]="roomSvc.session">
+        <ion-select-option [value]="session" *ngFor="let session of roomSvc.room.sessions">{{session.name}}</ion-select-option>
+      </ion-select>
+    </ion-toolbar>
+    <app-scrambler></app-scrambler>
+    <app-timer  (recordObtained)="recordObtained($event)"
+                (recordDeleted)="recordDeleted($event)"></app-timer>
+    <app-average></app-average>
+  </ng-template>
 </ion-content>

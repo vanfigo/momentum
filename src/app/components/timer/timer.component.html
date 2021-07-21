@@ -1,22 +1,40 @@
-<ion-card>
-  <ion-card-content>
-    <div class="timer-time-container" #timer>
-      <ion-text [color]="getColor()">{{getDisplayTime()}}</ion-text>
+<ion-card color="light">
+  <ion-card-header class="ion-no-padding">
+    <ion-toolbar color="light">
+      <ion-chip slot="end" color="medium" outline *ngIf="dnf">DNF</ion-chip>
+      <ion-chip slot="end" color="medium" outline *ngIf="plus">+2</ion-chip>
+    </ion-toolbar>
+  </ion-card-header>
+  <ion-card-content class="ion-no-padding">
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="ready">
+      <ion-fab-button size="small">
+        <ion-icon name="cog-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-list side="top" *ngIf="!dnf">
+        <ion-fab-button color="light" *ngIf="!plus">
+          <ion-icon name="duplicate-outline"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button color="warning">
+          <ion-icon name="flag-outline"></ion-icon>
+        </ion-fab-button>
+      </ion-fab-list>
+      <ion-fab-list side="start">
+        <ion-fab-button color="danger" (click)="deleteRecord()">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-fab-button>
+      </ion-fab-list>
+    </ion-fab>
+    <!-- Normal time -->
+    <div class="timer-record-container" *ngIf="!onInspection" #timerDisplay>
+      <ion-text [color]="getColor()" class="timer-display">{{record | timeDisplay}}</ion-text>
     </div>
-    <ion-grid *ngIf="finished && !running">
-      <ion-row>
-        <ion-col>
-          <ion-button expand="block" color="warning">+2</ion-button>
-        </ion-col>
-        <ion-col>
-          <ion-button expand="block" color="light">DNF</ion-button>
-        </ion-col>
-        <ion-col>
-          <ion-button expand="block" color="danger">
-            <ion-icon slot="icon-only" name="trash-bin-outline"></ion-icon>
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    <!-- Inspection display -->
+    <div class="timer-record-container" *ngIf="onInspection" #inspectionDisplay>
+      <ion-text [color]="getInspectionColor()" class="timer-display inspection-display">{{inspectionTime >= 17 ? 'DNF' : inspectionTime}}</ion-text>
+    </div>
+    <ion-item lines="none" color="light">
+      <ion-toggle [disabled]="!ready" [(ngModel)]="inspection"></ion-toggle>
+      <ion-label>Inspección</ion-label>
+    </ion-item>
   </ion-card-content>
 </ion-card>

@@ -7,7 +7,9 @@ import { IonicModule } from '@ionic/angular';
 import { RoomPageRoutingModule } from './room-routing.module';
 
 import { RoomPage } from './room.page';
-import { ComponentsModule } from '../../components/components.module';
+import { RoomModule } from '../../components/room.module';
+import { SharedModule } from 'src/app/components/shared.module';
+import { HistoryComponent } from 'src/app/components/history/history.component';
 
 @NgModule({
   imports: [
@@ -15,7 +17,8 @@ import { ComponentsModule } from '../../components/components.module';
     FormsModule,
     IonicModule,
     RoomPageRoutingModule,
-    ComponentsModule
+    RoomModule,
+    SharedModule
   ],
   declarations: [RoomPage]
 })

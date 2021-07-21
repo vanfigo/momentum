@@ -1,0 +1,51 @@
+<ion-card>
+  <ion-card-header class="ion-no-padding">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button (click)="addAverage()">
+          <ion-icon name="add-circle-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title *ngIf="!loading">Conteo: {{roomSvc.category.records.length}}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="showHistory()">
+          <ion-icon name="receipt-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-card-header>
+  <ion-card-content class="ion-no-padding">
+    <ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else display"></ion-progress-bar>
+    <ng-template #display>
+      <ion-list lines="full" class="ion-no-padding">
+        <ion-item>
+          <ion-grid>
+            <ion-row>
+              <ion-col class="average-col"><ion-text>Ultimo:</ion-text></ion-col>
+              <ion-col><app-time-chip [record]="roomSvc.getLastRecord()"></app-time-chip></ion-col>
+              <ion-col class="average-col"><ion-text>Mejor:</ion-text></ion-col>
+              <ion-col><app-time-chip [record]="roomSvc.getBestRecordByTime()"></app-time-chip></ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+        <ion-item-sliding *ngFor="let average of roomSvc.category.averages">
+          <ion-item-options side="start">
+            <ion-item-option color="danger" (click)="historyService.deleteAverageToCurrentSession(average)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+          <ion-item>
+            <ion-grid>
+              <ion-row>
+                <ion-col class="average-col"><ion-text>Ao{{average}}:</ion-text></ion-col>
+                <ion-col><ion-chip>{{historyService.getAverageOf(average) | timeDisplay}}</ion-chip></ion-col>
+                <ion-col class="average-col"><ion-text>Bo{{average}}:</ion-text></ion-col>
+                <ion-col><ion-chip>{{historyService.getBestAverageOf(average) | timeDisplay}}</ion-chip></ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-item-sliding>
+      </ion-list>
+    </ng-template>
+  </ion-card-content>
+</ion-card>
