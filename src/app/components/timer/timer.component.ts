@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { AlertController, GestureController } from '@ionic/angular';
 import { Record } from 'src/app/models/record.class';
-import { TimeDisplayPipe } from 'src/app/pipes/time-display.pipe';
+import { RecordDisplayPipe } from 'src/app/pipes/record-display.pipe';
 import { RoomService } from 'src/app/services/room.service';
 
 @Component({
@@ -38,7 +38,7 @@ export class TimerComponent implements AfterViewInit {
               private gestureCtrl: GestureController,
               private changeDetector: ChangeDetectorRef,
               private alertCtrl: AlertController,
-              private timeDisplayPipe: TimeDisplayPipe) {
+              private recordDisplayPipe: RecordDisplayPipe) {
     this.ready = true;
     this.pressed = false;
     this.onHold = false;
@@ -157,7 +157,7 @@ export class TimerComponent implements AfterViewInit {
     if (this.record) {
       this.alertCtrl.create({
         header: 'Borrar tiempo',
-        message: `En realidad quieres borrar el tiempo de ${this.timeDisplayPipe.transform(this.record)}`,
+        message: `En realidad quieres borrar el tiempo de ${this.recordDisplayPipe.transform(this.record)}`,
         buttons: ['Cancelar', {
           text: 'Borrar',
           handler: () => {

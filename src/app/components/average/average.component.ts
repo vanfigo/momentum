@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { Average } from 'src/app/models/average.class';
 import { RoomService } from 'src/app/services/room.service';
 import { HistoryComponent } from '../history/history.component';
 
@@ -13,11 +14,16 @@ export class AverageComponent implements OnDestroy {
 
   loading = true;
   roomSubscription: Subscription;
+  averages: Average[];
 
   constructor(public roomSvc: RoomService,
               private alertCtrl: AlertController,
-              private modalCtrl: ModalController) {
-    this.roomSubscription = this.roomSvc.$session.subscribe(() => { this.loading = false; });
+              private modalCtrl: ModalController,
+              private toastCtrl: ToastController) {
+    this.roomSubscription = this.roomSvc.$session.subscribe(() => {
+      this.averages = roomSvc.getAveragesOrderByRange();
+      this.loading = false;
+    });
   }
 
   ngOnDestroy() {
@@ -41,7 +47,14 @@ export class AverageComponent implements OnDestroy {
         handler: (data) => {
           let { average } = data;
           average = parseInt(average);
-          // this.historyService.addAverrageToCurrentSession(average);
+          if (average >= 5) {
+            this.roomSvc.addAverage(average);
+          } else {
+            this.toastCtrl.create({
+              message: 'Los promedios deben ser mayores o iguales a 5'
+            })
+            .then(toast => toast.present());
+          }
         }
       }]
     }).then(alert => {
@@ -51,7 +64,10 @@ export class AverageComponent implements OnDestroy {
 
   showHistory = () => {
     this.modalCtrl.create({
-      component: HistoryComponent
+      component: HistoryComponent,
+      componentProps: {
+        records: this.roomSvc.getRecordsOrderByCreation(true)
+      }
     }).then(modal => {
       modal.present();
     });

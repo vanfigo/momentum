@@ -32,7 +32,7 @@
     </ion-fab>
     <!-- Normal time -->
     <div class="timer-record-container" *ngIf="!onInspection" #timerDisplay>
-      <ion-text [color]="getColor()" class="timer-display">{{record | timeDisplay}}</ion-text>
+      <ion-text [color]="getColor()" class="timer-display">{{record | recordDisplay}}</ion-text>
     </div>
     <!-- Inspection display -->
     <div class="timer-record-container" *ngIf="onInspection" #inspectionDisplay>

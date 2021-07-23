@@ -22,7 +22,6 @@ import { LoginPageModule } from './pages/login/login.module';
     LoginPageModule
   ],
   declarations: [AppComponent],
-  entryComponents: [],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })

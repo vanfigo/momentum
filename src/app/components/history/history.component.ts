@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Room } from 'src/app/models/room.class';
 import { Record } from 'src/app/models/record.class';
 import { RoomService } from 'src/app/services/room.service';
 import { Session } from 'src/app/models/session.class';
+import { Average } from 'src/app/models/average.class';
 
 @Component({
   selector: 'app-history',
@@ -13,14 +14,18 @@ import { Session } from 'src/app/models/session.class';
 export class HistoryComponent implements OnInit {
 
   loading: boolean;
-  records: Record[];
+  @Input() records: Record[];
+  @Input() average: Average;
+  @Input() best: boolean;
 
-  constructor(public roomSvc: RoomService,
-              public modalCtrl: ModalController) {
-    this.loading = true;
-    roomSvc.$session.subscribe(() => { this.loading = false });
+  constructor(public roomSvc: RoomService, public modalCtrl: ModalController) {
+
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.average) {
+      this.records = this.best ? this.average.bestRecords : this.average.currentRecords;
+    }
+  }
 
 }

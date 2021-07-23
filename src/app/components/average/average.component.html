@@ -22,26 +22,26 @@
           <ion-grid>
             <ion-row>
               <ion-col class="average-col"><ion-text>Ultimo:</ion-text></ion-col>
-              <ion-col><app-time-chip [record]="roomSvc.getLastRecord()"></app-time-chip></ion-col>
+              <ion-col><app-record-chip [record]="roomSvc.getLastRecord()"></app-record-chip></ion-col>
               <ion-col class="average-col"><ion-text>Mejor:</ion-text></ion-col>
-              <ion-col><app-time-chip [record]="roomSvc.getBestRecordByTime()"></app-time-chip></ion-col>
+              <ion-col><app-record-chip [record]="roomSvc.getBestRecordByTime()"></app-record-chip></ion-col>
             </ion-row>
           </ion-grid>
         </ion-item>
-        <ion-item-sliding *ngFor="let average of roomSvc.category.averages">
+        <ion-item-sliding *ngFor="let average of averages">
           <ion-item-options side="start">
-            <!-- <ion-item-option color="danger" (click)="historyService.deleteAverageToCurrentSession(average)">>
+            <ion-item-option color="danger" (click)="roomSvc.deleteAverage(average.range)">
               <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-            </ion-item-option> -->
+            </ion-item-option>
           </ion-item-options>
           <ion-item>
             <ion-grid>
-              <!-- <ion-row>
-                <ion-col class="average-col"><ion-text>Ao{{average}}:</ion-text></ion-col>
-                <ion-col><ion-chip>{{historyService.getAverageOf(average) | timeDisplay}}</ion-chip></ion-col>
-                <ion-col class="average-col"><ion-text>Bo{{average}}:</ion-text></ion-col>
-                <ion-col><ion-chip>{{historyService.getBestAverageOf(average) | timeDisplay}}</ion-chip></ion-col>
-              </ion-row> -->
+              <ion-row>
+                <ion-col class="average-col"><ion-text>Ao{{average.range}}:</ion-text></ion-col>
+                <ion-col><app-average-chip [average]="average"></app-average-chip></ion-col>
+                <ion-col class="average-col"><ion-text>Bo{{average.range}}:</ion-text></ion-col>
+                <ion-col><app-average-chip [average]="average" [best]="true"></app-average-chip></ion-col>
+              </ion-row>
             </ion-grid>
           </ion-item>
         </ion-item-sliding>

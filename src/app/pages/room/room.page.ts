@@ -27,18 +27,18 @@ export class RoomPage {
 
   recordObtained = (record: Record) => {
     record.scramble = this.scrambler.scramble;
-    this.roomSvc.addTimeToCurrentCategory(record);
+    this.roomSvc.addRecord(record);
     this.scrambler.updateScramble();
   }
 
   recordDeleted = (record: Record) => {
     if (record !== undefined) {
-      this.roomSvc.deleteRecordFromCurrentCategory(record);
+      this.roomSvc.deleteRecord(record);
     }
   }
 
   recordUpdated = (record: Record) => {
-    this.roomSvc.updateRecordFromCurrentCategory(record);
+    this.roomSvc.updateRecord(record);
   }
 
 }

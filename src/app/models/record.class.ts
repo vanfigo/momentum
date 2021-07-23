@@ -5,6 +5,7 @@ export class Record {
     scramble: string;
     plus: boolean;
     dnf: boolean;
+    partOfAverage?: boolean;
 
     constructor(id: number) {
         this.id = id;
@@ -12,5 +13,6 @@ export class Record {
         this.creation = new Date().getTime();
         this.plus = false;
         this.dnf = false;
+        this.partOfAverage = true;
     }
 }

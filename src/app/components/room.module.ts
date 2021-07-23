@@ -5,32 +5,33 @@ import { IonicModule } from '@ionic/angular';
 import { HistoryComponent } from './history/history.component';
 import { ScramblerComponent } from './scrambler/scrambler.component';
 import { AverageComponent } from './average/average.component';
-import { TimeDisplayPipe } from '../pipes/time-display.pipe';
-import { TimeChipComponent } from './time-chip/time-chip.component';
+import { RecordDisplayPipe } from '../pipes/record-display.pipe';
+import { RecordChipComponent } from './record-chip/record-chip.component';
 import { FormsModule } from '@angular/forms';
+import { AverageChipComponent } from './average-chip/average-chip.component';
+import { PipesModule } from '../pipes/pipes.module';
+import { AverageDisplayPipe } from '../pipes/average-display.pipe';
 
 @NgModule({
     imports: [
       CommonModule,
       IonicModule,
-      FormsModule
+      FormsModule,
+      PipesModule
     ],
     declarations: [
       TimerComponent,
       HistoryComponent,
       ScramblerComponent,
       AverageComponent,
-      TimeChipComponent,
-      TimeDisplayPipe
+      RecordChipComponent,
+      AverageChipComponent
     ],
     exports: [
-      TimerComponent,
-      HistoryComponent,
       ScramblerComponent,
-      AverageComponent,
-      TimeChipComponent,
-      TimeDisplayPipe
+      TimerComponent,
+      AverageComponent
     ],
-    providers: [TimeDisplayPipe, DatePipe]
+    providers: [RecordDisplayPipe, AverageDisplayPipe, DatePipe]
   })
   export class RoomModule {}
