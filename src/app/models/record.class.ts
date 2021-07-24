@@ -7,7 +7,7 @@ export class Record {
     dnf: boolean;
     partOfAverage?: boolean;
 
-    constructor(id: number) {
+    constructor(id: number = 0) {
         this.id = id;
         this.time = 0;
         this.creation = new Date().getTime();

@@ -10,7 +10,7 @@ import { StorageService } from './storage.service';
 @Injectable({
   providedIn: 'root'
 })
-export class RoomService {
+export class TrainingRoomService {
 
   $session = new ReplaySubject<Session>(1);
   room: Room;
@@ -40,9 +40,16 @@ export class RoomService {
     this.$session.next(this.session);
   }
 
-  initRecord = (): Record => {
-    let id = this.category.records.length > 0 ? this.getLastRecord().id + 1 : 0;
-    return new Record(id);
+  addSession = (sessionName: string) => {
+    let session = new Session(this.room.sessions.length, sessionName);
+    this.room.sessions.push(session);
+    this.room.activeSessionId = session.id;
+    this.storageService.set('room', this.room).then(() => this.initRoom(this.room));
+  }
+
+  selectSession = (activeSessionId: number) => {
+    this.room.activeSessionId = activeSessionId;
+    this.storageService.set('room', this.room).then(() => this.initRoom(this.room));
   }
 
   getRecordsOrderByCreation = (order: boolean = false): Record[] => order ?
@@ -62,6 +69,8 @@ export class RoomService {
   getBestRecordByTime = () => this.getRecordsOrderByTime()[0];
   
   addRecord(record: Record) {
+    let id = this.category.records.length > 0 ? this.getLastRecord().id + 1 : 0;
+    record.id = id
     this.category.records.push(record);
     this.updateAverages();
     this.persistRoomChanges();
@@ -77,7 +86,7 @@ export class RoomService {
     let recordFound = this.category.records.find(_record => _record.id === record.id);
     if (recordFound) {
       let index = this.category.records.indexOf(recordFound);
-      this.category.records[index] = record;
+      this.category.records[index] = {...record, partOfAverage: true};
       this.updateAverages();
       this.persistRoomChanges();
     }
@@ -108,10 +117,17 @@ export class RoomService {
       // Calculates current average of (range)
       let currentRecords = this.getRecordsOrderByCreation().slice(0, range);
       let { time, averageRecords } = this.calculateAverage(currentRecords, range);
-      currentRecords = currentRecords.map(record => {
-        record.partOfAverage = !!averageRecords.find((_record) => record.id === _record.id);
-        return record;
-      });
+      if (time !== null) {
+        currentRecords = currentRecords.map(record => {
+          record.partOfAverage = !!averageRecords.find((_record) => record.id === _record.id);
+          return record;
+        });
+      } else {
+        currentRecords = currentRecords.map(record => {
+          record.dnf ? record.partOfAverage = false : record.partOfAverage = true;
+          return record;
+        });
+      }
       let bestTime: number = null;
       let bestRecords: Record[];
       let index = 0;
@@ -133,6 +149,11 @@ export class RoomService {
               return record;
             });
           }
+        }  else if (bestTime === null) {
+          bestRecords = newBestRecords.map(record => {
+            record.dnf ? record.partOfAverage = false : record.partOfAverage = true;
+            return record;
+          });
         }
         index++;
       }
@@ -150,7 +171,7 @@ export class RoomService {
       let averageRecords = filteredRecords.slice(trim, dnfRecords === trim ? filteredRecords.length : dnfRecords - trim);
       return {time: averageRecords.reduce((prev, record) => prev + record.time, 0) / averageRecords.length, averageRecords};
     }
-    return null;
+    return {time: null, averageRecords: []};
   }
 
   deleteAverage = (range: number) => {

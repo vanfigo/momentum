@@ -8,9 +8,9 @@ export class Session {
     categories: Category[];
     activeCategoryId: number;
 
-    constructor() {
-        this.id = 0;
-        this.name = "main";
+    constructor(id: number = 0, name: string = 'main') {
+        this.id = id;
+        this.name = name;
         let category = new Category();
         this.categories = [category];
         this.activeCategoryId = category.id;

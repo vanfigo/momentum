@@ -2,11 +2,14 @@
 
 .timer-record-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
+    min-height: 150px;
+    max-height: 150px;
 }
 
 .timer-display {
+    text-align: center;
     font-size: 5em;
     line-height: 1.2em;
     font-family: 'Share Tech Mono', monospace;

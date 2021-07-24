@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, 
 import { AlertController, GestureController } from '@ionic/angular';
 import { Record } from 'src/app/models/record.class';
 import { RecordDisplayPipe } from 'src/app/pipes/record-display.pipe';
-import { RoomService } from 'src/app/services/room.service';
+import { TrainingRoomService } from 'src/app/services/room.service';
 
 @Component({
   selector: 'app-timer',
@@ -22,6 +22,7 @@ export class TimerComponent implements AfterViewInit {
   inspectionTime: number = 0;
   dnf: boolean;
   plus: boolean;
+  plusEditable: boolean;
   editable: boolean;
 
   ready: boolean;
@@ -34,8 +35,7 @@ export class TimerComponent implements AfterViewInit {
   timerTimeOut: any;
   inspectionInterval: any;
 
-  constructor(private roomSvc: RoomService,
-              private gestureCtrl: GestureController,
+  constructor(private gestureCtrl: GestureController,
               private changeDetector: ChangeDetectorRef,
               private alertCtrl: AlertController,
               private recordDisplayPipe: RecordDisplayPipe) {
@@ -46,6 +46,7 @@ export class TimerComponent implements AfterViewInit {
     this.running = false;
     this.dnf = false;
     this.plus = false;
+    this.plusEditable = false;
     this.editable = false;
   }
 
@@ -114,7 +115,7 @@ export class TimerComponent implements AfterViewInit {
             this.dnf = false;
             this.plus = false;
             this.editable = false;
-            this.record = this.roomSvc.initRecord();
+            this.record = new Record();
           }, 400);
         }
       },
@@ -163,6 +164,9 @@ export class TimerComponent implements AfterViewInit {
           handler: () => {
             this.recordDeleted.emit(this.record);
             this.record = undefined;
+            this.plus = false;
+            this.plusEditable = false;
+            this.dnf = false;
           }
         }]
       }).then(alert => alert.present());
@@ -171,8 +175,7 @@ export class TimerComponent implements AfterViewInit {
 
   updatePlusRecord = (plus: boolean) => {
     if (this.record) {
-      this.editable = true;
-      this.plus = plus;
+      this.plusEditable = plus;
       this.record.plus = plus;
       plus ? this.record.time += 2000 : this.record.time -= 2000;
       this.recordUpdated.emit(this.record);
@@ -181,7 +184,8 @@ export class TimerComponent implements AfterViewInit {
 
   updateDNFRecord = (dnf: boolean) => {
     if (this.record) {
-      if (dnf && this.plus) {
+      if (dnf && this.plusEditable) {
+        this.plusEditable = false
         this.plus = false;
         this.record.plus = false;
         this.record.time -= 2000;

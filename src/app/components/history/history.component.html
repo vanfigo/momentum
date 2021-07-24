@@ -11,7 +11,8 @@
   <ion-list lines="full">
     <ion-item *ngFor="let record of records; let index = index">
       <ion-note slot="start">{{index + 1}}</ion-note>
-      <app-record-chip [record]="record"></app-record-chip>
+      <app-record-chip [record]="record"  (recordUpdated)="recordUpdated($event)"
+                                          (recordDeleted)="recordDeleted($event)"></app-record-chip>
       <ion-text slot="end">{{record.creation | date:'medium'}}</ion-text>
     </ion-item>
   </ion-list>

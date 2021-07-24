@@ -4,7 +4,7 @@ import { TimerComponent  } from './timer/timer.component';
 import { IonicModule } from '@ionic/angular';
 import { HistoryComponent } from './history/history.component';
 import { ScramblerComponent } from './scrambler/scrambler.component';
-import { AverageComponent } from './average/average.component';
+import { TrainingRoomAverageComponent } from './training-room-average/training-room-average.component';
 import { RecordDisplayPipe } from '../pipes/record-display.pipe';
 import { RecordChipComponent } from './record-chip/record-chip.component';
 import { FormsModule } from '@angular/forms';
@@ -23,15 +23,15 @@ import { AverageDisplayPipe } from '../pipes/average-display.pipe';
       TimerComponent,
       HistoryComponent,
       ScramblerComponent,
-      AverageComponent,
+      TrainingRoomAverageComponent,
       RecordChipComponent,
       AverageChipComponent
     ],
     exports: [
       ScramblerComponent,
       TimerComponent,
-      AverageComponent
+      TrainingRoomAverageComponent
     ],
     providers: [RecordDisplayPipe, AverageDisplayPipe, DatePipe]
   })
-  export class RoomModule {}
+  export class TrainingRoomModule {}

@@ -2,26 +2,27 @@ import { Component, OnDestroy } from '@angular/core';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Average } from 'src/app/models/average.class';
-import { RoomService } from 'src/app/services/room.service';
+import { Record } from 'src/app/models/record.class';
+import { TrainingRoomService } from 'src/app/services/room.service';
 import { HistoryComponent } from '../history/history.component';
 
 @Component({
-  selector: 'app-average',
-  templateUrl: './average.component.html',
-  styleUrls: ['./average.component.scss'],
+  selector: 'app-training-room-average',
+  templateUrl: './training-room-average.component.html',
+  styleUrls: ['./training-room-average.component.scss'],
 })
-export class AverageComponent implements OnDestroy {
+export class TrainingRoomAverageComponent implements OnDestroy {
 
   loading = true;
   roomSubscription: Subscription;
   averages: Average[];
 
-  constructor(public roomSvc: RoomService,
+  constructor(public trainingRoomSvc: TrainingRoomService,
               private alertCtrl: AlertController,
               private modalCtrl: ModalController,
               private toastCtrl: ToastController) {
-    this.roomSubscription = this.roomSvc.$session.subscribe(() => {
-      this.averages = roomSvc.getAveragesOrderByRange();
+    this.roomSubscription = this.trainingRoomSvc.$session.subscribe(() => {
+      this.averages = trainingRoomSvc.getAveragesOrderByRange();
       this.loading = false;
     });
   }
@@ -32,8 +33,8 @@ export class AverageComponent implements OnDestroy {
 
   addAverage = () => {
     this.alertCtrl.create({
-      header: 'Add average',
-      message: 'Selecciona el average que deseas agregar',
+      header: 'Agrega promedio',
+      message: 'Selecciona el promedio que deseas agregar',
       inputs: [{
         name: 'average',
         type: 'number',
@@ -41,14 +42,14 @@ export class AverageComponent implements OnDestroy {
       }],
       buttons: [{
         text: 'Cancelar',
-        cssClass: 'secondary'
+        role: 'cancel'
       }, {
         text: 'Agregar',
         handler: (data) => {
           let { average } = data;
           average = parseInt(average);
           if (average >= 5) {
-            this.roomSvc.addAverage(average);
+            this.trainingRoomSvc.addAverage(average);
           } else {
             this.toastCtrl.create({
               message: 'Los promedios deben ser mayores o iguales a 5'
@@ -66,10 +67,20 @@ export class AverageComponent implements OnDestroy {
     this.modalCtrl.create({
       component: HistoryComponent,
       componentProps: {
-        records: this.roomSvc.getRecordsOrderByCreation(true)
+        records: this.trainingRoomSvc.getRecordsOrderByCreation()
       }
     }).then(modal => {
       modal.present();
+      modal.onDidDismiss().then(props => {
+        if (props.data !== undefined) {
+          let {record, deleted} = props.data;
+          if (deleted) {
+            this.trainingRoomSvc.deleteRecord(record);
+          } else {
+            this.trainingRoomSvc.updateRecord(record);
+          }
+        }
+      })
     });
   }
 
