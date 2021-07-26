@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { AverageChipComponent } from './average-chip/average-chip.component';
 import { PipesModule } from '../pipes/pipes.module';
 import { AverageDisplayPipe } from '../pipes/average-display.pipe';
+import { TrainingRoomSettingsComponent } from './training-room-settings/training-room-settings.component';
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import { AverageDisplayPipe } from '../pipes/average-display.pipe';
       ScramblerComponent,
       TrainingRoomAverageComponent,
       RecordChipComponent,
-      AverageChipComponent
+      AverageChipComponent,
+      TrainingRoomSettingsComponent
     ],
     exports: [
       ScramblerComponent,

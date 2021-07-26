@@ -1,8 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { ScramblerComponent } from 'src/app/components/scrambler/scrambler.component';
+import { TrainingRoomSettingsComponent } from 'src/app/components/training-room-settings/training-room-settings.component';
 import { Record } from 'src/app/models/record.class';
-import { TrainingRoomService } from 'src/app/services/room.service';
+import { TrainingRoomService } from 'src/app/services/training-room.service';
 @Component({
   selector: 'app-training-room',
   templateUrl: './training-room.page.html',
@@ -18,7 +19,7 @@ export class TrainingRoomPage {
   };
 
   constructor(public trainingRoomSvc: TrainingRoomService,
-              private alertCtrl: AlertController) {
+              private modalCtrl: ModalController) {
     this.loading = true;
     this.trainingRoomSvc.$session.subscribe(() => this.loading = false);
   }
@@ -38,34 +39,13 @@ export class TrainingRoomPage {
   recordUpdated = (record: Record) => {
     this.trainingRoomSvc.updateRecord(record);
   }
-
-  showAddSession = () => {
-    this.alertCtrl.create({
-      header: 'Agrega sesion',
-      message: 'Selecciona el nombre de tu nueva sesion',
-      inputs: [{
-        name: 'session',
-        type: 'text'
-      }],
-      buttons: [{
-        text: 'Cancelar',
-        role: 'cancel'
-      }, {
-        text: 'Agregar',
-        handler: (data) => {
-          let { session } = data;
-          this.trainingRoomSvc.addSession(session)
-        }
-      }]
-    })
-    .then(alert => alert.present());
-  }
-
-  sessionSelected = (event: any) => {
-    if (event.detail?.value) {
-      let { id } = event.detail.value;
-      this.trainingRoomSvc.selectSession(id);
-    }
+  
+  showTrainingRoomSettings = () => {
+    this.modalCtrl.create({
+      component: TrainingRoomSettingsComponent
+    }).then(modal => {
+      modal.present();
+    });
   }
 
 }

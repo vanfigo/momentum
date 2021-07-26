@@ -2,17 +2,11 @@
   <ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else roomContent"></ion-progress-bar>
   <ng-template #roomContent>
     <ion-fab slot="fixed" horizontal="end" vertical="bottom">
-      <ion-fab-button color="light"></ion-fab-button>
+      <ion-fab-button color="light" (click)="showTrainingRoomSettings()">
+        <ion-icon name="grid-outline"></ion-icon>
+      </ion-fab-button>
     </ion-fab>
-    <ion-list lines="full" class="ion-no-padding">
-      <ion-item color="primary">
-        <ion-label>Sesion</ion-label>
-        <ion-select [interfaceOptions]="popOverOptions" interface="action-sheet" [(ngModel)]="trainingRoomSvc.session" (ionChange)="sessionSelected($event)">
-          <ion-select-option [value]="session" *ngFor="let session of trainingRoomSvc.room.sessions">{{session.name}}</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <app-scrambler></app-scrambler>
-    </ion-list>
+    <app-scrambler></app-scrambler>
     <app-timer  (recordObtained)="recordObtained($event)"
                 (recordDeleted)="recordDeleted($event)"
                 (recordUpdated)="recordUpdated($event)"></app-timer>

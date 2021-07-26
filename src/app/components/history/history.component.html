@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="medium">
+  <ion-toolbar>
     <ion-title *ngIf="!average">Conteo: {{records.length}}</ion-title>
     <ion-title *ngIf="average">Promedio: {{average | averageDisplay: best}}</ion-title>
     <ion-buttons slot="end">

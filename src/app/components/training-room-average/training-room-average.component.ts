@@ -3,7 +3,7 @@ import { AlertController, ModalController, ToastController } from '@ionic/angula
 import { Subscription } from 'rxjs';
 import { Average } from 'src/app/models/average.class';
 import { Record } from 'src/app/models/record.class';
-import { TrainingRoomService } from 'src/app/services/room.service';
+import { TrainingRoomService } from 'src/app/services/training-room.service';
 import { HistoryComponent } from '../history/history.component';
 
 @Component({
@@ -52,7 +52,8 @@ export class TrainingRoomAverageComponent implements OnDestroy {
             this.trainingRoomSvc.addAverage(average);
           } else {
             this.toastCtrl.create({
-              message: 'Los promedios deben ser mayores o iguales a 5'
+              message: 'Los promedios deben ser mayores o iguales a 5',
+              duration: 4000
             })
             .then(toast => toast.present());
           }

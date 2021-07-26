@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Room } from 'src/app/models/room.class';
 import { Record } from 'src/app/models/record.class';
-import { TrainingRoomService } from 'src/app/services/room.service';
+import { TrainingRoomService } from 'src/app/services/training-room.service';
 import { Session } from 'src/app/models/session.class';
 import { Average } from 'src/app/models/average.class';
 

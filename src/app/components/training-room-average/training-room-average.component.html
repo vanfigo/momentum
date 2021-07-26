@@ -1,11 +1,11 @@
 <ion-toolbar color="light">
   <ion-buttons slot="start">
     <ion-button (click)="addAverage()">
-      <ion-icon name="add-circle-outline"></ion-icon>
+      <ion-icon name="add-outline"></ion-icon>
     </ion-button>
   </ion-buttons>
   <ion-title *ngIf="!loading">Conteo: {{trainingRoomSvc.category.records.length}}</ion-title>
-  <ion-buttons slot="end">
+  <ion-buttons slot="end" *ngIf="trainingRoomSvc.category.records.length > 0">
     <ion-button (click)="showHistory()">
       <ion-icon name="receipt-outline" slot="icon-only"></ion-icon>
     </ion-button>

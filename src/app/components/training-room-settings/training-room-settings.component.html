@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="modalCtrl.dismiss()">Listo</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-segment [(ngModel)]="segment">
+    <ion-segment-button value="session">
+      <ion-label>Sesion</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="category">
+      <ion-label>Categoria</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <ion-list *ngIf="segment === 'category'; else sessions">
+    <ion-radio-group [value]="trainingRoomSvc.activeCategoryType" (ionChange)="categorySelected($event)">
+      <ion-item *ngFor="let category of CategoryType | keyvalue">
+        <ion-label>{{category.value}}</ion-label>
+        <ion-radio slot="start" [value]="category.value"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+  <ng-template #sessions>
+    <ion-fab vertical="bottom" horizontal="end">
+      <ion-fab-button color="success" (click)="showAddSession()">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+    <ion-list>
+      <ion-radio-group [value]="trainingRoomSvc.activeSessionId" (ionChange)="sessionSelected($event)">
+        <ion-item-sliding *ngFor="let session of trainingRoomSvc.room.sessions" #sliding>
+          <ion-item-options side="start">
+            <ion-item-option color="danger" (click)="deleteSession(session)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+          <ion-item>
+            <ion-label>{{session.name}}</ion-label>
+            <ion-radio slot="start" [value]="session.id"></ion-radio>
+          </ion-item>
+          <ion-item-options side="end">
+            <ion-item-option color="warning" (click)="showEditSession(session, sliding)">
+              <ion-icon slot="icon-only" name="pencil-sharp"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-radio-group>
+    </ion-list>
+  </ng-template>
+</ion-content>

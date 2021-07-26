@@ -21,21 +21,25 @@ export class AverageChipComponent implements OnInit {
   ngOnInit() {}
 
   showAverage = () => {
-    this.modalCtrl.create({
-      component: HistoryComponent,
-      componentProps: {
-        average: this.average,
-        best: this.best
-      }
-    }).then(modal => {
-      modal.present();
-      modal.onDidDismiss().then(props => {
-        if (props.data !== undefined) {
-          let { record, deleted } = props.data;
-          deleted ? this.recordDeleted.emit(record) : this.recordUpdated.emit(record);
+    console.log(this.best, this.average);
+    
+    if ((this.best && this.average.bestTime) || (!this.best && this.average.currentTime)) {
+      this.modalCtrl.create({
+        component: HistoryComponent,
+        componentProps: {
+          average: this.average,
+          best: this.best
         }
+      }).then(modal => {
+        modal.present();
+        modal.onDidDismiss().then(props => {
+          if (props.data !== undefined) {
+            let { record, deleted } = props.data;
+            deleted ? this.recordDeleted.emit(record) : this.recordUpdated.emit(record);
+          }
+        });
       });
-    });
+    }
   }
 
 }

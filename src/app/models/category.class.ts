@@ -9,7 +9,6 @@ export class Category {
     averages: Average[];
 
     constructor() {
-        this.id = 0;
         this.categoryType = CategoryType.CUBE3X3;
         this.records = [];
         this.averages = [];

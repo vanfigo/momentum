@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, 
 import { AlertController, GestureController } from '@ionic/angular';
 import { Record } from 'src/app/models/record.class';
 import { RecordDisplayPipe } from 'src/app/pipes/record-display.pipe';
-import { TrainingRoomService } from 'src/app/services/room.service';
+import { TrainingRoomService } from 'src/app/services/training-room.service';
 
 @Component({
   selector: 'app-timer',

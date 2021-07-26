@@ -18,7 +18,7 @@ export class TrainingRoomService {
   category: Category;
 
   activeSessionId: number;
-  activeCategoryId: number;
+  activeCategoryType: string;
 
   constructor(private storageService: StorageService) {
     storageService.get('room').then((room: Room) => {
@@ -35,15 +35,32 @@ export class TrainingRoomService {
     this.room = room;
     this.activeSessionId = room.activeSessionId;
     this.session = room.sessions.find(session => session.id === room.activeSessionId);
-    this.activeCategoryId = this.session.activeCategoryId;
-    this.category = this.session.categories.find(category => category.id === this.activeCategoryId);
+    this.activeCategoryType = this.session.activeCategoryType;
+    this.category = this.session.categories.find(category => category.categoryType === this.activeCategoryType);
     this.$session.next(this.session);
   }
 
   addSession = (sessionName: string) => {
-    let session = new Session(this.room.sessions.length, sessionName);
+    let sessionsLength = this.room.sessions.length;
+    let session = new Session(this.room.sessions[sessionsLength - 1].id + 1, sessionName);
     this.room.sessions.push(session);
     this.room.activeSessionId = session.id;
+    this.storageService.set('room', this.room).then(() => this.initRoom(this.room));
+  }
+
+  editSession = (sessionId: number, sessionName: string) => {
+    let session = this.room.sessions.find(session => session.id === sessionId);
+    session.name = sessionName;
+    let index = this.room.sessions.indexOf(session);
+    this.room.sessions[index] = session;
+    this.storageService.set('room', this.room).then(() => this.initRoom(this.room));
+  }
+
+  deleteSession = (sessionId: number) => {
+    this.room.sessions = this.room.sessions.filter(session => session.id !== sessionId);
+    if (this.activeSessionId === sessionId) {
+      this.activeSessionId = this.room.sessions[0].id;
+    }
     this.storageService.set('room', this.room).then(() => this.initRoom(this.room));
   }
 

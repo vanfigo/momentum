@@ -6,13 +6,13 @@ export class Session {
     id: number;
     name: string;
     categories: Category[];
-    activeCategoryId: number;
+    activeCategoryType: string;
 
     constructor(id: number = 0, name: string = 'main') {
         this.id = id;
         this.name = name;
         let category = new Category();
         this.categories = [category];
-        this.activeCategoryId = category.id;
+        this.activeCategoryType = category.categoryType;
     }
 }
