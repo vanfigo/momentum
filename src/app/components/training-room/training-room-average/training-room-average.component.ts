@@ -2,9 +2,8 @@ import { Component, OnDestroy } from '@angular/core';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Average } from 'src/app/models/average.class';
-import { Record } from 'src/app/models/record.class';
 import { TrainingRoomService } from 'src/app/services/training-room.service';
-import { HistoryComponent } from '../history/history.component';
+import { HistoryComponent } from '../../shared/history/history.component';
 
 @Component({
   selector: 'app-training-room-average',

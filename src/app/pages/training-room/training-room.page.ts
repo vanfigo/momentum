@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { ScramblerComponent } from 'src/app/components/scrambler/scrambler.component';
-import { TrainingRoomSettingsComponent } from 'src/app/components/training-room-settings/training-room-settings.component';
+import { ScramblerComponent } from 'src/app/components/shared/scrambler/scrambler.component';
+import { TrainingRoomSettingsComponent } from 'src/app/components/training-room/training-room-settings/training-room-settings.component';
 import { Record } from 'src/app/models/record.class';
 import { TrainingRoomService } from 'src/app/services/training-room.service';
 @Component({

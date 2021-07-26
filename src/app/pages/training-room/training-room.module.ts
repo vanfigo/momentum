@@ -7,8 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { TrainingRoomPageRoutingModule } from './training-room-routing.module';
 
 import { TrainingRoomPage } from './training-room.page';
-import { TrainingRoomModule } from '../../components/training-room.module';
-import { SharedModule } from 'src/app/components/shared.module';
+import { TrainingRoomModule } from '../../components/training-room/training-room.module';
+import { SharedModule } from 'src/app/components/shared/shared.module';
 
 @NgModule({
   imports: [
@@ -16,8 +16,8 @@ import { SharedModule } from 'src/app/components/shared.module';
     FormsModule,
     IonicModule,
     TrainingRoomPageRoutingModule,
-    TrainingRoomModule,
-    SharedModule
+    SharedModule,
+    TrainingRoomModule
   ],
   declarations: [TrainingRoomPage]
 })
