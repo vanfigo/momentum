@@ -7,6 +7,7 @@ export const environment = {
     storageBucket: "momentum-bucketdev.appspot.com",
     messagingSenderId: "225696889612",
     appId: "1:225696889612:web:5b46aef9601b9c17b56729",
-    measurementId: "G-SBPJDFKD8K"
+    measurementId: "G-SBPJDFKD8K",
+    useEmulators: false
   }
 };

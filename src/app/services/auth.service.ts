@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import firebase from 'firebase/app';
 import { NavController } from '@ionic/angular';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +17,8 @@ export class AuthService {
   constructor(private afAuth: AngularFireAuth,
               private router: Router,
               private route: ActivatedRoute,
-              private navController: NavController
-              // private storageService: StorageService,
-              // private modalController: ModalController,
-              // private platform: Platform
+              private navController: NavController,
+              private db: AngularFirestore
               ) {
     afAuth.authState.subscribe(user => {
       this.user = user;
@@ -42,4 +41,8 @@ export class AuthService {
   signOut = async () => {
     await this.afAuth.signOut();
   }
+
+  getCurrentUserFromDB = () => this.db.collection('users').doc(this.user.uid).get().toPromise();
+
+  listenCurrentUserChanges = () => this.db.collection('users').doc(this.user.uid).snapshotChanges();
 }

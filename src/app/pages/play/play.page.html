@@ -1,5 +1,5 @@
 <ion-content color="light">
-  <ion-card button>
+  <ion-card button (click)="addWaitingPlayer(RoomType.RANKED)">
     <ion-card-header color="warning">
       <ion-card-title>Ranked</ion-card-title>
       <ion-card-subtitle>Jugadores en linea: {{50}}</ion-card-subtitle>
@@ -21,7 +21,7 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
-  <ion-card button>
+  <ion-card button (click)="addWaitingPlayer(RoomType.UNRANKED)">
     <ion-card-header color="primary">
       <ion-card-title>Unranked</ion-card-title>
       <ion-card-subtitle>Jugadores en linea: {{150}}</ion-card-subtitle>
