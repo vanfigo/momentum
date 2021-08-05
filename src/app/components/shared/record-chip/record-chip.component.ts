@@ -13,6 +13,8 @@ export class RecordChipComponent implements OnInit {
 
   @Input() record: Record;
   @Input() color: string = "primary";
+  @Input() canEdit: boolean = true;
+  @Input() canDelete: boolean = true;
   @Output() recordUpdated: EventEmitter<Record> = new EventEmitter();
   @Output() recordDeleted: EventEmitter<Record> = new EventEmitter();
 
@@ -27,21 +29,28 @@ export class RecordChipComponent implements OnInit {
 
   showTime = () => {
     if (this.record !== undefined) { 
-      this.alertCtrl.create({
-        header: this.recordDisplayPipe.transform(this.record),
-        subHeader: this.datePipe.transform(this.record.creation, 'medium'),
-        message: this.record.scramble,
-        buttons: [{
+      const buttons: any[] = [{ text: 'Aceptar', role: 'cancel' }];
+      if (this.canDelete) {
+        buttons.unshift({
+          text: 'Borrar',
+          cssClass: 'delete-button',
+          handler: this.deleteRecord,
+        })
+      }
+      if (this.canEdit) {
+        buttons.unshift({
           text: '+2',
           handler: this.updatePlusRecord
         }, {
           text: 'DNF',
           handler: this.updateDNFRecord
-        }, {
-          text: 'Borrar',
-          cssClass: 'delete-button',
-          handler: this.deleteRecord,
-        }, { text: 'Aceptar', role: 'cancel' }]
+        });
+      }
+      this.alertCtrl.create({
+        header: this.recordDisplayPipe.transform(this.record),
+        subHeader: this.datePipe.transform(this.record.creation, 'medium'),
+        message: this.record.scramble,
+        buttons
       }).then(alert => alert.present());
     }
   }
@@ -68,7 +77,6 @@ export class RecordChipComponent implements OnInit {
   updateDNFRecord = () => {
     this.record.dnf = !this.record.dnf;
     this.recordUpdated.emit(this.record);
-    
   }
 
 }

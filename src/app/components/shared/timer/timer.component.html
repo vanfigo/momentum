@@ -24,7 +24,7 @@
           <ion-icon name="flag-outline"></ion-icon>
         </ion-fab-button>
       </ion-fab-list>
-      <ion-fab-list side="start">
+      <ion-fab-list side="start" *ngIf="allowDelete">
         <ion-fab-button color="danger" (click)="deleteRecord()">
           <ion-icon name="trash-outline"></ion-icon>
         </ion-fab-button>
@@ -39,7 +39,7 @@
       <ion-text [color]="getInspectionColor()" class="timer-display inspection-display">{{inspectionTime >= 17 ? 'DNF' : inspectionTime}}</ion-text>
     </div>
     <ion-item lines="none" color="light">
-      <ion-toggle [disabled]="!ready" [(ngModel)]="inspection"></ion-toggle>
+      <ion-toggle [disabled]="!ready || forceInspection" [(ngModel)]="inspection"></ion-toggle>
       <ion-label>Inspección</ion-label>
     </ion-item>
   </ion-card-content>

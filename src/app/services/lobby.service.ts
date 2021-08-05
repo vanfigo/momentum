@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, QuerySnapshot } from '@angular/fire/firestore';
 import { Lobby } from "../models/lobby.class";
-import { Player } from '../models/player.class';
+import { MomentumUser } from '../models/momentum-user.class';
 import { RoomType } from '../models/room-type.enum';
 
 @Injectable({
@@ -15,7 +15,7 @@ export class LobbyService {
     this.colletion = this.db.collection('lobbies');
   }
 
-  addPLayer = (user: Player, roomType: RoomType): Promise<void> =>
+  addPLayer = (user: MomentumUser, roomType: RoomType): Promise<void> =>
     // Remove possibly old records
     this.db.collection('lobbies', ref => ref.where('roomType', '==', roomType).where('user.uid', '==', user.uid)).get().toPromise().then((snapshot: QuerySnapshot<Lobby>) => {
       let batch = this.db.firestore.batch();

@@ -42,7 +42,7 @@ export class AuthService {
     await this.afAuth.signOut();
   }
 
-  getCurrentUserFromDB = () => this.db.collection('users').doc(this.user.uid).get().toPromise();
+  getUserFromDB = (uid: string = undefined) => this.db.collection('users').doc(uid ? uid : this.user.uid).get().toPromise();
 
   listenCurrentUserChanges = () => this.db.collection('users').doc(this.user.uid).snapshotChanges();
 }

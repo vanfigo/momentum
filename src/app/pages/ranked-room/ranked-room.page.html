@@ -1,12 +1,16 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home/dashboard"></ion-back-button>
-    </ion-buttons>
-    <ion-title>rankedRoom</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-
-</ion-content>
+<ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else rankedRoom"></ion-progress-bar>
+<ng-template #rankedRoom>
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button text="Salir" defaultHref="/home/dashboard"></ion-back-button>
+      </ion-buttons>
+      <ion-title>{{opponent.email}}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <app-scrambler (lastScramble)="lastScramble()" [scrambles]="room.scrambles"></app-scrambler>
+    <app-timer (recordObtained)="recordObtained($event)" (recordUpdated)="recordUpdated($event)" [forceInspection]="true" [allowDelete]="false"></app-timer>
+    <app-playing-room-history [scramblesToComplete]="room.scrambles.length" [opponentPlayer]="opponent" (recordUpdated)="recordUpdated($event)" (gameCompleted)="gameCompleted()"></app-playing-room-history>
+  </ion-content>
+</ng-template>

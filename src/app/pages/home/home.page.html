@@ -1,6 +1,6 @@
 <app-header></app-header>
 <ion-content>
-  <ion-tabs>
+  <ion-tabs #tabs (ionTabsDidChange)="tabChange(tabs)">
     <ion-tab-bar slot="bottom">
       <ion-tab-button tab="dashboard">
         <ion-icon name="pie-chart-outline"></ion-icon>

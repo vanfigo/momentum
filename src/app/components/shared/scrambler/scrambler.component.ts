@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ScramblerService } from 'src/app/services/scrambler.service';
 
 @Component({
@@ -8,14 +8,27 @@ import { ScramblerService } from 'src/app/services/scrambler.service';
 })
 export class ScramblerComponent implements OnInit {
 
+  @Input() scrambles: string[];
+  @Output() lastScramble: EventEmitter<void> = new EventEmitter();
+  
   scramble: string;
+  index = 0;
 
-  constructor(private scramblerService: ScramblerService) {
-    this.scramble = scramblerService.getScramble();
+  constructor(private scramblerService: ScramblerService) { }
+
+  ngOnInit() {
+    this.scramble = this.scrambles ? this.scrambles[this.index] : this.scramblerService.getScramble();
   }
 
-  ngOnInit() {}
-
   updateScramble = () => this.scramble = this.scramblerService.getScramble();
+
+  getNextScramble = () => {
+    if (this.index + 1 < this.scrambles.length) {
+      this.index++;
+      this.scramble = this.scrambles[this.index];
+    } else {
+      this.lastScramble.emit();
+    }
+  }
 
 }

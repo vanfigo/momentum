@@ -1,8 +1,8 @@
-import { Player } from './player.class';
+import { MomentumUser } from './momentum-user.class';
 import { RoomType } from './room-type.enum';
 
 export class Lobby {
-    user: Player;
+    user: MomentumUser;
     roomType: RoomType;
     creation: number;
 }

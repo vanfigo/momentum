@@ -1,9 +1,7 @@
 /* eslint-disable no-invalid-this, require-jsdoc */
 export class Scrambler {
-  
   turnTypes = "'2 ";
   turns = "UDFBRL";
-
   getPlayableScrambles = (scramblesNumber = 5): string[] => {
     const scrambles: string[] = [];
     for (let i = 0; i < scramblesNumber; i++) {

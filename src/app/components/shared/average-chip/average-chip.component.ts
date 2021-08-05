@@ -21,8 +21,6 @@ export class AverageChipComponent implements OnInit {
   ngOnInit() {}
 
   showAverage = () => {
-    console.log(this.best, this.average);
-    
     if ((this.best && this.average.bestTime) || (!this.best && this.average.currentTime)) {
       this.modalCtrl.create({
         component: HistoryComponent,

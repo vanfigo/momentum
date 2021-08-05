@@ -1,8 +1,9 @@
 <ion-item>
+  <ion-chip slot="start" *ngIf="scrambles" color="primary">{{index + 1}}</ion-chip>
   <div class="room-scramble">
     {{scramble}}
   </div>
-  <ion-button class="ion-no-margin" slot="end" fill="clear" (click)="updateScramble()">
+  <ion-button class="ion-no-margin" slot="end" fill="clear" (click)="updateScramble()" *ngIf="!scrambles">
     <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
   </ion-button>
 </ion-item>

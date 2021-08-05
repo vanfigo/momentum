@@ -1,21 +1,22 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
-import { AlertController, GestureController } from '@ionic/angular';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AlertController, Gesture, GestureController } from '@ionic/angular';
 import { Record } from 'src/app/models/record.class';
 import { RecordDisplayPipe } from 'src/app/pipes/record-display.pipe';
-import { TrainingRoomService } from 'src/app/services/training-room.service';
 
 @Component({
   selector: 'app-timer',
   templateUrl: './timer.component.html',
   styleUrls: ['./timer.component.scss'],
 })
-export class TimerComponent implements AfterViewInit {
+export class TimerComponent implements AfterViewInit, OnInit {
 
   @ViewChild('timerDisplay', {read: ElementRef}) timerDisplay: ElementRef;
   @ViewChild('inspectionDisplay', {read: ElementRef}) inspectionDisplay: ElementRef;
   @Output() recordObtained: EventEmitter<Record> = new EventEmitter();
   @Output() recordUpdated: EventEmitter<Record> = new EventEmitter();
   @Output() recordDeleted: EventEmitter<Record> = new EventEmitter();
+  @Input() forceInspection: boolean = false;
+  @Input() allowDelete: boolean = true;
 
   record: Record;
   inspection: boolean;
@@ -35,6 +36,8 @@ export class TimerComponent implements AfterViewInit {
   timerTimeOut: any;
   inspectionInterval: any;
 
+  timerGesture: Gesture;
+
   constructor(private gestureCtrl: GestureController,
               private changeDetector: ChangeDetectorRef,
               private alertCtrl: AlertController,
@@ -48,6 +51,10 @@ export class TimerComponent implements AfterViewInit {
     this.plus = false;
     this.plusEditable = false;
     this.editable = false;
+  }
+  
+  ngOnInit(): void {
+    this.inspection = this.forceInspection;
   }
 
   ngAfterViewInit(): void {
@@ -100,7 +107,7 @@ export class TimerComponent implements AfterViewInit {
   }
 
   addTimerGesture = () => {
-    this.gestureCtrl.create({
+    this.timerGesture = this.gestureCtrl.create({
       el: this.timerDisplay.nativeElement,
       threshold: 0,
       gestureName: 'timer-press',
@@ -114,6 +121,7 @@ export class TimerComponent implements AfterViewInit {
             this.onHold = true;
             this.dnf = false;
             this.plus = false;
+            this.plusEditable = false;
             this.editable = false;
             this.record = new Record();
           }, 400);
@@ -138,8 +146,11 @@ export class TimerComponent implements AfterViewInit {
           clearTimeout(this.timerTimeOut);
         }
       }
-    }, true).enable();
+    }, true);
+    this.timerGesture.enable();
   }
+
+  stopListeningTimer = () => this.timerGesture.destroy();
 
   finishRecord = () => {
     this.ready = true;

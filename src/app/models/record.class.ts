@@ -1,5 +1,6 @@
 export class Record {
     id: number;
+    uid?: string;
     time: number;
     creation: number;
     scramble: string;

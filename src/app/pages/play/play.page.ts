@@ -3,7 +3,7 @@ import { Action, DocumentSnapshot } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingController, NavController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { Player } from 'src/app/models/player.class';
+import { MomentumUser } from 'src/app/models/momentum-user.class';
 import { RoomType } from 'src/app/models/room-type.enum';
 import { AuthService } from 'src/app/services/auth.service';
 import { LobbyService } from 'src/app/services/lobby.service';
@@ -32,8 +32,8 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
   ionViewWillEnter(): void {
     // listens for when the user access to a room
     if (this.userSubscription === undefined || this.userSubscription.closed) {
-      this.userSubscription = this.authSvc.listenCurrentUserChanges().subscribe((action: Action<DocumentSnapshot<Player>>) => {
-        const user: Player = action.payload.data();
+      this.userSubscription = this.authSvc.listenCurrentUserChanges().subscribe((action: Action<DocumentSnapshot<MomentumUser>>) => {
+        const user: MomentumUser = action.payload.data();
         if (action.type === 'modified' && ( user.rankedRoomUid || user.unrankedRoomUid)) {
           this.loadingCtrl.dismiss();
           const roomType = user.rankedRoomUid ? RoomType.RANKED : RoomType.UNRANKED;
@@ -52,12 +52,12 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
     })
     .then(loading => {
       loading.present();
-      this.authSvc.getCurrentUserFromDB()
-      .then((userSnapshot: DocumentSnapshot<Player>) => {
+      this.authSvc.getUserFromDB()
+      .then((userSnapshot: DocumentSnapshot<MomentumUser>) => {
         // deletes the actual room reference for the room type sent
         userSnapshot.ref.update({rankedRoomUid: null, unrankedRoomUid: null})
           .then(() => {
-            let user: Player = {...userSnapshot.data(), uid: userSnapshot.id};
+            let user: MomentumUser = {...userSnapshot.data(), uid: userSnapshot.id};
             // adds the user as a player waiting in lobby
             this.lobbySvc.addPLayer(user, roomType)
             .catch(() => console.error('error adding user to lobby'));
