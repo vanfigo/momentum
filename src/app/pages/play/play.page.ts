@@ -35,10 +35,11 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
       this.userSubscription = this.authSvc.listenCurrentUserChanges().subscribe((action: Action<DocumentSnapshot<MomentumUser>>) => {
         const user: MomentumUser = action.payload.data();
         if (action.type === 'modified' && ( user.rankedRoomUid || user.unrankedRoomUid)) {
-          this.loadingCtrl.dismiss();
-          const roomType = user.rankedRoomUid ? RoomType.RANKED : RoomType.UNRANKED;
-          const roomURL = roomType === RoomType.RANKED ? '/ranked-room' : '/unranked-room';
-          this.navCtrl.navigateForward([roomURL, roomType === RoomType.RANKED ? user.rankedRoomUid : user.unrankedRoomUid], {relativeTo: this.route});
+          this.loadingCtrl.dismiss().then(() => {
+            const roomType = user.rankedRoomUid ? RoomType.RANKED : RoomType.UNRANKED;
+            const roomURL = roomType === RoomType.RANKED ? '/ranked-room' : '/unranked-room';
+            this.navCtrl.navigateForward([roomURL, roomType === RoomType.RANKED ? user.rankedRoomUid : user.unrankedRoomUid], {relativeTo: this.route});
+          });
         }
       });
     }

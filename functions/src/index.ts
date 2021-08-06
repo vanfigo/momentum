@@ -85,11 +85,13 @@ exports.roomCompleted = functions.firestore.document("rooms/{uid}")
           return record;
         });
         await generateRegistryForUser(userOne.uid, userTwo, room,
-            evaluateAverageTime(userOneAverage.time, userTwoAverage.time),
-            userOneAverage.time, userOneRecords, userTwoRecords);
+            evaluateAverageTime(userOneAverage.time, userTwoAverage.time,
+                userOneRecords, userTwoRecords), userOneAverage.time,
+            userTwoAverage.time, userOneRecords, userTwoRecords);
         await generateRegistryForUser(userTwo.uid, userOne, room,
-            evaluateAverageTime(userTwoAverage.time, userOneAverage.time),
-            userTwoAverage.time, userTwoRecords, userOneRecords);
+            evaluateAverageTime(userTwoAverage.time, userOneAverage.time,
+                userTwoRecords, userOneRecords), userTwoAverage.time,
+            userOneAverage.time, userTwoRecords, userOneRecords);
         await updateUserAverage(userOne.uid, room.roomType);
         await updateUserAverage(userTwo.uid, room.roomType);
       }
@@ -101,29 +103,42 @@ const updateUserAverage = async (userUid: string, roomType: number) => {
   const averageSum = snapshot.docs.reduce(
       (previous, document) => document.data().average + previous, 0);
   const newAverage = averageSum / snapshot.docs.length;
-  const userDoc = admin.firestore().collection("users").doc(userUid);
-  return roomType === 1 ? userDoc.update({unrankedAverage: newAverage}) :
-    userDoc.update({rankedAverage: newAverage});
+  const update: any = {rankedRoomUid: null, unrankedRoomUid: null};
+  if (roomType === 1) {
+    update["unrankedAverage"] = newAverage;
+  } else {
+    update["rankedAverage"] = newAverage;
+  }
+  return admin.firestore().collection("users").doc(userUid).update(update);
 };
 
-const evaluateAverageTime = (time: number|null, opponentTime: number|null) => {
+const evaluateAverageTime = (time: number|null, opponentTime: number|null,
+    userOneRecords: any[], userTwoRecords: any[]) => {
   if (time === null) {
     return false;
   } else if (opponentTime === null) {
     return true;
   }
-  return time === opponentTime ? false : time < opponentTime ? true : false;
+  if (time === opponentTime) {
+    for (let i = 0; i < userOneRecords.length; i++) {
+      if (userOneRecords[i].time !== userTwoRecords[i].time) {
+        return userOneRecords[i].time < userOneRecords[i].time ? true : false;
+      }
+    }
+    return false;
+  }
+  return time < opponentTime ? true : false;
 };
 
 const generateRegistryForUser = (userUid: string, opponentUser: any,
     room: any, won: boolean, average: number | null,
-    records: any[], opponentRecords: any[]) => {
+    opponentAverage: number | null, records: any[], opponentRecords: any[]) => {
   return admin.firestore().collection("registries").doc().create({
     opponentUsername: opponentUser.username,
     opponentPhotoUrl: opponentUser.photoUrl,
     roomType: room.roomType,
     roomUid: room.uid,
-    userUid, won, average, records, opponentRecords,
+    userUid, won, average, opponentAverage, records, opponentRecords,
   });
 };
 

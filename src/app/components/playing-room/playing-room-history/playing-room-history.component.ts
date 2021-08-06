@@ -56,10 +56,11 @@ export class PlayingRoomHistoryComponent implements OnInit, OnDestroy {
   }
 
   updateRecord = (record: Record) => {
-    if (record.uid === undefined) {
-      const _record = this.records[this.records.length - 1];
-      this.records[this.records.length - 1] = {...record, uid: _record.uid};
-    }
+      const recordFound = this.records.find(_record => _record.uid === record.uid);
+      if (recordFound) {
+        const index = this.records.indexOf(recordFound);
+        this.records[index] = record;
+      }
   }
 
   cardRecordUpdated = (record: Record) => {
@@ -120,7 +121,7 @@ export class PlayingRoomHistoryComponent implements OnInit, OnDestroy {
                     text: 'Salir',
                     role: 'cancel',
                     handler: () => {
-                      this.navCtrl.navigateBack(["home", "play"], { relativeTo: this.route });
+                      this.navCtrl.navigateBack(["/home", "play"], { relativeTo: this.route });
                     }
                   }]
                 }).then(alert => alert.present());

@@ -11,6 +11,7 @@ import { AverageDisplayPipe } from '../../pipes/average-display.pipe';
 import { RecordDisplayPipe } from '../../pipes/record-display.pipe';
 import { PipesModule } from '../../pipes/pipes.module';
 import { FormsModule } from '@angular/forms';
+import { RegistryDetailComponent } from './registry-detail/registry-detail.component';
 
 @NgModule({
   imports: [
@@ -25,14 +26,16 @@ import { FormsModule } from '@angular/forms';
     HistoryComponent,
     ScramblerComponent,
     RecordChipComponent,
-    AverageChipComponent
+    AverageChipComponent,
+    RegistryDetailComponent
   ],
   exports: [
     HeaderComponent,
     TimerComponent,
     ScramblerComponent,
     RecordChipComponent,
-    AverageChipComponent
+    AverageChipComponent,
+    RegistryDetailComponent
   ],
   providers: [RecordDisplayPipe, AverageDisplayPipe, DatePipe]
 })

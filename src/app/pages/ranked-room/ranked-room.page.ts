@@ -1,14 +1,19 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DocumentData, DocumentReference } from '@angular/fire/firestore';
+import { DocumentChangeAction, DocumentData, DocumentReference } from '@angular/fire/firestore';
 import { AngularFireFunctions } from '@angular/fire/functions';
 import { ActivatedRoute } from '@angular/router';
+import { LoadingController, ModalController, NavController, ViewDidLeave } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { PlayingRoomHistoryComponent } from 'src/app/components/playing-room/playing-room-history/playing-room-history.component';
+import { RegistryDetailComponent } from 'src/app/components/shared/registry-detail/registry-detail.component';
 import { ScramblerComponent } from 'src/app/components/shared/scrambler/scrambler.component';
 import { TimerComponent } from 'src/app/components/shared/timer/timer.component';
 import { MomentumUser } from 'src/app/models/momentum-user.class';
 import { Record } from 'src/app/models/record.class';
+import { Registry } from 'src/app/models/registry.class';
 import { Room } from 'src/app/models/room.class';
 import { AuthService } from 'src/app/services/auth.service';
+import { RegistryService } from 'src/app/services/registry.service';
 import { RoomService } from 'src/app/services/room.service';
 
 @Component({
@@ -16,7 +21,7 @@ import { RoomService } from 'src/app/services/room.service';
   templateUrl: './ranked-room.page.html',
   styleUrls: ['./ranked-room.page.scss'],
 })
-export class RankedRoomPage implements OnInit {
+export class RankedRoomPage implements ViewDidLeave {
 
   @ViewChild(ScramblerComponent, {static: false}) scramblerCmpt: ScramblerComponent;
   @ViewChild(PlayingRoomHistoryComponent, {static: false}) historyCmpt: PlayingRoomHistoryComponent;
@@ -27,11 +32,15 @@ export class RankedRoomPage implements OnInit {
   opponent: MomentumUser;
   room: Room;
   record: Record;
+  registrySubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
               private roomSvc: RoomService,
               private authSvc: AuthService,
-              private fireFunctions: AngularFireFunctions) {
+              private loadingCtrl: LoadingController,
+              private registrySvc: RegistryService,
+              private modalCtrl: ModalController,
+              private navCtrl: NavController) {
     this.roomUid = route.snapshot.params['uid'];
     this.roomSvc.geByUid(this.roomUid).toPromise()
     .then(room => {
@@ -55,6 +64,7 @@ export class RankedRoomPage implements OnInit {
   }
 
   recordUpdated = (record: Record) => {
+    record.uid = record.uid ? record.uid : this.record.uid;
     this.roomSvc.updateRecord(this.room.uid, record)
       .then(() => {
         this.historyCmpt.updateRecord(record);
@@ -66,12 +76,37 @@ export class RankedRoomPage implements OnInit {
   }
 
   gameCompleted = () => {
-    console.log('gameCompleted');
-    // this.fireFunctions.httpsCallable('endGame')({uid: this.room.uid}).subscribe();
-    this.roomSvc.completeRoom(this.roomUid);
+    this.loadingCtrl.create({
+      message: 'Finalizando partida...',
+      spinner: 'dots'
+    }).then(loading => {
+      loading.present();
+      this.roomSvc.completeRoom(this.roomUid);
+      this.registrySubscription = this.registrySvc.listenToRegistry(this.roomUid, this.authSvc.user.uid)
+        .subscribe((actions: DocumentChangeAction<Registry>[]) => {
+          actions.forEach(async (action: DocumentChangeAction<Registry>) => {
+            if (action.type === "added") {
+              loading.dismiss();
+              const modal = await this.modalCtrl.create({
+                component: RegistryDetailComponent,
+                componentProps: {
+                  registry: action.payload.doc.data(),
+                  scramblesToComplete: this.room.scrambles.length
+                }
+              });
+              modal.present();
+              this.navCtrl.navigateForward(["/home/play"], {relativeTo: this.route});
+              modal.onWillDismiss().then(() => {
+                // this.navCtrl.navigateForward(["/home/play"], {relativeTo: this.route});
+              })
+            }
+          })
+        })
+    });
   }
 
-  ngOnInit() {
+  ionViewDidLeave(): void {
+    this.registrySubscription && this.registrySubscription.unsubscribe();
   }
 
 }

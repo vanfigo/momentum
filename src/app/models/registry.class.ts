@@ -8,6 +8,7 @@ export class Registry {
     roomUid: string;
     won: boolean;
     average: number;
+    opponentAverage: number;
     opponentUsername: string;
     opponentPhotoUrl: string;
     records: Record[];
