@@ -7,4 +7,6 @@ export class MomentumUser {
     unrankedRoomUid?: string;
     rankedAverage: number;
     unrankedAverage: number;
+    rankedGames: number;
+    unrankedGames: number;
 }

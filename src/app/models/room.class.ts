@@ -1,5 +1,5 @@
 import { MomentumUser } from "./momentum-user.class";
-import { RoomStatus } from "./romm-status.enum";
+import { RoomStatus } from "./room-status.enum";
 import { RoomType } from "./room-type.enum";
 import { Session } from "./session.class";
 
@@ -11,6 +11,7 @@ export class Room {
     users: MomentumUser[];
     status: RoomStatus;
     roomType: RoomType;
+    creation: number;
 
     constructor() {
         let session = new Session();

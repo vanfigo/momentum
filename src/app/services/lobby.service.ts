@@ -22,4 +22,6 @@ export class LobbyService {
       snapshot.docs.forEach(player => batch.delete(player.ref))
       return batch.commit().then(() => this.colletion.doc().set({roomType, user, creation: new Date().getTime()}))
     });
+
+  countLobbiesByRoomType = (roomType: RoomType) => this.db.collection("lobbies", ref => ref.where("roomType", "==", roomType)).snapshotChanges();
 }

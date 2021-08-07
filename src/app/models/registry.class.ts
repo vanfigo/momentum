@@ -13,4 +13,5 @@ export class Registry {
     opponentPhotoUrl: string;
     records: Record[];
     opponentRecords: Record[];
+    creation: number;
 }

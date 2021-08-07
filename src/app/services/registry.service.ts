@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { Registry } from '../models/registry.class';
+import { RoomType } from '../models/room-type.enum';
 
 @Injectable({
   providedIn: 'root'

@@ -4,17 +4,19 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { DashboardPageRoutingModule } from './dashboard-routing.module';
+import { ProfilePageRoutingModule } from './profile-routing.module';
 
-import { DashboardPage } from './dashboard.page';
+import { ProfilePage } from './profile.page';
+import { PipesModule } from 'src/app/pipes/pipes.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    DashboardPageRoutingModule
+    ProfilePageRoutingModule,
+    PipesModule
   ],
-  declarations: [DashboardPage]
+  declarations: [ProfilePage]
 })
 export class DashboardPageModule {}

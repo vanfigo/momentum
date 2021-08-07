@@ -4,51 +4,69 @@ import {Scrambler} from "./scrambler.class";
 
 admin.initializeApp();
 
-exports.createUser = functions.auth.user().onCreate((userRecord, context) => {
+exports.createUser = functions.auth.user().onCreate((userRecord) => {
   return admin.firestore().doc(`/users/${userRecord.uid}`).set({
     email: userRecord.email,
     username: userRecord.displayName || userRecord.email,
     photoUrl: userRecord.photoURL || "",
+    rankedGames: 0,
+    unrankedGames: 0,
+    unrankedGamesWon: 0,
+    rankedGamesWon: 0,
+    rankedAverage: null,
   });
 });
 
 exports.findPlayer = functions.firestore.document("lobbies/{uid}")
     .onCreate((snapshot) => {
       const {roomType, user} = snapshot.data();
-      return admin.firestore().collection("lobbies")
-          // TODO based on roomType, add a filter for ranked times
-          .orderBy("user.uid")
-          .where("user.uid", "!=", user.uid)
-          .where("roomType", "==", roomType)
-          .orderBy("creation")
-          .get().then((querySnapshot: any) => {
-            // Opponent found!
-            if (querySnapshot.docs.length > 0) {
-              const opponent = querySnapshot.docs.pop();
-              const opponentUser = opponent.data().user;
-              // Creates a room for the matched players
-              admin.firestore().collection("rooms").add({
-                users: [opponentUser, user],
-                roomType,
-                status: 0,
-                creation: new Date().getTime(),
-                scrambles: new Scrambler().getPlayableScrambles(),
-              }).then((room) => {
-                // Updates user's room and deletes their lobby waiting documents
-                const batch = admin.firestore().batch();
-                const usersCol = admin.firestore().collection("users");
-                const lobbisesCol = admin.firestore().collection("lobbies");
-                batch.delete(lobbisesCol.doc(snapshot.id));
-                batch.delete(lobbisesCol.doc(opponent.id));
-                batch.update(usersCol.doc(user.uid),
-                    {rankedRoomUid: room.id});
-                batch.update(usersCol.doc(opponentUser.uid),
-                    {rankedRoomUid: room.id});
-                return batch.commit();
-              });
-            }
-            return null;
+      let queryPlayer = admin.firestore().collection("lobbies")
+          .orderBy("user.rankedAverage", "asc")
+          .orderBy("creation", "asc")
+          .where("roomType", "==", roomType);
+      // If it is a ranked match and you already have a ranked average
+      if (roomType === 2) {
+        console.log("user.rankedAverage", user.rankedAverage);
+        if (user.rankedAverage) {
+          const time = parseInt(functions.config().ranked.time);
+          console.log("time", time);
+          queryPlayer = queryPlayer
+              .where("user.rankedAverage", ">=", user.rankedAverage - time)
+              .where("user.rankedAverage", "<=", user.rankedAverage + time);
+        }
+      }
+      return queryPlayer.get().then((querySnapshot: any) => {
+        console.log("querySnapshot.docs", querySnapshot.docs);
+        const foundUsers = querySnapshot.docs.filter(
+            (doc: any) => doc.data().user.uid != user.uid);
+        console.log("foundUsers", foundUsers);
+        // Opponent found!
+        if (foundUsers.length > 0) {
+          const opponent = foundUsers.pop();
+          const opponentUser = opponent.data().user;
+          // Creates a room for the matched players
+          admin.firestore().collection("rooms").add({
+            users: [opponentUser, user],
+            roomType,
+            status: 0,
+            creation: new Date().getTime(),
+            scrambles: new Scrambler().getPlayableScrambles(),
+          }).then((room) => {
+            // Updates user's room and deletes their lobby waiting documents
+            const batch = admin.firestore().batch();
+            const usersCol = admin.firestore().collection("users");
+            const lobbisesCol = admin.firestore().collection("lobbies");
+            batch.delete(lobbisesCol.doc(snapshot.id));
+            batch.delete(lobbisesCol.doc(opponent.id));
+            batch.update(usersCol.doc(user.uid),
+                {rankedRoomUid: room.id});
+            batch.update(usersCol.doc(opponentUser.uid),
+                {rankedRoomUid: room.id});
+            return batch.commit();
           });
+        }
+        return null;
+      });
     });
 
 exports.roomCompleted = functions.firestore.document("rooms/{uid}")
@@ -84,32 +102,48 @@ exports.roomCompleted = functions.firestore.document("rooms/{uid}")
               .find((_record) => record.uid === _record.uid);
           return record;
         });
+        const userOneWon = evaluateAverageTime(userOneAverage.time,
+            userTwoAverage.time, userOneRecords, userTwoRecords);
+        const userTwoWon = evaluateAverageTime(userTwoAverage.time,
+            userOneAverage.time, userTwoRecords, userOneRecords);
         await generateRegistryForUser(userOne.uid, userTwo, room,
-            evaluateAverageTime(userOneAverage.time, userTwoAverage.time,
-                userOneRecords, userTwoRecords), userOneAverage.time,
+            userOneWon, userOneAverage.time,
             userTwoAverage.time, userOneRecords, userTwoRecords);
         await generateRegistryForUser(userTwo.uid, userOne, room,
-            evaluateAverageTime(userTwoAverage.time, userOneAverage.time,
-                userTwoRecords, userOneRecords), userTwoAverage.time,
+            userTwoWon, userTwoAverage.time,
             userOneAverage.time, userTwoRecords, userOneRecords);
-        await updateUserAverage(userOne.uid, room.roomType);
-        await updateUserAverage(userTwo.uid, room.roomType);
+        await updateUserAverage(userOne.uid, room.roomType, userOneWon);
+        await updateUserAverage(userTwo.uid, room.roomType, userTwoWon);
       }
     });
 
-const updateUserAverage = async (userUid: string, roomType: number) => {
+const updateUserAverage = async (uid: string, roomType: number,
+    won: boolean) => {
   const snapshot = await admin.firestore().collection("registries")
-      .where("userUid", "==", userUid).where("roomType", "==", roomType).get();
+      .where("userUid", "==", uid).where("roomType", "==", roomType)
+      .orderBy("creation", "desc")
+      .limitToLast(parseInt(functions.config().ranked.lastrecords))
+      .get();
   const averageSum = snapshot.docs.reduce(
       (previous, document) => document.data().average + previous, 0);
   const newAverage = averageSum / snapshot.docs.length;
   const update: any = {rankedRoomUid: null, unrankedRoomUid: null};
-  if (roomType === 1) {
-    update["unrankedAverage"] = newAverage;
-  } else {
-    update["rankedAverage"] = newAverage;
+  const userDoc = await admin.firestore().collection("users").doc(uid).get();
+  const user = userDoc.data();
+  if (user !== undefined) {
+    if (roomType === 1) {
+      update["unrankedAverage"] = newAverage;
+      update["unrankedGames"] = user.unrankedGames + 1;
+      update["unrankedGamesWon"] =
+          won ? user.unrankedGamesWon + 1 : user.unrankedGamesWon;
+    } else {
+      update["rankedAverage"] = newAverage;
+      update["rankedGames"] = user.rankedGames + 1;
+      update["rankedGamesWon"] =
+          won ? user.rankedGamesWon + 1 : user.rankedGamesWon;
+    }
   }
-  return admin.firestore().collection("users").doc(userUid).update(update);
+  return admin.firestore().collection("users").doc(uid).update(update);
 };
 
 const evaluateAverageTime = (time: number|null, opponentTime: number|null,
@@ -122,7 +156,7 @@ const evaluateAverageTime = (time: number|null, opponentTime: number|null,
   if (time === opponentTime) {
     for (let i = 0; i < userOneRecords.length; i++) {
       if (userOneRecords[i].time !== userTwoRecords[i].time) {
-        return userOneRecords[i].time < userOneRecords[i].time ? true : false;
+        return userOneRecords[i].time < userTwoRecords[i].time;
       }
     }
     return false;
@@ -138,12 +172,13 @@ const generateRegistryForUser = (userUid: string, opponentUser: any,
     opponentPhotoUrl: opponentUser.photoUrl,
     roomType: room.roomType,
     roomUid: room.uid,
+    creation: new Date().getTime(),
     userUid, won, average, opponentAverage, records, opponentRecords,
   });
 };
 
-const calculateAverage = (records: any[], range?: number) => {
-  range = range || records.length;
+const calculateAverage = (records: any[]) => {
+  const range = records.length;
   const trim = range < 20 ? 1 : Math.trunc(range * 0.05);
   const dnfRecords = records.reduce(
       (prev, currentRecord) => currentRecord.dnf ? ++prev : prev, 0);

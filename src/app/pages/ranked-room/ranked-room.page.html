@@ -5,7 +5,14 @@
       <ion-buttons slot="start">
         <ion-back-button text="Salir" defaultHref="/home/dashboard"></ion-back-button>
       </ion-buttons>
-      <ion-title>{{opponent.email}}</ion-title>
+      <ion-title>
+        <ion-chip>
+          <ion-avatar>
+            <img [src]="opponent.photoUrl | photo: 64" alt="">
+          </ion-avatar>
+          <ion-label>{{opponent.username}}</ion-label>
+        </ion-chip>
+      </ion-title>
     </ion-toolbar>
   </ion-header>
   <ion-content>

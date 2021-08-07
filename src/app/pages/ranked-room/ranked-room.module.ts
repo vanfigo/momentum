@@ -9,6 +9,7 @@ import { RankedRoomPageRoutingModule } from './ranked-room-routing.module';
 import { RankedRoomPage } from './ranked-room.page';
 import { SharedModule } from 'src/app/components/shared/shared.module';
 import { PlayingRoomModule } from 'src/app/components/playing-room/playing-room.module';
+import { PipesModule } from 'src/app/pipes/pipes.module';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { PlayingRoomModule } from 'src/app/components/playing-room/playing-room.
     IonicModule,
     RankedRoomPageRoutingModule,
     SharedModule,
-    PlayingRoomModule
+    PlayingRoomModule,
+    PipesModule
   ],
   declarations: [RankedRoomPage]
 })

@@ -4,7 +4,8 @@ import { Record } from '../models/record.class';
 import { Room } from '../models/room.class';
 import { AuthService } from './auth.service';
 import { map } from 'rxjs/operators'
-import { RoomStatus } from '../models/romm-status.enum';
+import { RoomStatus } from '../models/room-status.enum';
+import { RoomType } from '../models/room-type.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -29,5 +30,7 @@ export class RoomService {
       changeActions.map((changeAction: DocumentChangeAction<Record>): Record => changeAction.payload.doc.data())));
 
   completeRoom = (uid: string) => this.collection.doc(uid).update({status: RoomStatus.COMPLETED});
+
+  countRoomsActiveByRoomType = (roomType: RoomType) => this.db.collection('rooms', ref => ref.where("status", "==", RoomStatus.STARTED).where("roomType", "==", roomType)).snapshotChanges();
 
 }

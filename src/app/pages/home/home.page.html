@@ -2,17 +2,16 @@
 <ion-content>
   <ion-tabs #tabs (ionTabsDidChange)="tabChange(tabs)">
     <ion-tab-bar slot="bottom">
-      <ion-tab-button tab="dashboard">
-        <ion-icon name="pie-chart-outline"></ion-icon>
-        <ion-label>Dashboard</ion-label>
-        <ion-badge>6</ion-badge>
+      <ion-tab-button tab="profile" class="profile">
+        <ion-icon name="person-circle"></ion-icon>
+        <ion-label>Perfil</ion-label>
       </ion-tab-button>
-      <ion-tab-button tab="training-room">
-        <ion-icon name="stopwatch-outline"></ion-icon>
+      <ion-tab-button tab="training-room" class="training">
+        <ion-icon name="stopwatch"></ion-icon>
         <ion-label>Entrenar</ion-label>
       </ion-tab-button>
-      <ion-tab-button tab="play">
-        <ion-icon name="earth-outline"></ion-icon>
+      <ion-tab-button tab="play" class="play">
+        <ion-icon name="earth"></ion-icon>
         <ion-label>Jugar</ion-label>
       </ion-tab-button>
     </ion-tab-bar>

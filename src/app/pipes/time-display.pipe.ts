@@ -6,6 +6,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class TimeDisplayPipe implements PipeTransform {
 
   transform(time: number): string {
+    if (time === undefined) {
+      return '--:--';
+    }
     if (time === null) {
       return 'DNF';
     }

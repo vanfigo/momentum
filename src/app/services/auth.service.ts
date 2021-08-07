@@ -44,5 +44,7 @@ export class AuthService {
 
   getUserFromDB = (uid: string = undefined) => this.db.collection('users').doc(uid ? uid : this.user.uid).get().toPromise();
 
+  update = (update: any) => this.db.collection('users').doc(this.user.uid).update({...update})
+
   listenCurrentUserChanges = () => this.db.collection('users').doc(this.user.uid).snapshotChanges();
 }
