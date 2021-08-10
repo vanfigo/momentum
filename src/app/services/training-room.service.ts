@@ -5,6 +5,7 @@ import { Category } from '../models/category.class';
 import { Record } from '../models/record.class';
 import { Room } from '../models/room.class';
 import { Session } from '../models/session.class';
+import { AuthService } from './auth.service';
 import { StorageService } from './storage.service';
 
 @Injectable({
@@ -20,16 +21,8 @@ export class TrainingRoomService {
   activeSessionId: number;
   activeCategoryType: string;
 
-  constructor(private storageService: StorageService) {
-    storageService.get('room').then((room: Room) => {
-      if (room === null) {
-        room = new Room();
-        this.storageService.set('room', room).then(() => this.initRoom(room));
-      } else {
-        this.initRoom(room);
-      }
-    });
-  }
+  constructor(private storageService: StorageService,
+              private authSvc: AuthService) { }
 
   initRoom = (room: Room) => {
     this.room = room;
@@ -45,7 +38,7 @@ export class TrainingRoomService {
     let session = new Session(this.room.sessions[sessionsLength - 1].id + 1, sessionName);
     this.room.sessions.push(session);
     this.room.activeSessionId = session.id;
-    this.storageService.set('room', this.room).then(() => this.initRoom(this.room));
+    this.storageService.set(this.authSvc.user.uid, this.room).then(() => this.initRoom(this.room));
   }
 
   editSession = (sessionId: number, sessionName: string) => {
@@ -53,7 +46,7 @@ export class TrainingRoomService {
     session.name = sessionName;
     let index = this.room.sessions.indexOf(session);
     this.room.sessions[index] = session;
-    this.storageService.set('room', this.room).then(() => this.initRoom(this.room));
+    this.storageService.set(this.authSvc.user.uid, this.room).then(() => this.initRoom(this.room));
   }
 
   deleteSession = (sessionId: number) => {
@@ -61,12 +54,12 @@ export class TrainingRoomService {
     if (this.activeSessionId === sessionId) {
       this.activeSessionId = this.room.sessions[0].id;
     }
-    this.storageService.set('room', this.room).then(() => this.initRoom(this.room));
+    this.storageService.set(this.authSvc.user.uid, this.room).then(() => this.initRoom(this.room));
   }
 
   selectSession = (activeSessionId: number) => {
     this.room.activeSessionId = activeSessionId;
-    this.storageService.set('room', this.room).then(() => this.initRoom(this.room));
+    this.storageService.set(this.authSvc.user.uid, this.room).then(() => this.initRoom(this.room));
   }
 
   getRecordsOrderByCreation = (order: boolean = false): Record[] => order ?
@@ -114,7 +107,7 @@ export class TrainingRoomService {
     this.session.categories[categoryIndex] = this.category;
     let sessionIndex = this.room.sessions.indexOf(this.session);
     this.room.sessions[sessionIndex] = this.session;
-    this.storageService.set('room', this.room).then(() => this.initRoom(this.room));
+    this.storageService.set(this.authSvc.user.uid, this.room).then(() => this.initRoom(this.room));
   }
 
   addAverage = (range: number) => {
@@ -194,6 +187,17 @@ export class TrainingRoomService {
   deleteAverage = (range: number) => {
     this.category.averages = this.category.averages.filter(average => average.range !== range);
     this.persistRoomChanges();   
+  }
+
+  initTrainingRoom = () => {
+    this.storageService.get(this.authSvc.user.uid).then((room: Room) => {
+      if (room === null) {
+        room = new Room();
+        this.storageService.set(this.authSvc.user.uid, room).then(() => this.initRoom(room));
+      } else {
+        this.initRoom(room);
+      }
+    });
   }
 
 }

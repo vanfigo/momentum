@@ -14,10 +14,13 @@ export class RecordDisplayPipe implements PipeTransform {
     if (record.dnf) {
       return 'DNF';
     }
-    let elapsedTime = record.time / 1000;
-    let min = Math.trunc(elapsedTime / 60);
-    let sec = elapsedTime % 60;
-    return `${record.plus ? '+' : ''}${(min > 0 ? min + ':' : '')}${Number(sec).toFixed(2).padStart(5, '0')}s`;
+    const elapsedTime = record.time / 1000;
+    const min = Math.trunc(elapsedTime / 60);
+    const sec = Math.trunc(elapsedTime % 60);
+    const mil = Math.trunc(record.time % 1000 / 10);
+    
+    
+    return `${record.plus ? '+' : ''}${(min > 0 ? min + ':' : '')}${sec.toString().padStart(2, '0')}.${mil.toString().padStart(2, '0')}s`;
   }
 
 }

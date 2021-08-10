@@ -27,13 +27,17 @@
     <ion-card button (click)="addWaitingPlayer(RoomType.UNRANKED)">
       <ion-card-header color="primary">
         <ion-card-title>Unranked</ion-card-title>
+        <ion-card-subtitle>
+          <ion-label>Tu promedio actual</ion-label>
+          <ion-chip>{{user?.unrankedAverage | timeDisplay}}</ion-chip>
+        </ion-card-subtitle>
       </ion-card-header>
       <ion-card-content class="ion-no-padding">
         <ion-list lines="full" class="ion-no-padding">
           <ion-item>
             <ion-icon slot="start" name="people-circle"></ion-icon>
             <ion-label>Compitiendo</ion-label>
-            <ion-note slot="end">{{unrankedRooms}}</ion-note>
+            <ion-note slot="end">{{unrankedRooms * 2}}</ion-note>
           </ion-item>
         </ion-list>
       </ion-card-content>

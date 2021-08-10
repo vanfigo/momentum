@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { DocumentChangeAction, DocumentData, DocumentReference } from '@angular/fire/firestore';
-import { AngularFireFunctions } from '@angular/fire/functions';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingController, ModalController, NavController, ViewDidLeave } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { PlayingRoomHistoryComponent } from 'src/app/components/playing-room/playing-room-history/playing-room-history.component';
+import { OnlineRoomHistoryComponent } from 'src/app/components/online-room/online-room-history/online-room-history.component';
 import { RegistryDetailComponent } from 'src/app/components/shared/registry-detail/registry-detail.component';
 import { ScramblerComponent } from 'src/app/components/shared/scrambler/scrambler.component';
 import { TimerComponent } from 'src/app/components/shared/timer/timer.component';
@@ -17,19 +16,20 @@ import { RegistryService } from 'src/app/services/registry.service';
 import { RoomService } from 'src/app/services/room.service';
 
 @Component({
-  selector: 'app-ranked-room',
-  templateUrl: './ranked-room.page.html',
-  styleUrls: ['./ranked-room.page.scss'],
+  selector: 'app-online-room',
+  templateUrl: './online-room.page.html',
+  styleUrls: ['./online-room.page.scss'],
 })
-export class RankedRoomPage implements ViewDidLeave {
+export class OnlineRoomPage implements ViewDidLeave {
 
   @ViewChild(ScramblerComponent, {static: false}) scramblerCmpt: ScramblerComponent;
-  @ViewChild(PlayingRoomHistoryComponent, {static: false}) historyCmpt: PlayingRoomHistoryComponent;
+  @ViewChild(OnlineRoomHistoryComponent, {static: false}) historyCmpt: OnlineRoomHistoryComponent;
   @ViewChild(TimerComponent, {static: false}) timerComponent: TimerComponent;
 
   loading = true;
   roomUid: string;
   opponent: MomentumUser;
+  user: MomentumUser;
   room: Room;
   record: Record;
   registrySubscription: Subscription;
@@ -46,6 +46,7 @@ export class RankedRoomPage implements ViewDidLeave {
     .then(room => {
       this.room = room;
       this.opponent = this.room.users.find(user => user.uid !== this.authSvc.user.uid);
+      this.user = this.room.users.find(user => user.uid === this.authSvc.user.uid);
       this.loading = false;
     });
   }

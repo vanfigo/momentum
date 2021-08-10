@@ -66,11 +66,9 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
         this.user = action.payload.data();
         this.loading = false;
         if (action.type === 'modified' && ( this.user.rankedRoomUid || this.user.unrankedRoomUid)) {
-          this.loadingCtrl.dismiss().then(() => {
-            const roomType = this.user.rankedRoomUid ? RoomType.RANKED : RoomType.UNRANKED;
-            const roomURL = roomType === RoomType.RANKED ? '/ranked-room' : '/unranked-room';
-            this.navCtrl.navigateForward([roomURL, roomType === RoomType.RANKED ? this.user.rankedRoomUid : this.user.unrankedRoomUid], {relativeTo: this.route});
-          });
+          const roomType = this.user.rankedRoomUid ? RoomType.RANKED : RoomType.UNRANKED;
+          const uri = roomType === RoomType.RANKED ? this.user.rankedRoomUid : this.user.unrankedRoomUid
+          this.loadingCtrl.dismiss().then(() => this.navCtrl.navigateForward(["/online-room", uri], {relativeTo: this.route}));
         }
       });
     }
@@ -84,19 +82,14 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
     })
     .then(loading => {
       loading.present();
-      this.authSvc.getUserFromDB()
-      .then((userSnapshot: DocumentSnapshot<MomentumUser>) => {
+      this.authSvc.getUserFromDB().then((userSnapshot: DocumentSnapshot<MomentumUser>) => {
         // deletes the actual room reference for the room type sent
-        userSnapshot.ref.update({rankedRoomUid: null, unrankedRoomUid: null})
-          .then(() => {
-            let user: MomentumUser = {...userSnapshot.data(), uid: userSnapshot.id};
-            // adds the user as a player waiting in lobby
-            this.lobbySvc.addPLayer(user, roomType)
-            .catch(() => console.error('error adding user to lobby'));
-          })
-          .catch(() => console.error('error updating user room uid'));
-      })
-      .catch(() => console.error('error retrieving user from DB'));
+        userSnapshot.ref.update({rankedRoomUid: null, unrankedRoomUid: null}).then(() => {
+          let user: MomentumUser = {...userSnapshot.data(), uid: userSnapshot.id};
+          // adds the user as a player waiting in lobby
+          this.lobbySvc.addPLayer(user, roomType).catch(() => console.error('error adding user to lobby'));
+        }).catch(() => console.error('error updating user room uid'));
+      }).catch(() => console.error('error retrieving user from DB'));
     });
   }
 

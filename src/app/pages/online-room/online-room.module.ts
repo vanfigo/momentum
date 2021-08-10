@@ -4,11 +4,11 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { RankedRoomPageRoutingModule } from './ranked-room-routing.module';
+import { OnlineRoomPageRoutingModule } from './online-room-routing.module';
 
-import { RankedRoomPage } from './ranked-room.page';
+import { OnlineRoomPage } from './online-room.page';
 import { SharedModule } from 'src/app/components/shared/shared.module';
-import { PlayingRoomModule } from 'src/app/components/playing-room/playing-room.module';
+import { OnlineRoomModule } from 'src/app/components/online-room/online-room.module';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 
 @NgModule({
@@ -16,11 +16,11 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     CommonModule,
     FormsModule,
     IonicModule,
-    RankedRoomPageRoutingModule,
+    OnlineRoomPageRoutingModule,
     SharedModule,
-    PlayingRoomModule,
+    OnlineRoomModule,
     PipesModule
   ],
-  declarations: [RankedRoomPage]
+  declarations: [OnlineRoomPage]
 })
-export class RankedRoomPageModule {}
+export class OnlineRoomPageModule {}

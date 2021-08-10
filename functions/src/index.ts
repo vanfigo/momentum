@@ -36,10 +36,8 @@ exports.findPlayer = functions.firestore.document("lobbies/{uid}")
         }
       }
       return queryPlayer.get().then((querySnapshot: any) => {
-        console.log("querySnapshot.docs", querySnapshot.docs);
         const foundUsers = querySnapshot.docs.filter(
             (doc: any) => doc.data().user.uid != user.uid);
-        console.log("foundUsers", foundUsers);
         // Opponent found!
         if (foundUsers.length > 0) {
           const opponent = foundUsers.pop();
@@ -58,10 +56,10 @@ exports.findPlayer = functions.firestore.document("lobbies/{uid}")
             const lobbisesCol = admin.firestore().collection("lobbies");
             batch.delete(lobbisesCol.doc(snapshot.id));
             batch.delete(lobbisesCol.doc(opponent.id));
-            batch.update(usersCol.doc(user.uid),
-                {rankedRoomUid: room.id});
-            batch.update(usersCol.doc(opponentUser.uid),
-                {rankedRoomUid: room.id});
+            const updateRoomUid = roomType === 2 ? {rankedRoomUid: room.id} :
+                {unrankedRoomUid: room.id};
+            batch.update(usersCol.doc(user.uid), updateRoomUid);
+            batch.update(usersCol.doc(opponentUser.uid), updateRoomUid);
             return batch.commit();
           });
         }
@@ -106,16 +104,34 @@ exports.roomCompleted = functions.firestore.document("rooms/{uid}")
             userTwoAverage.time, userOneRecords, userTwoRecords);
         const userTwoWon = evaluateAverageTime(userTwoAverage.time,
             userOneAverage.time, userTwoRecords, userOneRecords);
-        await generateRegistryForUser(userOne.uid, userTwo, room,
+        await generateRegistryForUser(userOne, userTwo, room,
             userOneWon, userOneAverage.time,
             userTwoAverage.time, userOneRecords, userTwoRecords);
-        await generateRegistryForUser(userTwo.uid, userOne, room,
+        await generateRegistryForUser(userTwo, userOne, room,
             userTwoWon, userTwoAverage.time,
             userOneAverage.time, userTwoRecords, userOneRecords);
         await updateUserAverage(userOne.uid, room.roomType, userOneWon);
         await updateUserAverage(userTwo.uid, room.roomType, userTwoWon);
       }
     });
+
+const evaluateAverageTime = (time: number|null, opponentTime: number|null,
+    userOneRecords: any[], userTwoRecords: any[]) => {
+  if (time === null) {
+    return false;
+  } else if (opponentTime === null) {
+    return true;
+  }
+  if ((time/10) === (opponentTime/10)) {
+    for (let i = 0; i < userOneRecords.length; i++) {
+      if ((userOneRecords[i].time/10) !== (userTwoRecords[i].time/10)) {
+        return (userOneRecords[i].time/10) < (userTwoRecords[i].time/10);
+      }
+    }
+    return false;
+  }
+  return time < opponentTime ? true : false;
+};
 
 const updateUserAverage = async (uid: string, roomType: number,
     won: boolean) => {
@@ -126,7 +142,7 @@ const updateUserAverage = async (uid: string, roomType: number,
       .get();
   const averageSum = snapshot.docs.reduce(
       (previous, document) => document.data().average + previous, 0);
-  const newAverage = averageSum / snapshot.docs.length;
+  const newAverage = Math.trunc(averageSum / snapshot.docs.length);
   const update: any = {rankedRoomUid: null, unrankedRoomUid: null};
   const userDoc = await admin.firestore().collection("users").doc(uid).get();
   const user = userDoc.data();
@@ -146,34 +162,20 @@ const updateUserAverage = async (uid: string, roomType: number,
   return admin.firestore().collection("users").doc(uid).update(update);
 };
 
-const evaluateAverageTime = (time: number|null, opponentTime: number|null,
-    userOneRecords: any[], userTwoRecords: any[]) => {
-  if (time === null) {
-    return false;
-  } else if (opponentTime === null) {
-    return true;
-  }
-  if (time === opponentTime) {
-    for (let i = 0; i < userOneRecords.length; i++) {
-      if (userOneRecords[i].time !== userTwoRecords[i].time) {
-        return userOneRecords[i].time < userTwoRecords[i].time;
-      }
-    }
-    return false;
-  }
-  return time < opponentTime ? true : false;
-};
-
-const generateRegistryForUser = (userUid: string, opponentUser: any,
-    room: any, won: boolean, average: number | null,
-    opponentAverage: number | null, records: any[], opponentRecords: any[]) => {
+const generateRegistryForUser = (user: any, opponentUser: any, room: any,
+    won: boolean, average: number | null, opponentAverage: number | null,
+    records: any[], opponentRecords: any[]) => {
   return admin.firestore().collection("registries").doc().create({
+    opponentUid: opponentUser.uid,
     opponentUsername: opponentUser.username,
     opponentPhotoUrl: opponentUser.photoUrl,
     roomType: room.roomType,
     roomUid: room.uid,
     creation: new Date().getTime(),
-    userUid, won, average, opponentAverage, records, opponentRecords,
+    userUid: user.uid,
+    userUsername: user.username,
+    userPhotoUrl: user.photoUrl,
+    won, average, opponentAverage, records, opponentRecords,
   });
 };
 
@@ -187,9 +189,9 @@ const calculateAverage = (records: any[]) => {
         (record) => !record.dnf).sort((a, b) => a.time - b.time);
     const averageRecords = filteredRecords.slice(
         trim, dnfRecords === trim ? filteredRecords.length : dnfRecords - trim);
-    return {time: averageRecords.reduce(
-        (prev, record) => prev + record.time, 0) / averageRecords.length,
-    averageRecords};
+    return {time: Math.trunc((
+      averageRecords.reduce((prev, record) => prev + record.time, 0) /
+          averageRecords.length)), averageRecords};
   }
   return {time: null, averageRecords: []};
 };

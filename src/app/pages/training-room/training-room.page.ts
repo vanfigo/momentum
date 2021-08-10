@@ -21,6 +21,7 @@ export class TrainingRoomPage {
   constructor(public trainingRoomSvc: TrainingRoomService,
               private modalCtrl: ModalController) {
     this.loading = true;
+    this.trainingRoomSvc.initTrainingRoom();
     this.trainingRoomSvc.$session.subscribe(() => this.loading = false);
   }
 

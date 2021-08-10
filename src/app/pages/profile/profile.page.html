@@ -13,7 +13,7 @@
         </ion-card-subtitle>
       </ion-card-header>
       <ion-card-content class="ion-no-padding">
-        <ion-list lines="full">
+        <ion-list lines="full" class="ion-no-padding">
           <ion-item detail button>
             <img [src]="null | photo: 32: 'laurel-wreath--v1'" slot="start"/>
             <ion-label>Partidas con ranking</ion-label>
@@ -35,6 +35,10 @@
           <ion-item>
             <ion-label>Partidas ganadas</ion-label>
             <ion-note slot="end">{{user.unrankedGamesWon}}</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label>Promedio ultimas 10 partidas</ion-label>
+            <ion-note slot="end">{{user.unrankedAverage | timeDisplay}}</ion-note>
           </ion-item>
         </ion-list>
       </ion-card-content>

@@ -8,13 +8,14 @@ import { AuthService } from 'src/app/services/auth.service';
 import { RoomService } from 'src/app/services/room.service';
 
 @Component({
-  selector: 'app-playing-room-history',
-  templateUrl: './playing-room-history.component.html',
-  styleUrls: ['./playing-room-history.component.scss'],
+  selector: 'app-online-room-history',
+  templateUrl: './online-room-history.component.html',
+  styleUrls: ['./online-room-history.component.scss'],
 })
-export class PlayingRoomHistoryComponent implements OnInit, OnDestroy {
+export class OnlineRoomHistoryComponent implements OnInit, OnDestroy {
 
-  @Input() opponentPlayer: MomentumUser;
+  @Input() opponent: MomentumUser;
+  @Input() user: MomentumUser;
   @Input() scramblesToComplete: number;
   @Output() recordUpdated: EventEmitter<Record> = new EventEmitter();
   @Output() gameCompleted: EventEmitter<void> = new EventEmitter();
@@ -39,7 +40,7 @@ export class PlayingRoomHistoryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.opponentPlayerSubscription === undefined || this.opponentPlayerSubscription.closed) {
-      this.opponentPlayerSubscription = this.roomSvc.listenSolvesForOpponentPlayer(this.roomUid, this.opponentPlayer.uid).subscribe((records: Record[]) => {
+      this.opponentPlayerSubscription = this.roomSvc.listenSolvesForOpponentPlayer(this.roomUid, this.opponent.uid).subscribe((records: Record[]) => {
         this.opponentRecords = records;
         this.validateCompletion();
       });

@@ -22,7 +22,30 @@
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content class="ion-no-padding">
-      <ion-list lines="full">
+      <ion-list lines="full" class="ion-no-padding">
+        <ion-item color="light">
+          <ion-grid>
+            <ion-row>
+              <ion-col size="2"></ion-col>
+              <ion-col size="5" class="online-room-history-col">
+                <ion-chip>
+                  <ion-avatar>
+                    <img [src]="registry.userPhotoUrl | photo: 64" alt="">
+                  </ion-avatar>
+                  <ion-label>{{registry.userUsername}}</ion-label>
+                </ion-chip>
+              </ion-col>
+              <ion-col size="5" class="online-room-history-col">
+                <ion-chip>
+                  <ion-avatar>
+                    <img [src]="registry.opponentPhotoUrl | photo: 64" alt="">
+                  </ion-avatar>
+                  <ion-label>{{registry.opponentUsername}}</ion-label>
+                </ion-chip>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
         <ion-item *ngFor="let scrambleIndex of [].constructor(scramblesToComplete); let index = index">
           <ion-grid>
             <ion-row>
