@@ -4,10 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { PlayPage } from './play.page';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: PlayPage
-  }
+  { path: '', component: PlayPage }
 ];
 
 @NgModule({

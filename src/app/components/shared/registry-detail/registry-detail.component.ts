@@ -11,7 +11,6 @@ import { AuthService } from 'src/app/services/auth.service';
 export class RegistryDetailComponent implements OnInit {
 
   @Input() registry: Registry;
-  @Input() scramblesToComplete: number;
 
   constructor(public modalCtrl: ModalController,
               private authSvc: AuthService) {

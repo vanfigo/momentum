@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar color="medium">
+    <ion-buttons>
+      <ion-back-button defaultHref="/home" text="Salir"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else games"></ion-progress-bar>
+  <ng-template #games>
+    <ion-list>
+      <ion-item *ngFor="let registry of registries; let index = index" detail button (click)="showDetail(registry)">
+        <ion-note [color]="registry.won ? 'success' : 'danger'" slot="">{{index + 1}}</ion-note>
+        <app-avatar [photoUrl]="registry.opponentPhotoUrl" [username]="registry.opponentUsername"></app-avatar>
+        <ion-note slot="end">{{registry.creation | date: 'medium'}}</ion-note>
+      </ion-item>
+    </ion-list>
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadRegistries($event)">
+      <ion-infinite-scroll-content loadingSpinner="dots" loadingText="Cargando mas partidas">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ng-template>
+</ion-content>

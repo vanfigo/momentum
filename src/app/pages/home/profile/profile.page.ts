@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { Action, DocumentSnapshot } from '@angular/fire/firestore';
-import { AlertController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
+import { AlertController, NavController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { MomentumUser } from 'src/app/models/momentum-user.class';
+import { RoomType } from 'src/app/models/room-type.enum';
 import { AuthService } from 'src/app/services/auth.service';
 import { UploadService } from 'src/app/services/upload.service';
-import { Upload } from '../../models/upload.class';
+import { Upload } from '../../../models/upload.class';
 
 @Component({
   selector: 'app-profile',
@@ -19,10 +20,12 @@ export class ProfilePage implements ViewWillEnter, ViewDidLeave {
   user: MomentumUser;
   upload: Upload;
   userSubscription: Subscription;
+  RoomType = RoomType;
 
   constructor(private authSvc: AuthService,
               private uploadSvc: UploadService,
-              private alertCtrl: AlertController) {
+              private alertCtrl: AlertController,
+              private navCtrl: NavController) {
   }
 
   fileSelected = (inputFile: HTMLInputElement) => {
@@ -73,5 +76,7 @@ export class ProfilePage implements ViewWillEnter, ViewDidLeave {
   ionViewDidLeave(): void {
     this.userSubscription && this.userSubscription.unsubscribe();
   }
+
+  navigateToRegistries = (roomType: RoomType) => this.navCtrl.navigateForward(['/registry'], {state: {roomType}});
 
 }

@@ -12,6 +12,7 @@ import { RecordDisplayPipe } from '../../pipes/record-display.pipe';
 import { PipesModule } from '../../pipes/pipes.module';
 import { FormsModule } from '@angular/forms';
 import { RegistryDetailComponent } from './registry-detail/registry-detail.component';
+import { AvatarComponent } from './avatar/avatar.component';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { RegistryDetailComponent } from './registry-detail/registry-detail.compo
     ScramblerComponent,
     RecordChipComponent,
     AverageChipComponent,
-    RegistryDetailComponent
+    RegistryDetailComponent,
+    AvatarComponent
   ],
   exports: [
     HeaderComponent,
@@ -35,7 +37,8 @@ import { RegistryDetailComponent } from './registry-detail/registry-detail.compo
     ScramblerComponent,
     RecordChipComponent,
     AverageChipComponent,
-    RegistryDetailComponent
+    RegistryDetailComponent,
+    AvatarComponent
   ],
   providers: [RecordDisplayPipe, AverageDisplayPipe, DatePipe]
 })

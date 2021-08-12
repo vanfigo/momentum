@@ -3,7 +3,7 @@ import { RoomStatus } from "./room-status.enum";
 import { RoomType } from "./room-type.enum";
 import { Session } from "./session.class";
 
-export class Room {
+export class OnlineRoom {
     uid: string;
     sessions: Session[];
     activeSessionId: number;
@@ -12,13 +12,4 @@ export class Room {
     status: RoomStatus;
     roomType: RoomType;
     creation: number;
-
-    constructor() {
-        let session = new Session();
-        this.sessions = [session];
-        this.activeSessionId = session.id;
-        this.scrambles = [];
-        this.users = []
-        this.status = RoomStatus.STARTED
-    }
 }

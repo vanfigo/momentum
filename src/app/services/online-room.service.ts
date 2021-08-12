@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } from '@angular/fire/firestore';
 import { Record } from '../models/record.class';
-import { Room } from '../models/room.class';
+import { OnlineRoom } from '../models/online-room.class';
 import { AuthService } from './auth.service';
 import { map } from 'rxjs/operators'
 import { RoomStatus } from '../models/room-status.enum';
@@ -10,13 +10,13 @@ import { RoomType } from '../models/room-type.enum';
 @Injectable({
   providedIn: 'root'
 })
-export class RoomService {
+export class OnlineRoomService {
 
-  collection: AngularFirestoreCollection<Room>;
+  collection: AngularFirestoreCollection<OnlineRoom>;
 
   constructor(private db: AngularFirestore,
               private authSvc: AuthService) {
-    this.collection = db.collection('rooms');
+    this.collection = db.collection("online-rooms");
   }
 
   geByUid = (uid: string) => this.collection.doc(uid).get().pipe(map((snapshot) => { return {...snapshot.data(), uid: snapshot.id} }));
@@ -31,6 +31,6 @@ export class RoomService {
 
   completeRoom = (uid: string) => this.collection.doc(uid).update({status: RoomStatus.COMPLETED});
 
-  countRoomsActiveByRoomType = (roomType: RoomType) => this.db.collection('rooms', ref => ref.where("status", "==", RoomStatus.STARTED).where("roomType", "==", roomType)).snapshotChanges();
+  countRoomsActiveByRoomType = (roomType: RoomType) => this.db.collection("online-rooms", ref => ref.where("status", "==", RoomStatus.STARTED).where("roomType", "==", roomType)).snapshotChanges();
 
 }

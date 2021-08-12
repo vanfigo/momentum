@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { MomentumUser } from 'src/app/models/momentum-user.class';
 import { Record } from 'src/app/models/record.class';
 import { AuthService } from 'src/app/services/auth.service';
-import { RoomService } from 'src/app/services/room.service';
+import { OnlineRoomService } from 'src/app/services/online-room.service';
 
 @Component({
   selector: 'app-online-room-history',
@@ -29,7 +29,7 @@ export class OnlineRoomHistoryComponent implements OnInit, OnDestroy {
   records: Record[] = [];
   opponentRecords: Record[] = [];
 
-  constructor(private roomSvc: RoomService,
+  constructor(private onlineRoomSvc: OnlineRoomService,
               private route: ActivatedRoute,
               public authSvc: AuthService,
               private toastCtrl: ToastController,
@@ -40,7 +40,7 @@ export class OnlineRoomHistoryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.opponentPlayerSubscription === undefined || this.opponentPlayerSubscription.closed) {
-      this.opponentPlayerSubscription = this.roomSvc.listenSolvesForOpponentPlayer(this.roomUid, this.opponent.uid).subscribe((records: Record[]) => {
+      this.opponentPlayerSubscription = this.onlineRoomSvc.listenSolvesForOpponentPlayer(this.roomUid, this.opponent.uid).subscribe((records: Record[]) => {
         this.opponentRecords = records;
         this.validateCompletion();
       });

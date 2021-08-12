@@ -11,53 +11,36 @@
       <ion-card-title>
         Promedio <strong>{{registry.average | timeDisplay}}</strong>
       </ion-card-title>
-      <ion-card-subtitle>
-        <ion-chip>
-          <ion-avatar>
-            <img [src]="registry.opponentPhotoUrl | photo: 64" alt="">
-          </ion-avatar>
-          <ion-label>{{registry.opponentUsername}}</ion-label>
-        </ion-chip>
+      <ion-card-subtitle>        
+        <app-avatar [photoUrl]="registry.opponentPhotoUrl" [username]="registry.opponentUsername"></app-avatar>
         <strong>{{registry.opponentAverage | timeDisplay}}</strong>
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content class="ion-no-padding">
       <ion-list lines="full" class="ion-no-padding">
         <ion-item color="light">
-          <ion-grid>
-            <ion-row>
+          <ion-grid class="ion-no-padding">
+            <ion-row class="registry-detail-history-row registry-detail-history-header">
               <ion-col size="2"></ion-col>
-              <ion-col size="5" class="online-room-history-col">
-                <ion-chip>
-                  <ion-avatar>
-                    <img [src]="registry.userPhotoUrl | photo: 64" alt="">
-                  </ion-avatar>
-                  <ion-label>{{registry.userUsername}}</ion-label>
-                </ion-chip>
+              <ion-col size="5">
+                <app-avatar [photoUrl]="registry.userPhotoUrl" [username]="registry.userUsername"></app-avatar>
               </ion-col>
-              <ion-col size="5" class="online-room-history-col">
-                <ion-chip>
-                  <ion-avatar>
-                    <img [src]="registry.opponentPhotoUrl | photo: 64" alt="">
-                  </ion-avatar>
-                  <ion-label>{{registry.opponentUsername}}</ion-label>
-                </ion-chip>
+              <ion-col size="5">
+                <app-avatar [photoUrl]="registry.opponentPhotoUrl" [username]="registry.opponentUsername"></app-avatar>
               </ion-col>
             </ion-row>
           </ion-grid>
         </ion-item>
-        <ion-item *ngFor="let scrambleIndex of [].constructor(scramblesToComplete); let index = index">
-          <ion-grid>
-            <ion-row>
-              <ion-col size="2" class="registry-detail-col">
+        <ion-item *ngFor="let scrambleIndex of [].constructor(5); let index = index">
+          <ion-grid class="ion-no-padding">
+            <ion-row class="registry-detail-history-row">
+              <ion-col size="2">
                 <ion-note [color]="getColor(index)">{{index + 1}}</ion-note>
               </ion-col>
-              <ion-col size="3">
+              <ion-col size="5">
                 <app-record-chip [record]="registry.records[index]" [canDelete]="false" [canEdit]="false"></app-record-chip>
               </ion-col>
-              <ion-col size="4">
-              </ion-col>
-              <ion-col size="3">
+              <ion-col size="5">
                 <app-record-chip [record]="registry.opponentRecords[index]" [canEdit]="false" [canDelete]="false"></app-record-chip>
               </ion-col>
             </ion-row>

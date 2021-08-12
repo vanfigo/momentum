@@ -4,21 +4,21 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { TrainingRoomPageRoutingModule } from './training-room-routing.module';
+import { RegistryPageRoutingModule } from './registry-routing.module';
 
-import { TrainingRoomPage } from './training-room.page';
-import { TrainingRoomModule } from '../../components/training-room/training-room.module';
+import { RegistryPage } from './registry.page';
 import { SharedModule } from 'src/app/components/shared/shared.module';
+import { PipesModule } from 'src/app/pipes/pipes.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    TrainingRoomPageRoutingModule,
+    RegistryPageRoutingModule,
     SharedModule,
-    TrainingRoomModule
+    PipesModule
   ],
-  declarations: [TrainingRoomPage]
+  declarations: [RegistryPage]
 })
-export class TrainingRoomPageModule {}
+export class RegistryPageModule {}

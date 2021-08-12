@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, QueryDocumentSnapshot, QuerySnapshot } from '@angular/fire/firestore';
 import { Registry } from '../models/registry.class';
 import { RoomType } from '../models/room-type.enum';
 
@@ -15,6 +15,18 @@ export class RegistryService {
   }
 
   listenToRegistry = (roomUid: string, userUid: string) => this.db.collection('registries', ref =>
-    ref.where('roomUid', '==', roomUid).where('userUid', '==', userUid)).snapshotChanges()
+    ref.where('roomUid', '==', roomUid).where('userUid', '==', userUid)).snapshotChanges();
+
+  getPagedRegistriesByUserAndRoomType = (userUid: string, roomType: RoomType, lastRegistry: QueryDocumentSnapshot<Registry>) => {
+    let query = this.collection.ref
+      .where('userUid', '==', userUid)
+      .where('roomType', '==', roomType)
+      .orderBy('creation', 'desc');
+    if (lastRegistry) {
+      query = query.startAfter(lastRegistry);
+    }
+    query = query.limit(15);
+    return query.get();
+  }
 
 }

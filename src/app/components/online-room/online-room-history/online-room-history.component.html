@@ -1,32 +1,22 @@
 <ion-list lines="full">
   <ion-progress-bar type="indeterminate" color="primary" *ngIf="validatingLastSolve"></ion-progress-bar>
   <ion-item color="light">
-    <ion-grid>
-      <ion-row>
+    <ion-grid class="ion-no-padding">
+      <ion-row class="online-room-history-row online-room-history-header">
         <ion-col size="2"></ion-col>
-        <ion-col size="5" class="online-room-history-col">
-          <ion-chip>
-            <ion-avatar>
-              <img [src]="user.photoUrl | photo: 64" alt="">
-            </ion-avatar>
-            <ion-label>{{user.username}}</ion-label>
-          </ion-chip>
+        <ion-col size="5">
+          <app-avatar [user]="user"></app-avatar>
         </ion-col>
-        <ion-col size="5" class="online-room-history-col">
-          <ion-chip>
-            <ion-avatar>
-              <img [src]="opponent.photoUrl | photo: 64" alt="">
-            </ion-avatar>
-            <ion-label>{{opponent.username}}</ion-label>
-          </ion-chip>
+        <ion-col size="5">
+          <app-avatar [user]="opponent"></app-avatar>
         </ion-col>
       </ion-row>
     </ion-grid>
   </ion-item>
   <ion-item *ngFor="let scrambleIndex of [].constructor(scramblesToComplete); let index = index">
-    <ion-grid>
-      <ion-row>
-        <ion-col size="2" class="room-history-col">
+    <ion-grid class="ion-no-padding">
+      <ion-row class="online-room-history-row">
+        <ion-col size="2">
           <ion-note [color]="getColor(index)">{{index + 1}}</ion-note>
         </ion-col>
         <ion-col size="5">

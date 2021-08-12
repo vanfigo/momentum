@@ -1,3 +1,9 @@
-.online-room-history-col {
+.online-room-history-row ion-col{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.online-room-history-header ion-col{
     overflow: hidden;
 }

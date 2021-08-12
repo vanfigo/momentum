@@ -1,0 +1,67 @@
+<ion-content color="light">
+  <ion-card button (click)="addWaitingPlayer(RoomType.RANKED)">
+    <ion-card-header color="warning">
+      <ion-card-title>Ranked</ion-card-title>
+      <ion-card-subtitle>
+        <ion-label>Tu promedio actual</ion-label>
+        <ion-chip>{{user?.rankedAverage | timeDisplay}}</ion-chip>
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content class="ion-no-padding">
+      <ion-list lines="full" class="ion-no-padding">
+        <ion-item>
+          <ion-icon slot="start" name="person-circle"></ion-icon>
+          <ion-label>Jugadores en espera</ion-label>
+          <ion-note slot="end">{{rankedLobbies}}</ion-note>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="people-circle"></ion-icon>
+          <ion-label>Compitiendo</ion-label>
+          <ion-note slot="end">{{rankedRooms}}</ion-note>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  <ion-card button (click)="addWaitingPlayer(RoomType.UNRANKED)">
+    <ion-card-header color="primary">
+      <ion-card-title>Unranked</ion-card-title>
+      <ion-card-subtitle>
+        <ion-label>Tu promedio actual</ion-label>
+        <ion-chip>{{user?.unrankedAverage | timeDisplay}}</ion-chip>
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content class="ion-no-padding">
+      <ion-list lines="full" class="ion-no-padding">
+        <ion-item>
+          <ion-icon slot="start" name="people-circle"></ion-icon>
+          <ion-label>Compitiendo</ion-label>
+          <ion-note slot="end">{{unrankedRooms * 2}}</ion-note>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header color="secondary">
+      <ion-card-title>Salas</ion-card-title>
+      <ion-card-subtitle>Salas publicas: {{10}}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content class="ion-no-padding">
+      <ion-list lines="full" class="ion-no-padding">
+        <ion-item detail button>
+          <ion-label>Sala test</ion-label>
+          <ion-note slot="end">{{today | date}}</ion-note>
+        </ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button fill="clear" color="secondary" expand="full">Entrar</ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button color="secondary" expand="full">Crear</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
