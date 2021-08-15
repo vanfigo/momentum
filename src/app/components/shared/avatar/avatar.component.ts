@@ -21,6 +21,9 @@ export class AvatarComponent implements OnInit {
       this.uid = this.user.uid;
       this.photoURL = this.user.photoURL;
       this.username = this.user.username;
-    }}
+    }
+  }
+
+  showProfile = () => {}
 
 }
