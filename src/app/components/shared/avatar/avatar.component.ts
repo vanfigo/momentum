@@ -10,7 +10,7 @@ export class AvatarComponent implements OnInit {
 
   @Input() user: MomentumUser;
   @Input() uid: string;
-  @Input() photoUrl: string;
+  @Input() photoURL: string;
   @Input() username: string;
 
   constructor() {
@@ -19,7 +19,7 @@ export class AvatarComponent implements OnInit {
   ngOnInit() {
     if (this.user) {
       this.uid = this.user.uid;
-      this.photoUrl = this.user.photoUrl;
+      this.photoURL = this.user.photoURL;
       this.username = this.user.username;
     }}
 

@@ -2,11 +2,13 @@ export class MomentumUser {
     uid: string;
     username: string;
     email: string;
-    photoUrl: string;
+    photoURL: string;
     rankedRoomUid?: string;
     unrankedRoomUid?: string;
     rankedAverage: number;
     unrankedAverage: number;
     rankedGames: number;
     unrankedGames: number;
+    rankedGamesWon: number;
+    unrankedGamesWon: number;
 }

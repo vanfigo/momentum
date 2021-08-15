@@ -3,8 +3,8 @@ import { ReplaySubject } from 'rxjs';
 import { Average } from '../models/average.class';
 import { Category } from '../models/category.class';
 import { Record } from '../models/record.class';
-import { OnlineRoom } from '../models/online-room.class';
 import { Session } from '../models/session.class';
+import { TrainingRoom } from '../models/training-room.class';
 import { AuthService } from './auth.service';
 import { StorageService } from './storage.service';
 
@@ -14,7 +14,7 @@ import { StorageService } from './storage.service';
 export class TrainingRoomService {
 
   $session = new ReplaySubject<Session>(1);
-  room: OnlineRoom;
+  room: TrainingRoom;
   session: Session;
   category: Category;
 
@@ -24,7 +24,7 @@ export class TrainingRoomService {
   constructor(private storageService: StorageService,
               private authSvc: AuthService) { }
 
-  initRoom = (room: OnlineRoom) => {
+  initRoom = (room: TrainingRoom) => {
     this.room = room;
     this.activeSessionId = room.activeSessionId;
     this.session = room.sessions.find(session => session.id === room.activeSessionId);
@@ -190,9 +190,9 @@ export class TrainingRoomService {
   }
 
   initTrainingRoom = () => {
-    this.storageService.get(this.authSvc.user.uid).then((room: OnlineRoom) => {
+    this.storageService.get(this.authSvc.user.uid).then((room: TrainingRoom) => {
       if (room === null) {
-        room = new OnlineRoom();
+        room = new TrainingRoom();
         this.storageService.set(this.authSvc.user.uid, room).then(() => this.initRoom(room));
       } else {
         this.initRoom(room);

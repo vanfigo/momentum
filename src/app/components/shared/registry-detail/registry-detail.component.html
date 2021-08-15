@@ -12,7 +12,7 @@
         Promedio <strong>{{registry.average | timeDisplay}}</strong>
       </ion-card-title>
       <ion-card-subtitle>        
-        <app-avatar [photoUrl]="registry.opponentPhotoUrl" [username]="registry.opponentUsername"></app-avatar>
+        <app-avatar [photoURL]="registry.opponentPhotoUrl" [username]="registry.opponentUsername"></app-avatar>
         <strong>{{registry.opponentAverage | timeDisplay}}</strong>
       </ion-card-subtitle>
     </ion-card-header>
@@ -23,10 +23,10 @@
             <ion-row class="registry-detail-history-row registry-detail-history-header">
               <ion-col size="2"></ion-col>
               <ion-col size="5">
-                <app-avatar [photoUrl]="registry.userPhotoUrl" [username]="registry.userUsername"></app-avatar>
+                <app-avatar [photoURL]="registry.userPhotoUrl" [username]="registry.userUsername"></app-avatar>
               </ion-col>
               <ion-col size="5">
-                <app-avatar [photoUrl]="registry.opponentPhotoUrl" [username]="registry.opponentUsername"></app-avatar>
+                <app-avatar [photoURL]="registry.opponentPhotoUrl" [username]="registry.opponentUsername"></app-avatar>
               </ion-col>
             </ion-row>
           </ion-grid>

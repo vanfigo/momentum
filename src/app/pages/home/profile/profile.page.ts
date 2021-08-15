@@ -37,7 +37,7 @@ export class ProfilePage implements ViewWillEnter, ViewDidLeave {
     this.uploadSvc.upload(this.upload)
       .then((snapshot) => {
         snapshot.ref.getDownloadURL().then((downloadURL: string) => {
-          this.authSvc.update({photoUrl: downloadURL}).then(() => this.uploading = false);
+          this.authSvc.update({photoURL: downloadURL}).then(() => this.uploading = false);
         });
     });
   }
@@ -77,6 +77,8 @@ export class ProfilePage implements ViewWillEnter, ViewDidLeave {
     this.userSubscription && this.userSubscription.unsubscribe();
   }
 
-  navigateToRegistries = (roomType: RoomType) => this.navCtrl.navigateForward(['/registry'], {state: {roomType}});
+  navigateToRegistries = (roomType: RoomType) => this.navCtrl.navigateForward(['registry'], {state: {roomType}});
+
+  navigateToFriends = () => this.navCtrl.navigateForward(['friend']);
 
 }

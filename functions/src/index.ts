@@ -6,9 +6,10 @@ admin.initializeApp();
 
 exports.createUser = functions.auth.user().onCreate((userRecord) => {
   return admin.firestore().doc(`/users/${userRecord.uid}`).set({
+    uid: userRecord.uid,
     email: userRecord.email,
     username: userRecord.displayName || userRecord.email,
-    photoUrl: userRecord.photoURL || "",
+    photoURL: userRecord.photoURL || "",
     rankedGames: 0,
     unrankedGames: 0,
     rankedGamesWon: 0,
@@ -176,13 +177,13 @@ const generateRegistryForUser = (user: any, opponentUser: any, room: any,
   return admin.firestore().collection("registries").doc().create({
     opponentUid: opponentUser.uid,
     opponentUsername: opponentUser.username,
-    opponentPhotoUrl: opponentUser.photoUrl,
+    opponentPhotoUrl: opponentUser.photoURL,
     roomType: room.roomType,
     roomUid: room.uid,
     creation: new Date().getTime(),
     userUid: user.uid,
     userUsername: user.username,
-    userPhotoUrl: user.photoUrl,
+    userPhotoUrl: user.photoURL,
     won, average, opponentAverage, records, opponentRecords,
   });
 };

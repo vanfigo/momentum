@@ -1,6 +1,4 @@
-import { Average } from "./average.class";
 import { Category } from "./category.class";
-import { Record } from "./record.class";
 
 export class Session {
     id: number;

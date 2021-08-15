@@ -42,25 +42,23 @@
   </ion-card>
   <ion-card>
     <ion-card-header color="secondary">
-      <ion-card-title>Salas</ion-card-title>
+      <ion-card-title>Salas Personales</ion-card-title>
       <ion-card-subtitle>Salas publicas: {{10}}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content class="ion-no-padding">
+      <ion-grid><ion-row>
+          <ion-col>
+            <ion-button fill="clear" color="secondary" expand="full">Entrar</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button color="secondary" expand="full" (click)="showCreatePersonalRoom()">Crear</ion-button>
+          </ion-col>
+      </ion-row></ion-grid>
       <ion-list lines="full" class="ion-no-padding">
         <ion-item detail button>
           <ion-label>Sala test</ion-label>
           <ion-note slot="end">{{today | date}}</ion-note>
         </ion-item>
-        <ion-grid>
-          <ion-row>
-            <ion-col>
-              <ion-button fill="clear" color="secondary" expand="full">Entrar</ion-button>
-            </ion-col>
-            <ion-col>
-              <ion-button color="secondary" expand="full">Crear</ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
       </ion-list>
     </ion-card-content>
   </ion-card>

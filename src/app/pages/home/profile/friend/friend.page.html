@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar color="medium">
+    <ion-buttons>
+      <ion-back-button defaultHref="/home" text="Salir"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-segment [(ngModel)]="segment" (ionChange)="loadUsers($event)">
+    <ion-segment-button value="friends">
+      <ion-label>Mis amigos</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="users">
+      <ion-label>Agregar amigos</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <app-my-friends *ngIf="segment === 'friends'; else allUsers"></app-my-friends>
+  <ng-template #allUsers>
+    <ion-searchbar placeholder="Buscar usuarios" (ionChange)="filterUsers()" [(ngModel)]="searchText"></ion-searchbar>
+    <ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else listUsers"></ion-progress-bar>
+    <ng-template #listUsers>
+      <ion-list class="ion-no-padding" #ionListUsers>
+        <ion-item-sliding *ngFor="let user of filteredUsers">
+          <ion-item-options side="start">
+            <ion-item-option *ngIf="user.status === null" (click)="sendFriendRequest(user)">Agregar</ion-item-option>
+            <ion-item-option *ngIf="user.status === FriendStatus.PENDING" color="warning">Pendiente</ion-item-option>
+            <ion-item-option *ngIf="user.status === null" (click)="sendBlockRequest(user)" color="danger">Bloquear</ion-item-option>
+            <ion-item-option *ngIf="user.status === FriendStatus.BLOCKED" (click)="sendUnblockRequest(user)">Desbloquear</ion-item-option>
+          </ion-item-options>
+          <ion-item>
+            <ion-avatar slot="start">
+              <img [src]="user.photoURL | photo" alt="">
+            </ion-avatar>
+            <ion-label>{{user.username}}</ion-label>
+          </ion-item>
+        </ion-item-sliding>
+      </ion-list>
+      <div class="no-records-display">
+        <ion-text color="medium" *ngIf="!searchText && filteredUsers.length === 0">No hay usuarios en la plataforma</ion-text>
+        <ion-text color="medium" *ngIf="searchText && filteredUsers.length === 0">Intenta una nueva busqueda</ion-text>
+      </div>
+    </ng-template>
+  </ng-template>
+</ion-content>
