@@ -37,7 +37,7 @@ export class FriendPage {
   loadUsers = (event) => {
     if (event.detail.value === 'users') {
       this.loading = true;
-      this.friendSvc.getAllFriends().then((snapshot) => {
+      this.friendSvc.getAllFriendsBut().then((snapshot) => {
         this.friends = snapshot.docs.map(doc => doc.data());
         this.authSvc.findAllButMe().then((snapshot) => {
           this.users = snapshot.docs.map(doc => {

@@ -1,4 +1,4 @@
-<ion-chip (click)="showProfile()">
+<ion-chip (click)="showProfile()" [disabled]="disabled">
   <ion-avatar>
     <img [src]="photoURL | photo" alt="">
   </ion-avatar>

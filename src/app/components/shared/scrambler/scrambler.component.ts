@@ -9,7 +9,10 @@ import { ScramblerService } from 'src/app/services/scrambler.service';
 export class ScramblerComponent implements OnInit {
 
   @Input() scrambles: string[];
+  @Input() allowRefresh: boolean = true;
+  @Input() waitingForScramble: boolean = false;
   @Output() lastScramble: EventEmitter<void> = new EventEmitter();
+  @Output() currentScramble: EventEmitter<string> = new EventEmitter();
   
   scramble: string;
   index = 0;
@@ -17,10 +20,19 @@ export class ScramblerComponent implements OnInit {
   constructor(private scramblerService: ScramblerService) { }
 
   ngOnInit() {
-    this.scramble = this.scrambles ? this.scrambles[this.index] : this.scramblerService.getScramble();
+    this.scramble = this.scrambles ? this.scrambles[this.index] : this.updateScramble();
   }
 
-  updateScramble = () => this.scramble = this.scramblerService.getScramble();
+  setScramble = (scramble: string) => {
+    this.scramble = scramble;
+    this.waitingForScramble = false;
+  }
+
+  updateScramble = () => {
+    const scramble = this.scramblerService.getScramble();
+    this.currentScramble.emit(scramble);
+    return scramble;
+  };
 
   getNextScramble = () => {
     if (this.index + 1 < this.scrambles.length) {

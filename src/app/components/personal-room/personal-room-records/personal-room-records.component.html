@@ -1,0 +1,13 @@
+<ion-toolbar color="medium">
+</ion-toolbar>
+<ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else showRecords"></ion-progress-bar>
+<ng-template #showRecords>
+  <ion-list>
+    <ion-item *ngFor="let personalRecord of displayPersonalRecords; let index = index">
+      <ion-note slot="start">{{index + 1}}</ion-note>
+      <app-avatar [user]="personalRecord.user" [disabled]="!personalRecord.user.active"></app-avatar>
+      <app-record-chip [record]="personalRecord.time ? personalRecord : undefined" slot="end"
+        [canEdit]="canEdit(personalRecord.user)" [canDelete]="false" (recordUpdated)="_recordUpdated($event)"></app-record-chip>
+    </ion-item>
+  </ion-list>
+</ng-template>

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MomentumUser } from 'src/app/models/momentum-user.class';
+import { Player } from 'src/app/models/player.class';
 
 @Component({
   selector: 'app-avatar',
@@ -8,10 +9,11 @@ import { MomentumUser } from 'src/app/models/momentum-user.class';
 })
 export class AvatarComponent implements OnInit {
 
-  @Input() user: MomentumUser;
+  @Input() user: MomentumUser | Player;
   @Input() uid: string;
   @Input() photoURL: string;
   @Input() username: string;
+  @Input() disabled: boolean = false;
 
   constructor() {
   }

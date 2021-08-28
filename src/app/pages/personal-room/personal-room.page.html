@@ -1,0 +1,20 @@
+<ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else personalRoom"></ion-progress-bar>
+<ng-template #personalRoom>
+  <ion-header>
+    <ion-toolbar color="medium">
+      <ion-buttons slot="start">
+        <ion-back-button text="Salir" defaultHref="/home/dashboard"></ion-back-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <app-scrambler [allowRefresh]="false" [waitingForScramble]="true" (currentScramble)="updateCurrentScramble($event)"></app-scrambler>
+    <app-timer (recordObtained)="recordObtained($event)" (recordUpdated)="recordUpdated($event)" [allowDelete]="false"></app-timer>
+    <app-personal-room-records [uid]="uid" (recordUpdated)="recordUpdated($event)"></app-personal-room-records>
+    <ion-fab horizontal="end" vertical="bottom" slot="fixed" *ngIf="isHost()">
+      <ion-fab-button color="success" (click)="updateScramble()" [disabled]="personalRecord === null">
+        <ion-icon name="play-circle"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </ion-content>
+</ng-template>

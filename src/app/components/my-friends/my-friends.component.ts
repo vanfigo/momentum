@@ -20,7 +20,7 @@ export class MyFriendsComponent {
   @ViewChild('ionListFriends', {static: false}) friendsList: IonList;
 
   constructor(private friendSvc: FriendService) {
-    this.friendSvc.getAllFriends(FriendStatus.BLOCKED).then((snapshot) => {
+    this.friendSvc.getAllFriendsBut(FriendStatus.BLOCKED).then((snapshot) => {
       this.friends = snapshot.docs.map(doc => doc.data());
       this.filteredFriends = [...this.friends];
       this.loading = false;

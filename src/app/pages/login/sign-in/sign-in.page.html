@@ -4,14 +4,14 @@
     <ion-icon name="mail" slot="start"></ion-icon>
     <ion-input placeholder="Email" formControlName="email"></ion-input>
     <ion-note slot="end" color="danger"
-              *ngIf="!signInFormGroup.untouched && signInFormGroup.controls.email.errors?.required">Campo Requerido</ion-note>
+              *ngIf="!signInFormGroup.untouched && signInFormGroup.controls.email.errors?.required">Requerido</ion-note>
     <ion-note slot="end" color="danger" *ngIf="signInFormGroup.controls.email.errors?.email">Email Incorrecto</ion-note>
   </ion-item>
   <ion-item>
     <ion-icon name="key" slot="start"></ion-icon>
     <ion-input placeholder="Contraseña" formControlName="password" type="password"></ion-input>
     <ion-note slot="end" color="danger"
-              *ngIf="!signInFormGroup.untouched && signInFormGroup.controls.password.errors?.required">Campo Requerido</ion-note>
+              *ngIf="!signInFormGroup.untouched && signInFormGroup.controls.password.errors?.required">Requerido</ion-note>
   </ion-item>
   <ion-button expand="block" color="primary" class="ion-margin-vertical"
               (click)="signIn()" [disabled]="signInFormGroup.invalid">Ingresar</ion-button>

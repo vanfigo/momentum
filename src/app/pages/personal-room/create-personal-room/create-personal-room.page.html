@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar color="medium">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text="Salir">Cerrar</ion-back-button>
+    </ion-buttons>
+    <ion-title>Crea tu sala</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content color="light">
+  <form [formGroup]="personalRoomForm">
+    <ion-list lines="full" class="ion-no-padding">
+      <ion-item>
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input formControlName="name"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Privado</ion-label>
+        <ion-checkbox formControlName="isPrivate" slot="end" (ionChange)="toggleHideFriends($event)"></ion-checkbox>
+      </ion-item>
+    </ion-list>
+    <ion-button expand="full" color="primary" class="ion-margin-vertical"
+                (click)="createRoom()">Crear</ion-button>
+  </form>
+  <div *ngIf="showFriends">
+    <ion-searchbar placeHolder="Buscar amigos" [(ngModel)]="searchText" (ionChange)="loadFriends()"></ion-searchbar>
+    <ion-list class="ion-no-padding">
+      <ion-item *ngFor="let friend of filteredFriends">
+        <ion-checkbox slot="start" (ionChange)="selectFriend($event, friend)" [name]="friend.uid"></ion-checkbox>
+        <ion-avatar slot="start">
+          <img [src]="friend.photoURL | photo" alt="">
+        </ion-avatar>
+        <ion-label>{{friend.username}}</ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>

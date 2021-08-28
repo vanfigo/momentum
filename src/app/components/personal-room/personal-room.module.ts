@@ -1,16 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CreatePersonalRoomComponent } from './create-personal-room/create-personal-room.component';
+import { PersonalRoomRecordsComponent } from './personal-room-records/personal-room-records.component';
 import { IonicModule } from '@ionic/angular';
-import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     IonicModule,
-    ReactiveFormsModule
+    SharedModule
   ],
-  declarations: [CreatePersonalRoomComponent],
-  exports: [CreatePersonalRoomComponent]
+  declarations: [
+    PersonalRoomRecordsComponent
+  ],
+  exports: [
+    PersonalRoomRecordsComponent
+  ]
 })
 export class PersonalRoomModule { }

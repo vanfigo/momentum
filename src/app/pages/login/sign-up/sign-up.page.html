@@ -4,21 +4,21 @@
     <ion-icon name="mail" slot="start"></ion-icon>
     <ion-input placeholder="Email" formControlName="email"></ion-input>
     <ion-note slot="end" color="danger"
-              *ngIf="!signUpFormGroup.untouched && signUpFormGroup.controls.email.errors?.required">Campo Requerido</ion-note>
+              *ngIf="!signUpFormGroup.untouched && signUpFormGroup.controls.email.errors?.required">Requerido</ion-note>
     <ion-note slot="end" color="danger" *ngIf="signUpFormGroup.controls.email.errors?.email">Email Incorrecto</ion-note>
   </ion-item>
   <ion-item>
     <ion-icon name="key" slot="start"></ion-icon>
     <ion-input placeholder="Contraseña" formControlName="password" type="password"></ion-input>
     <ion-note slot="end" color="danger"
-              *ngIf="!signUpFormGroup.untouched && signUpFormGroup.controls.password.errors?.required">Campo Requerido</ion-note>
+              *ngIf="!signUpFormGroup.untouched && signUpFormGroup.controls.password.errors?.required">Requerido</ion-note>
     <ion-note slot="end" color="danger" *ngIf="signUpFormGroup.controls.password.errors?.minlength">Minimo 6 letras</ion-note>
   </ion-item>
   <ion-item>
     <ion-icon name="key" slot="start"></ion-icon>
     <ion-input placeholder="Repetir Contraseña" formControlName="repassword" type="password"></ion-input>
     <ion-note slot="end" color="danger"
-              *ngIf="!signUpFormGroup.untouched && signUpFormGroup.controls.repassword.errors?.required">Campo Requerido</ion-note>
+              *ngIf="!signUpFormGroup.untouched && signUpFormGroup.controls.repassword.errors?.required">Requerido</ion-note>
     <ion-note slot="end" color="danger" *ngIf="signUpFormGroup.controls.repassword.errors?.notequal">Password no coincide</ion-note>
   </ion-item>
   <ion-button expand="block" color="primary" class="ion-margin-vertical"

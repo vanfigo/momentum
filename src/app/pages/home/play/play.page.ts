@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Action, DocumentChangeAction, DocumentSnapshot } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { AlertController, LoadingController, NavController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
+import { LoadingController, ModalController, NavController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Lobby } from 'src/app/models/lobby.class';
 import { MomentumUser } from 'src/app/models/momentum-user.class';
@@ -39,7 +39,7 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
               private navCtrl: NavController,
               private route: ActivatedRoute,
               private loadingCtrl: LoadingController,
-              private alertCtrl: AlertController) { }
+              private modalCtrl: ModalController) { }
               
   ionViewDidLeave(): void {
     this.rankedLobbiesSubscription && this.rankedLobbiesSubscription.unsubscribe();
@@ -102,29 +102,6 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
     });
   }
 
-  showCreatePersonalRoom = () => {
-    this.alertCtrl.create({
-      header: "Crea tu sala",
-      subHeader: "Puedes crear una sala publica o privada",
-      inputs: [{
-        type: "checkbox",
-        name: "private",
-        label: "Privado",
-        checked: false
-      }],
-      buttons: [{
-        role: "cancel",
-        text: "Cancelar"
-      }, {
-        text: "Crear",
-        handler: (data) => {
-          console.log(data);
-          
-        }
-      }]
-    }).then(alert => {
-      alert.present();
-    });
-  }
+  showCreatePersonalRoom = () => this.navCtrl.navigateForward(["/personal-room"], {relativeTo: this.route});
 
 }

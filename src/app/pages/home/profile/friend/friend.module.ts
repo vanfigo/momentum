@@ -9,6 +9,7 @@ import { FriendPageRoutingModule } from './friend-routing.module';
 import { FriendPage } from './friend.page';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { SharedModule } from 'src/app/components/shared/shared.module';
+import { MyFriendsComponent } from 'src/app/components/my-friends/my-friends.component';
 
 @NgModule({
   imports: [
@@ -19,6 +20,6 @@ import { SharedModule } from 'src/app/components/shared/shared.module';
     PipesModule,
     SharedModule
   ],
-  declarations: [FriendPage]
+  declarations: [FriendPage, MyFriendsComponent]
 })
 export class FriendPageModule {}

@@ -16,10 +16,10 @@ export class FriendService {
     this.collection = db.collection('friends');
   }
 
-  getAllFriends = (status?: FriendStatus) => {
+  getAllFriendsBut = (...statuses: FriendStatus[]) => {
     let friendRef =  this.collection.ref.where('userUid', '==', this.authSvc.user.uid);
-    if (status) {
-      friendRef = friendRef.where('status', '!=', status);
+    if (statuses.length > 0) {
+      friendRef = friendRef.where('status', 'not-in', Object.values(statuses));
     }
     return friendRef.get();
   };

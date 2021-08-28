@@ -13,7 +13,6 @@ import { PipesModule } from '../../pipes/pipes.module';
 import { FormsModule } from '@angular/forms';
 import { RegistryDetailComponent } from './registry-detail/registry-detail.component';
 import { AvatarComponent } from './avatar/avatar.component';
-import { MyFriendsComponent } from './my-friends/my-friends.component';
 
 @NgModule({
   imports: [
@@ -30,8 +29,7 @@ import { MyFriendsComponent } from './my-friends/my-friends.component';
     RecordChipComponent,
     AverageChipComponent,
     RegistryDetailComponent,
-    AvatarComponent,
-    MyFriendsComponent
+    AvatarComponent
   ],
   exports: [
     HeaderComponent,
@@ -41,7 +39,6 @@ import { MyFriendsComponent } from './my-friends/my-friends.component';
     AverageChipComponent,
     RegistryDetailComponent,
     AvatarComponent,
-    MyFriendsComponent
   ],
   providers: [RecordDisplayPipe, AverageDisplayPipe, DatePipe]
 })

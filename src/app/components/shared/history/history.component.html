@@ -3,7 +3,7 @@
     <ion-title *ngIf="!average">Conteo: {{records.length}}</ion-title>
     <ion-title *ngIf="average">Promedio: {{average | averageDisplay: best}}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="modalCtrl.dismiss()">Listo</ion-button>
+      <ion-button (click)="modalCtrl.dismiss()">Cerrar</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
