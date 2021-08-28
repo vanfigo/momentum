@@ -53,10 +53,11 @@
             <ion-button color="secondary" expand="full" (click)="showCreatePersonalRoom()">Crear</ion-button>
           </ion-col>
       </ion-row></ion-grid>
+      <ion-progress-bar type="indeterminate" color="primary" *ngIf="loadingPublicRooms"></ion-progress-bar>
       <ion-list lines="full" class="ion-no-padding">
-        <ion-item detail button>
-          <ion-label>Sala test</ion-label>
-          <ion-note slot="end">{{today | date}}</ion-note>
+        <ion-item detail button *ngFor="let personalRoom of publicRooms" (click)="showPersonalRoom(personalRoom.uid)">
+          <ion-label>{{personalRoom.name}}</ion-label>
+          <ion-note slot="end">{{personalRoom.creation | date}}</ion-note>
         </ion-item>
       </ion-list>
     </ion-card-content>

@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
-import { Action, DocumentChangeAction, DocumentSnapshot } from '@angular/fire/firestore';
+import { Action, DocumentChangeAction, DocumentSnapshot, QuerySnapshot } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingController, ModalController, NavController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Lobby } from 'src/app/models/lobby.class';
 import { MomentumUser } from 'src/app/models/momentum-user.class';
+import { PersonalRoom } from 'src/app/models/personal-room.class';
 import { RoomType } from 'src/app/models/room-type.enum';
 import { AuthService } from 'src/app/services/auth.service';
 import { LobbyService } from 'src/app/services/lobby.service';
 import { OnlineRoomService } from 'src/app/services/online-room.service';
+import { PersonalRoomService } from 'src/app/services/personal-room.service';
 
 @Component({
   selector: 'app-play',
@@ -17,11 +19,12 @@ import { OnlineRoomService } from 'src/app/services/online-room.service';
 })
 export class PlayPage implements ViewDidLeave, ViewWillEnter {
 
-  today = new Date();
   RoomType = RoomType;
   user: MomentumUser;
   userSnapshot: DocumentSnapshot<MomentumUser>;
   loading: boolean;
+  loadingPublicRooms: boolean = true;
+  publicRooms: PersonalRoom[];
   
   userSubscription: Subscription;
 
@@ -39,7 +42,8 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
               private navCtrl: NavController,
               private route: ActivatedRoute,
               private loadingCtrl: LoadingController,
-              private modalCtrl: ModalController) { }
+              private modalCtrl: ModalController,
+              private personalRoomSvc: PersonalRoomService) { }
               
   ionViewDidLeave(): void {
     this.rankedLobbiesSubscription && this.rankedLobbiesSubscription.unsubscribe();
@@ -53,7 +57,14 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
       this.user = {...userSnapshot.data(), uid: userSnapshot.id};
       this.userSnapshot = userSnapshot;
       this.loading = false;
-    })
+    });
+    this.personalRoomSvc.getByPrivate(false)
+      .then((roomSnapshot: QuerySnapshot<PersonalRoom>) => {
+        this.publicRooms = roomSnapshot.docs.map(doc => {
+          return { ...doc.data(), uid: doc.id };
+        });
+        this.loadingPublicRooms = false;
+      });
     if (this.rankedLobbiesSubscription === undefined || this.rankedLobbiesSubscription.closed) {
       this.rankedLobbiesSubscription = this.lobbySvc.countLobbiesByRoomType(RoomType.RANKED).subscribe((changeActions: DocumentChangeAction<Lobby>[]) =>
         this.rankedLobbies = changeActions.reduce((prev, current) => current.type === "added" || "modified" ? prev + 1 : prev, 0));
@@ -103,5 +114,7 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
   }
 
   showCreatePersonalRoom = () => this.navCtrl.navigateForward(["/personal-room"], {relativeTo: this.route});
+
+  showPersonalRoom = (uid: string) => this.navCtrl.navigateForward(["/personal-room", uid], {relativeTo: this.route});
 
 }

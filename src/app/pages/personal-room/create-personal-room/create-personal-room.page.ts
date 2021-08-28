@@ -51,6 +51,7 @@ export class CreatePersonalRoomPage implements ViewDidEnter {
 
   createRoom = () => {
     const {name, isPrivate} = this.personalRoomForm.value;
+    console.log(isPrivate);
     this.personalRoomSvc.create({
       hostUid: this.authSvc.user.uid,
       creation: new Date().getTime(),
