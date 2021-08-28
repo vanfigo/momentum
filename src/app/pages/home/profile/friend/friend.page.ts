@@ -53,22 +53,25 @@ export class FriendPage {
   }
 
   sendFriendRequest = (user: Friend) => this.friendSvc.sendFriendRequest(user).then((status: FriendStatus) => {
-    this.usersList.closeSlidingItems();
-    if (status !== FriendStatus.BLOCKED) {
-      user.status = status;
-    } else {
-      this.toastCtrl.create({message: 'No fue posible enviar la solicitud', duration: 3000}).then(toast => toast.present())
-    }
+    this.usersList.closeSlidingItems().then(() => {
+      if (status !== FriendStatus.BLOCKED) {
+        user.status = status;
+      } else {
+        this.toastCtrl.create({message: 'No fue posible enviar la solicitud', duration: 3000}).then(toast => toast.present())
+      }
+    });
   });
 
   sendBlockRequest = (user: Friend) => this.friendSvc.sendBlockRequest(user).then(() => {
-    this.usersList.closeSlidingItems()
-    user.status = FriendStatus.BLOCKED;
+    this.usersList.closeSlidingItems().then(() => {
+      user.status = FriendStatus.BLOCKED;
+    });
   });
 
   sendUnblockRequest = (user: Friend) => this.friendSvc.sendUnblockRequest(user).then(() => {
-    this.usersList.closeSlidingItems();
-    user.status = null;
+    this.usersList.closeSlidingItems().then(() => {
+      user.status = null;
+    });
   });
 
 }

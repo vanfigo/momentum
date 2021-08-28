@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DocumentChangeAction, DocumentData } from '@angular/fire/firestore';
+import { ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { MomentumUser } from 'src/app/models/momentum-user.class';
 import { PersonalRecord } from 'src/app/models/personal-record.class';
@@ -7,6 +8,7 @@ import { Player } from 'src/app/models/player.class';
 import { Record } from 'src/app/models/record.class';
 import { AuthService } from 'src/app/services/auth.service';
 import { PersonalRoomService } from 'src/app/services/personal-room.service';
+import { PersonalRoomHistoryComponent } from '../personal-room-history/personal-room-history.component';
 
 @Component({
   selector: 'app-personal-room-records',
@@ -19,6 +21,7 @@ export class PersonalRoomRecordsComponent implements OnInit, OnDestroy {
   @Output() recordUpdated = new EventEmitter<Record>();
 
   loading: boolean = true;
+  solveCount: number = 0;
   personalRecords: PersonalRecord[] = [];
   displayPersonalRecords: PersonalRecord[] = [];
   players: Player[] = [];
@@ -28,7 +31,8 @@ export class PersonalRoomRecordsComponent implements OnInit, OnDestroy {
   playersSubscription: Subscription;
 
   constructor(private personalRoomSvc: PersonalRoomService,
-              private authSvc: AuthService) { }
+              private authSvc: AuthService,
+              private modalCtrl: ModalController) { }
 
   ngOnInit() {
     this.playersSubscription = this.personalRoomSvc.listenToPlayers(this.uid).subscribe((documents: DocumentChangeAction<Player>[]) => {
@@ -42,7 +46,7 @@ export class PersonalRoomRecordsComponent implements OnInit, OnDestroy {
     this.personalRecordsSubscription && this.personalRecordsSubscription.unsubscribe()
   }
 
-  canEdit = (user: MomentumUser) => this.authSvc.user.uid === user.uid;
+  canEdit = (user: Player) => this.authSvc.user.uid === user.uid;
 
   setPersonalSolveUid = (personalSolveUid: string) => {
     this.personalSolveUid = personalSolveUid;
@@ -59,6 +63,18 @@ export class PersonalRoomRecordsComponent implements OnInit, OnDestroy {
     const players = this.players.filter(player => this.personalRecords.find(personalRecord => personalRecord.user.uid === player.uid) === undefined);
     this.displayPersonalRecords = this.personalRecords.concat(players.sort((a, b) => a.active === b.active ? 0 : a ? 1 : -1)
       .map(player => { return {user: player, ...new Record()} }));
+  }
+
+  showHistory = () => {
+    this.modalCtrl.create({component: PersonalRoomHistoryComponent, componentProps: {uid: this.uid}}).then(modal => modal.present())
+  }
+
+  setPersonalSolveCount(length: number) {
+    this.solveCount = length;
+  }
+
+  incrementSolveCount(): any {
+    this.solveCount++;
   }
 
 }

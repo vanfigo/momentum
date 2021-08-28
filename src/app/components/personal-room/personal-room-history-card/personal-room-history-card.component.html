@@ -1,0 +1,43 @@
+<ion-card>
+  <ion-card-header color="light">
+    <ion-card-title>        
+      <app-avatar [photoURL]="player.photoURL" [username]="player.username"></app-avatar>
+    </ion-card-title>
+    <ion-card-subtitle>Conteo: {{personalRecords.length}}</ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content class="ion-no-padding">
+    <ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else showAverages"></ion-progress-bar>
+    <ng-template #showAverages>
+      <ion-list class="ion-no-padding" lines="full">
+        <ion-item>
+          <ion-grid>
+            <ion-row>
+              <ion-col class="average-col"><ion-text>Ultimo:</ion-text></ion-col>
+              <ion-col>
+                <app-record-chip [record]="lastRecord" [canDelete]="false" [canEdit]="false"></app-record-chip>
+              </ion-col>
+              <ion-col class="average-col"><ion-text>Mejor:</ion-text></ion-col>
+              <ion-col>
+                <app-record-chip [record]="bestRecord" [canDelete]="false" [canEdit]="false"></app-record-chip>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+        <ion-item *ngFor="let averageOf of averageNumbers">
+          <ion-grid>
+            <ion-row>
+              <ion-col class="average-col"><ion-text>Ao{{averageOf}}:</ion-text></ion-col>
+              <ion-col>
+                <app-average-chip [average]="averages[averageOf]" [canDelete]="false" [canEdit]="false"></app-average-chip>
+                </ion-col>
+              <ion-col class="average-col"><ion-text>Bo{{averageOf}}:</ion-text></ion-col>
+              <ion-col>
+                <app-average-chip [average]="averages[averageOf]" [best]="true" [canDelete]="false" [canEdit]="false"></app-average-chip>
+                </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ion-list>
+    </ng-template>
+  </ion-card-content>
+</ion-card>

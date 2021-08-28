@@ -14,6 +14,8 @@ export class HistoryComponent implements OnInit {
   @Input() records: Record[];
   @Input() average: Average;
   @Input() best: boolean;
+  @Input() canEdit: boolean = true;
+  @Input() canDelete: boolean = true;
 
   constructor(public modalCtrl: ModalController) { }
 

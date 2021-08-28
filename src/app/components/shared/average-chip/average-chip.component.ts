@@ -13,6 +13,8 @@ export class AverageChipComponent implements OnInit {
 
   @Input() average: Average;
   @Input() best: boolean = false;
+  @Input() canEdit: boolean = true;
+  @Input() canDelete: boolean = true;
   @Output() recordUpdated: EventEmitter<Record> = new EventEmitter();
   @Output() recordDeleted: EventEmitter<Record> = new EventEmitter();
 
@@ -26,7 +28,9 @@ export class AverageChipComponent implements OnInit {
         component: HistoryComponent,
         componentProps: {
           average: this.average,
-          best: this.best
+          best: this.best,
+          canEdit: this.canEdit,
+          canDelete: this.canDelete
         }
       }).then(modal => {
         modal.present();

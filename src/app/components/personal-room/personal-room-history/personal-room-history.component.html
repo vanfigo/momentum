@@ -1,0 +1,13 @@
+<ion-header>
+  <ion-toolbar color="medium">
+    <ion-buttons slot="end">
+      <ion-button (click)="modalCtrl.dismiss()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else showCards"></ion-progress-bar>
+  <ng-template #showCards>
+    <app-personal-room-history-card *ngFor="let player of players" [player]="player" [personalRoomUid]="uid"></app-personal-room-history-card>
+  </ng-template>
+</ion-content>

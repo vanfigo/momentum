@@ -1,4 +1,10 @@
 <ion-toolbar color="medium">
+  <ion-title>Conteo: {{solveCount}}</ion-title>
+  <ion-buttons slot="end">
+    <ion-button (click)="showHistory()">
+      <ion-icon name="receipt-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+  </ion-buttons>
 </ion-toolbar>
 <ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else showRecords"></ion-progress-bar>
 <ng-template #showRecords>

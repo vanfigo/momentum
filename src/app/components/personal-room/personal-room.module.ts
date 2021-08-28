@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { PersonalRoomRecordsComponent } from './personal-room-records/personal-room-records.component';
 import { IonicModule } from '@ionic/angular';
 import { SharedModule } from '../shared/shared.module';
+import { PersonalRoomHistoryComponent } from './personal-room-history/personal-room-history.component';
+import { PersonalRoomHistoryCardComponent } from './personal-room-history-card/personal-room-history-card.component';
 
 @NgModule({
   imports: [
@@ -11,7 +13,9 @@ import { SharedModule } from '../shared/shared.module';
     SharedModule
   ],
   declarations: [
-    PersonalRoomRecordsComponent
+    PersonalRoomRecordsComponent,
+    PersonalRoomHistoryComponent,
+    PersonalRoomHistoryCardComponent
   ],
   exports: [
     PersonalRoomRecordsComponent
