@@ -50,7 +50,16 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
               await this.personalRoomSvc.setActive(this.personalRoom.code, true);
               this.player = {...playerFound.data() as Player, active: true};
             } else {
-              // TODO show alert and close personal room page (navigate to home)
+              this.alertCtrl.create({
+                header: "Oops :(",
+                subHeader: "No estas en la lista",
+                message: "Para acceder a esta sala privada debes de estar en la lista de jugadores invitados",
+                buttons: [{
+                  text: "Aceptar",
+                  role: "cancel",
+                  handler: () => this.navCtrl.navigateForward(["/home"], {relativeTo: this.route})
+                }]
+              }).then(alert => alert.present());
             }
           } else { // public room
             if (playerFound === undefined) { // not in players list
