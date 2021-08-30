@@ -1,6 +1,8 @@
+import { Route } from '@angular/compiler/src/core';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Action, DocumentData, DocumentSnapshot, QuerySnapshot } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
+import { AlertController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { PersonalRoomRecordsComponent } from 'src/app/components/personal-room/personal-room-records/personal-room-records.component';
 import { ScramblerComponent } from 'src/app/components/shared/scrambler/scrambler.component';
@@ -30,7 +32,9 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
 
   constructor(private route: ActivatedRoute,
               private authSvc: AuthService,
-              private personalRoomSvc: PersonalRoomService) { }
+              private personalRoomSvc: PersonalRoomService,
+              private alertCtrl: AlertController,
+              private navCtrl: NavController) { }
 
   ngOnInit() {
     // get personal-room info
@@ -68,8 +72,8 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
                 const { currentPersonalSolveUid } = action.payload.data();
                 currentPersonalSolveUid && this.listenToSolves(currentPersonalSolveUid)
                 break;
-              case 'deleted':
-                // TODO display message on host left and navigate to home
+              case 'removed':
+                this.showNonExistantRoom(true);
                 break;
             }
             this.loading = false;
@@ -78,10 +82,21 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
           });
           window.addEventListener('beforeunload', this.exitPersonalRoom);
         } else {
-          // TODO show alert and close personal room page (navigate to home)
+          this.showNonExistantRoom(false);
         }
       });
   }
+  showNonExistantRoom = (deleted: boolean = false) => this.alertCtrl.create({
+    header: "Oops :(",
+    subHeader: deleted ? "El host abandono la sala" : "Esta sala ya no existe",
+    message: deleted ? "La sala en la que estabas jugando dejo de existir, intenta crear o unirte a una nueva"
+      : "La sala a la que intentas entrar dejo de existir, intenta con un nuevo codigo",
+    buttons: [{
+      text: "Cerrar",
+      role: "cancel",
+      handler: () => this.navCtrl.navigateForward(["/home"], {relativeTo: this.route})
+    }]
+  }).then(alert => alert.present());
 
   ngOnDestroy() {
     this.personalRoomSubscription && this.personalRoomSubscription.unsubscribe();
@@ -90,7 +105,7 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
 
   exitPersonalRoom = () => {
     if (this.isHost()) {
-      // TODO delete the personal-room
+      this.personalRoomSvc.deletePersonalRoomByCode(this.personalRoom.code);
     } else {
       if (this.personalRoom.isPrivate) {
         this.personalRoomSvc.setActive(this.personalRoom.code, false);

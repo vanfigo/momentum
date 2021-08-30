@@ -44,6 +44,29 @@ export class PersonalRoomService {
 
   getByCode = (code: string) => this.collection.doc(code).get().toPromise();
 
+  deletePersonalRoomByCode = async (code: string) => {
+    const personalRoom = this.collection.doc(code).ref;
+
+    const solves = await personalRoom.collection('solves').get()
+    solves.docs.forEach(async (solve) => {
+      const batch = this.db.firestore.batch();
+      const records = await solve.ref.collection('records').get()
+        records.forEach(record => batch.delete(record.ref));
+        batch.delete(solve.ref);
+        batch.commit();
+    });
+
+    const players = await personalRoom.collection('players').get();
+    players.docs.forEach(async (player) => {
+      const batch = this.db.firestore.batch();
+      const histories = await player.ref.collection('history').get();
+      histories.forEach(history => batch.delete(history.ref));
+      batch.delete(player.ref);
+      batch.commit();
+    });
+    personalRoom.delete();
+  }
+
   updateCurrentScramble = (code: string, scramble: string) => {
     this.collection.doc(code).collection('solves').add({scramble}).then((document: DocumentReference) => {
       this.collection.doc(code).update({currentPersonalSolveUid: document.id})

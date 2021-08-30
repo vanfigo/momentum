@@ -77,7 +77,13 @@ export class ProfilePage implements ViewWillEnter, ViewDidLeave {
     this.userSubscription && this.userSubscription.unsubscribe();
   }
 
-  navigateToRegistries = (roomType: RoomType) => this.navCtrl.navigateForward(['registry'], {state: {roomType}});
+  navigateToRegistries = (roomType: RoomType) => {
+    if (roomType === RoomType.RANKED && this.user.rankedGames > 0) {
+      this.navCtrl.navigateForward(['registry'], {state: {roomType}})
+    } else if (roomType === RoomType.RANKED && this.user.unrankedGames > 0) {
+      this.navCtrl.navigateForward(['registry'], {state: {roomType}})
+    }
+  }
 
   navigateToFriends = () => this.navCtrl.navigateForward(['friend']);
 

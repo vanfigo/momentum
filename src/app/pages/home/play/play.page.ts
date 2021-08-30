@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Action, DocumentChangeAction, DocumentSnapshot, QuerySnapshot } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingController, ModalController, NavController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController, NavController, ToastController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Lobby } from 'src/app/models/lobby.class';
 import { MomentumUser } from 'src/app/models/momentum-user.class';
@@ -39,11 +39,13 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
   constructor(private authSvc: AuthService,
               private lobbySvc: LobbyService,
               private onlineRoomSvc: OnlineRoomService,
-              private navCtrl: NavController,
+              private personalRoomSvc: PersonalRoomService,
               private route: ActivatedRoute,
+              private navCtrl: NavController,
               private loadingCtrl: LoadingController,
               private modalCtrl: ModalController,
-              private personalRoomSvc: PersonalRoomService) { }
+              private alertCtrl: AlertController,
+              private toastCtrl: ToastController) { }
               
   ionViewDidLeave(): void {
     this.rankedLobbiesSubscription && this.rankedLobbiesSubscription.unsubscribe();
@@ -115,6 +117,41 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
 
   showCreatePersonalRoom = () => this.navCtrl.navigateForward(["/personal-room"], {relativeTo: this.route});
 
-  showPersonalRoom = (uid: string) => this.navCtrl.navigateForward(["/personal-room", uid], {relativeTo: this.route});
+  showEnterPersonalRoom = () => {
+    this.alertCtrl.create({
+      header: "Ingresa el codigo",
+      subHeader: "Pide a tus amigos que te compartan su codigo de sala",
+      message: "En caso de ser sala privada, debes estar invitado, de lo contrario, no podras entrar",
+      inputs: [{
+        type: "number",
+        name: "code",
+        label: "Codigo"
+      }],
+      buttons: [{
+        text: 'Cancelar',
+        role: 'cancel'
+      }, {
+        text: 'Entrar',
+        handler: (data) => {
+          let { code } = data;
+          if (isNaN(code)) {
+            this.toastCtrl.create({message: "El codigo de sala es incorrecto", color: "danger", buttons: ["cerrar"], duration: 3000})
+              .then(toast => toast.present());
+          } else {
+            this.personalRoomSvc.getByCode(code).then(snapshot => {
+              if (snapshot.exists) {
+                this.showPersonalRoom(code);
+              } else {
+                this.toastCtrl.create({message: "El codigo de sala no existe", buttons: ["cerrar"], duration: 3000})
+                  .then(toast => toast.present());
+              }
+            })
+          }
+        }
+      }]
+    }).then(alert => alert.present())
+  }
+
+  showPersonalRoom = (code: string) => this.navCtrl.navigateForward(["/personal-room", code], {relativeTo: this.route});
 
 }
