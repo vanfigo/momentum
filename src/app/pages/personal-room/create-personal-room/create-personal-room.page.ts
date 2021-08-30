@@ -2,7 +2,7 @@ import { AfterContentInit, ChangeDetectorRef, Component, OnInit, QueryList, View
 import { DocumentReference } from '@angular/fire/firestore';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { IonCheckbox, IonInput, ModalController, NavController, ViewDidEnter } from '@ionic/angular';
+import { IonCheckbox, IonInput, LoadingController, ModalController, NavController, ViewDidEnter } from '@ionic/angular';
 import { FriendStatus } from 'src/app/models/friend-status.enum';
 import { Friend } from 'src/app/models/friend.class';
 import { PersonalRoom } from 'src/app/models/personal-room.class';
@@ -34,7 +34,8 @@ export class CreatePersonalRoomPage implements ViewDidEnter {
               private authSvc: AuthService,
               private navCtrl: NavController,
               private route: ActivatedRoute,
-              private changeDetector: ChangeDetectorRef) {
+              private changeDetector: ChangeDetectorRef,
+              private loadingCtrl: LoadingController) {
     this.personalRoomForm = new FormGroup({
       name: new FormControl(''), isPrivate: new FormControl(this.showFriends)
     });
@@ -50,21 +51,27 @@ export class CreatePersonalRoomPage implements ViewDidEnter {
   }
 
   createRoom = () => {
-    const {name, isPrivate} = this.personalRoomForm.value;
-    console.log(isPrivate);
-    this.personalRoomSvc.create({
-      hostUid: this.authSvc.user.uid,
-      creation: new Date().getTime(),
-      currentPersonalSolveUid: null,
-      name, isPrivate
-    }, this.selectedFriends.map(friend => { return {
-      uid: friend.friendUid,
-      photoURL: friend.photoURL,
-      username: friend.username,
-      email: friend.email,
-      active: false
-    }})).then((uid: string) => {
-      this.navCtrl.navigateForward([uid], {relativeTo: this.route})
+    this.loadingCtrl.create({
+      message: 'Creando sala...',
+      spinner: 'dots'
+    }).then (async (loading) => {
+      await loading.present()
+      const {name, isPrivate} = this.personalRoomForm.value;
+      const code: string = await this.personalRoomSvc.getCode();
+      this.personalRoomSvc.create({
+        hostUid: this.authSvc.user.uid,
+        creation: new Date().getTime(),
+        currentPersonalSolveUid: null,
+        name, isPrivate, code
+      }, this.selectedFriends.map(friend => { return {
+        uid: friend.friendUid,
+        photoURL: friend.photoURL,
+        username: friend.username,
+        email: friend.email,
+        active: false
+      }})).then(() => {
+        this.navCtrl.navigateForward([code], {relativeTo: this.route}).then(() => loading.dismiss());
+      })
     })
   }
 

@@ -8,6 +8,6 @@
 <ion-content>
   <ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else showCards"></ion-progress-bar>
   <ng-template #showCards>
-    <app-personal-room-history-card *ngFor="let player of players" [player]="player" [personalRoomUid]="uid"></app-personal-room-history-card>
+    <app-personal-room-history-card *ngFor="let player of players" [player]="player" [code]="code"></app-personal-room-history-card>
   </ng-template>
 </ion-content>

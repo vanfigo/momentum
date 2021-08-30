@@ -28,10 +28,8 @@ exports.findPlayer = functions.firestore.document("lobbies/{uid}")
           .where("roomType", "==", roomType);
       // If it is a ranked match and you already have a ranked average
       if (roomType === 2) {
-        console.log("user.rankedAverage", user.rankedAverage);
         if (user.rankedAverage) {
           const time = parseInt(functions.config().ranked.time);
-          console.log("time", time);
           queryPlayer = queryPlayer
               .where("user.rankedAverage", ">=", user.rankedAverage - time)
               .where("user.rankedAverage", "<=", user.rankedAverage + time);
@@ -150,7 +148,6 @@ const updateUserAverage = async (uid: string, roomType: number,
       .get();
   const averageSum = snapshot.docs.reduce(
       (previous, document) => document.data().average + previous, 0);
-  console.log(snapshot.docs.length, averageSum);
   const newAverage = Math.trunc(averageSum / snapshot.docs.length);
   const update: any = {rankedRoomUid: null, unrankedRoomUid: null};
   const userDoc = await admin.firestore().collection("users").doc(uid).get();

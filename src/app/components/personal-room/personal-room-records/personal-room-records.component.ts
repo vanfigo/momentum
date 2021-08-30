@@ -17,7 +17,7 @@ import { PersonalRoomHistoryComponent } from '../personal-room-history/personal-
 })
 export class PersonalRoomRecordsComponent implements OnInit, OnDestroy {
 
-  @Input() uid: string;
+  @Input() code: string;
   @Output() recordUpdated = new EventEmitter<Record>();
 
   loading: boolean = true;
@@ -35,7 +35,7 @@ export class PersonalRoomRecordsComponent implements OnInit, OnDestroy {
               private modalCtrl: ModalController) { }
 
   ngOnInit() {
-    this.playersSubscription = this.personalRoomSvc.listenToPlayers(this.uid).subscribe((documents: DocumentChangeAction<Player>[]) => {
+    this.playersSubscription = this.personalRoomSvc.listenToPlayers(this.code).subscribe((documents: DocumentChangeAction<Player>[]) => {
       this.players = documents.map(document => { return {...document.payload.doc.data(), uid: document.payload.doc.id} })
       this.updatePersonalRecords();
       this.loading = false;
@@ -51,7 +51,7 @@ export class PersonalRoomRecordsComponent implements OnInit, OnDestroy {
   setPersonalSolveUid = (personalSolveUid: string) => {
     this.personalSolveUid = personalSolveUid;
     this.personalRecordsSubscription && this.personalRecordsSubscription.unsubscribe();
-    this.personalRecordsSubscription = this.personalRoomSvc.listenToSolves(this.uid, personalSolveUid).subscribe((documents: DocumentData[]) => {
+    this.personalRecordsSubscription = this.personalRoomSvc.listenToSolves(this.code, personalSolveUid).subscribe((documents: DocumentData[]) => {
       this.personalRecords = documents as PersonalRecord[];
       this.updatePersonalRecords();
     });
@@ -66,7 +66,7 @@ export class PersonalRoomRecordsComponent implements OnInit, OnDestroy {
   }
 
   showHistory = () => {
-    this.modalCtrl.create({component: PersonalRoomHistoryComponent, componentProps: {uid: this.uid}}).then(modal => modal.present())
+    this.modalCtrl.create({component: PersonalRoomHistoryComponent, componentProps: {code: this.code}}).then(modal => modal.present())
   }
 
   setPersonalSolveCount(length: number) {

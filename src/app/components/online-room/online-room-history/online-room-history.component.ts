@@ -89,7 +89,6 @@ export class OnlineRoomHistoryComponent implements OnInit, OnDestroy {
     if (!this.validatingLastSolve) {
       if (this.records.length === this.scramblesToComplete) {
         if (this.opponentRecords.length === this.scramblesToComplete) {
-          // TODO completed, calcluate average, update room status, notify user
           const alert = await this.alertCtrl.getTop();
           alert && alert.dismiss();
           const toast = await this.toastCtrl.getTop();
@@ -139,7 +138,6 @@ export class OnlineRoomHistoryComponent implements OnInit, OnDestroy {
           }
         }
       } else if (this.opponentRecords.length === this.scramblesToComplete) {
-        // TODO notify user that user is pending
         this.toastCtrl.getTop()
           .then(toast => {
             if (!toast) {

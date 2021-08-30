@@ -11,7 +11,7 @@ import { PersonalRoomService } from 'src/app/services/personal-room.service';
 })
 export class PersonalRoomHistoryComponent implements OnInit {
 
-  @Input() uid: string;
+  @Input() code: string;
   loading: boolean = true;
   players: Player[] = [];
 
@@ -19,7 +19,7 @@ export class PersonalRoomHistoryComponent implements OnInit {
               private personalRoomSvc: PersonalRoomService) { }
 
   ngOnInit() {
-    this.personalRoomSvc.getPlayers(this.uid).then((snapshot: QuerySnapshot<Player>) => {
+    this.personalRoomSvc.getPlayers(this.code).then((snapshot: QuerySnapshot<Player>) => {
       this.players = snapshot.docs.map(doc => {
         return {...doc.data(), uid: doc.id}
       });

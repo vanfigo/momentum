@@ -19,8 +19,7 @@ import { PersonalRoomService } from 'src/app/services/personal-room.service';
 })
 export class PersonalRoomPage implements OnInit, OnDestroy {
 
-  uid: string;
-  hostUid: string;
+  personalRoom: PersonalRoom;
   player: Player;
   personalRecord: PersonalRecord = null;
   listenToUpdates: boolean = true;
@@ -35,17 +34,16 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     // get personal-room info
-    this.personalRoomSvc.getByUid(this.route.snapshot.params['uid'])
+    this.personalRoomSvc.getByCode(this.route.snapshot.params['code'])
       .then(async (snapshot) => {
         if (snapshot.exists) {
-          this.uid = snapshot.id;
-          const {isPrivate, /* roomCode */ } = snapshot.data();
+          this.personalRoom = {...snapshot.data()};
           // get players added (isPriavte ? friends added : people accessed this public room)
-          const playersSnapshot = await this.personalRoomSvc.getPlayers(this.uid);
+          const playersSnapshot = await this.personalRoomSvc.getPlayers(this.personalRoom.code);
           const playerFound = playersSnapshot.docs.find(snapshot => snapshot.data().uid === this.authSvc.user.uid)
-          if (isPrivate) {
+          if (this.personalRoom.isPrivate) {
             if (playerFound !== undefined) {
-              await this.personalRoomSvc.setActive(this.uid, true);
+              await this.personalRoomSvc.setActive(this.personalRoom.code, true);
               this.player = {...playerFound.data() as Player, active: true};
             } else {
               // TODO show alert and close personal room page (navigate to home)
@@ -55,32 +53,30 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
               const userSnapshot = await this.authSvc.getUserFromDB();
               const { uid, username, email, photoURL } = {...userSnapshot.data() as MomentumUser, uid: userSnapshot.id};
               this.player = { uid, username, email, photoURL, active: true }
-              await this.personalRoomSvc.addPlayer(this.uid, this.player);
+              await this.personalRoomSvc.addPlayer(this.personalRoom.code, this.player);
             } else { // player already in public personal-room
               // This piece of code should never be called, but is better to have it, since a public player will be pop from players list once it exits
-              await this.personalRoomSvc.setActive(this.uid, true);
+              await this.personalRoomSvc.setActive(this.personalRoom.code, true);
               this.player = {...playerFound.data() as Player, active: true};
             }
           }
           this.personalRoomSubscription && this.personalRoomSubscription.unsubscribe();
-          this.personalRoomSubscription = this.personalRoomSvc.listenToPersonalRoom(this.uid).subscribe((action: Action<DocumentSnapshot<PersonalRoom>>) => {
+          this.personalRoomSubscription = this.personalRoomSvc.listenToPersonalRoom(this.personalRoom.code).subscribe((action: Action<DocumentSnapshot<PersonalRoom>>) => {
             switch(action.type) {
-              case 'added': {
-                const {hostUid, currentPersonalSolveUid} = action.payload.data();
-                this.hostUid = hostUid;
+              case 'added':
+              case 'modified':
+                const { currentPersonalSolveUid } = action.payload.data();
                 currentPersonalSolveUid && this.listenToSolves(currentPersonalSolveUid)
                 break;
-              }
-              case 'modified': {
-                const {currentPersonalSolveUid} = action.payload.data();
-                currentPersonalSolveUid && this.listenToSolves(currentPersonalSolveUid)
+              case 'deleted':
+                // TODO display message on host left and navigate to home
                 break;
-              }
             }
             this.loading = false;
-            this.personalRoomSvc.getHistoryCount(this.uid).then((snapshot: QuerySnapshot<PersonalRecord>) =>
+            this.personalRoomSvc.getHistoryCount(this.personalRoom.code).then((snapshot: QuerySnapshot<PersonalRecord>) =>
               this.recordsCmpt.setPersonalSolveCount(snapshot.docs.length));
-          })
+          });
+          window.addEventListener('beforeunload', this.exitPersonalRoom);
         } else {
           // TODO show alert and close personal room page (navigate to home)
         }
@@ -89,9 +85,22 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.personalRoomSubscription && this.personalRoomSubscription.unsubscribe();
+    this.exitPersonalRoom()
   }
 
-  isHost = () => this.authSvc.user.uid === this.hostUid;
+  exitPersonalRoom = () => {
+    if (this.isHost()) {
+      // TODO delete the personal-room
+    } else {
+      if (this.personalRoom.isPrivate) {
+        this.personalRoomSvc.setActive(this.personalRoom.code, false);
+      } else {
+        this.personalRoomSvc.removePlayer(this.personalRoom.code);
+      }
+    }
+  }
+
+  isHost = () => this.authSvc.user.uid === this.personalRoom.hostUid;
 
   updateScramble = () => {
     this.scramblerCmpt.updateScramble();
@@ -99,9 +108,9 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
 
   updateCurrentScramble = (scramble: string ) => {
     if (this.isHost()) {
-      this.personalRoomSvc.updateCurrentScramble(this.uid, scramble);
+      this.personalRoomSvc.updateCurrentScramble(this.personalRoom.code, scramble);
       if (this.personalRecord) {
-        this.personalRoomSvc.addHistory(this.uid, this.personalRecord)
+        this.personalRoomSvc.addHistory(this.personalRoom.code, this.personalRecord)
           .then(() => this.recordsCmpt.incrementSolveCount());
       }
     }
@@ -110,11 +119,11 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
   listenToSolves = (personalSolveUid: string) => {
     if (this.personalRecord !== null) {
       if (!this.isHost()) {
-        this.personalRoomSvc.addHistory(this.uid, this.personalRecord)
+        this.personalRoomSvc.addHistory(this.personalRoom.code, this.personalRecord)
           .then(() => this.recordsCmpt.incrementSolveCount());
       }
     }
-    this.personalRoomSvc.getCurrentScramble(this.uid, personalSolveUid).toPromise().then((document: DocumentSnapshot<any>) => {
+    this.personalRoomSvc.getCurrentScramble(this.personalRoom.code, personalSolveUid).toPromise().then((document: DocumentSnapshot<any>) => {
       const {scramble} = document.data();
       this.scramblerCmpt.setScramble(scramble);
       this.recordsCmpt.setPersonalSolveUid(personalSolveUid);
@@ -127,7 +136,7 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
   recordObtained = (record: Record) => {
     if (this.personalRecord === null) {
       this.personalRecord = {...record, user: this.player, scramble: this.scramblerCmpt.scramble}
-      this.personalRoomSvc.addRecord(this.uid, this.recordsCmpt.personalSolveUid, this.personalRecord).then((document) => {
+      this.personalRoomSvc.addRecord(this.personalRoom.code, this.recordsCmpt.personalSolveUid, this.personalRecord).then((document) => {
         this.personalRecord.uid = document.id;
       });
     } else {
@@ -137,7 +146,7 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
 
   recordUpdated = (record: Record) => {
     if (this.listenToUpdates) {
-      this.personalRoomSvc.updateRecord(this.uid, this.recordsCmpt.personalSolveUid, this.personalRecord.uid, record);
+      this.personalRoomSvc.updateRecord(this.personalRoom.code, this.recordsCmpt.personalSolveUid, this.personalRecord.uid, record);
       this.personalRecord = {...this.personalRecord, ...record};
     }
   }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, DocumentReference } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, DocumentReference, QuerySnapshot } from '@angular/fire/firestore';
 import { Average } from '../models/average.class';
 import { MomentumUser } from '../models/momentum-user.class';
 import { PersonalRecord } from '../models/personal-record.class';
@@ -20,70 +20,78 @@ export class PersonalRoomService {
     this.collection = db.collection('personal-rooms');
   }
 
-  create = (personalRoom: PersonalRoom, users: Player[]) =>
-    this.collection.add({...personalRoom}).then(async (document: DocumentReference<PersonalRoom>) => {
-      const roomUid = document.id;
-      if (users.length > 0) {
-        const batch = this.db.firestore.batch();
-        const playerCollection = this.collection.doc(roomUid).collection<Player>('players');
-        users.forEach(user => batch.set( playerCollection.doc(user.uid).ref, {...user}))
-        // add current user as a player
-        const userSnapshot = await this.authSvc.getUserFromDB();
-        const { photoURL, email, username, uid } = {...userSnapshot.data() as MomentumUser, uid: userSnapshot.id};
-        batch.set(playerCollection.doc(uid).ref, {uid, username, email, photoURL, active: true})
-        await batch.commit();
-      }
-      return roomUid;
+  getCode = async (): Promise<string> => {
+    let uniqueCode: string = null;
+    let snapshot: QuerySnapshot<PersonalRoom> = null;
+    do {
+      uniqueCode = Math.floor(Math.random() * 999999).toString().padStart(6, '0');
+      snapshot = await this.collection.ref.where('code', '==', uniqueCode).get()
+    } while(!snapshot.empty);
+    return uniqueCode;
+  }
+
+  create = (personalRoom: PersonalRoom, users: Player[]) => this.collection.doc(personalRoom.code).set({...personalRoom})
+    .then(async () => {
+      const batch = this.db.firestore.batch();
+      const playerCollection = this.collection.doc(personalRoom.code).collection<Player>('players');
+      users.forEach(user => batch.set( playerCollection.doc(user.uid).ref, {...user}))
+      // add current user as a player
+      const userSnapshot = await this.authSvc.getUserFromDB();
+      const { photoURL, email, username, uid } = {...userSnapshot.data() as MomentumUser, uid: userSnapshot.id};
+      batch.set(playerCollection.doc(uid).ref, {uid, username, email, photoURL, active: true})
+      return batch.commit();
     });
 
-  getByUid = (uid: string) => this.collection.doc(uid).get().toPromise();
+  getByCode = (code: string) => this.collection.doc(code).get().toPromise();
 
-  updateCurrentScramble = (uid: string, scramble: string) => {
-    this.collection.doc(uid).collection('solves').add({scramble}).then((document: DocumentReference) => {
-      this.collection.doc(uid).update({currentPersonalSolveUid: document.id})
+  updateCurrentScramble = (code: string, scramble: string) => {
+    this.collection.doc(code).collection('solves').add({scramble}).then((document: DocumentReference) => {
+      this.collection.doc(code).update({currentPersonalSolveUid: document.id})
     })
   }
 
-  listenToPersonalRoom = (uid: string) => this.collection.doc(uid).snapshotChanges();
+  listenToPersonalRoom = (code: string) => this.collection.doc(code).snapshotChanges();
 
-  getCurrentScramble = (uid: string, personalSolveUid: string) => this.collection.doc(uid)
+  getCurrentScramble = (code: string, personalSolveUid: string) => this.collection.doc(code)
     .collection('solves').doc(personalSolveUid).get();
 
-  listenToSolves = (uid: string, personalSolveUid: string) => this.collection.doc(uid)
+  listenToSolves = (code: string, personalSolveUid: string) => this.collection.doc(code)
     .collection('solves').doc(personalSolveUid)
     .collection('records', ref => ref.orderBy("dnf", "asc").orderBy("time", "asc")).valueChanges({idField: 'id'});
 
-  listenToPlayers = (uid: string) => this.collection.doc(uid)
+  listenToPlayers = (code: string) => this.collection.doc(code)
     .collection('players').snapshotChanges();
 
-  getPlayers = (uid: string) => this.collection.doc(uid)
+  getPlayers = (code: string) => this.collection.doc(code)
     .collection('players').get().toPromise();
 
   getByPrivate = (isPrivate: boolean) => this.collection.ref.where("isPrivate", "==", isPrivate).orderBy("creation", "asc").get()
 
-  getHistoryByPlayerUid = (uid: string, playerUid: string) => this.collection.doc(uid)
+  getHistoryByPlayerUid = (code: string, playerUid: string) => this.collection.doc(code)
     .collection('players').doc(playerUid)
     .collection('history').ref.orderBy('creation', 'asc').get();
   
-  getHistoryCount = (uid: string) => this.collection.doc(uid)
+  getHistoryCount = (code: string) => this.collection.doc(code)
     .collection('players').doc(this.authSvc.user.uid)
     .collection('history').get().toPromise();
   
-  addRecord = (uid: string, personalSolveUid: string, personalRecord: PersonalRecord) => this.collection.doc(uid)
+  addRecord = (code: string, personalSolveUid: string, personalRecord: PersonalRecord) => this.collection.doc(code)
     .collection('solves').doc(personalSolveUid)
     .collection('records').add({...personalRecord});
 
-  updateRecord = (uid: string, personalSolveUid: string, personalRecordUid: string, record: Record) => this.collection.doc(uid)
+  updateRecord = (code: string, personalSolveUid: string, personalRecordUid: string, record: Record) => this.collection.doc(code)
     .collection('solves').doc(personalSolveUid)
     .collection('records').doc(personalRecordUid).update({...record})
 
-  setActive = (uid: string, active: boolean) => this.collection.doc(uid)
+  setActive = (code: string, active: boolean) => this.collection.doc(code)
     .collection('players').doc(this.authSvc.user.uid).update({active})
 
-  addPlayer = (uid: string, player: Player) => this.collection.doc(uid)
+  addPlayer = (code: string, player: Player) => this.collection.doc(code)
     .collection('players').doc(player.uid).set({...player})
+
+  removePlayer = (code: string) => this.collection.doc(code).collection('players').doc(this.authSvc.user.uid).delete()
   
-  addHistory = (uid: string, personalRecord: PersonalRecord) => this.collection.doc(uid)
+  addHistory = (code: string, personalRecord: PersonalRecord) => this.collection.doc(code)
     .collection('players').doc(this.authSvc.user.uid)
     .collection('history').add({...personalRecord});
 

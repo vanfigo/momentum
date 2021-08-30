@@ -13,7 +13,7 @@ import { PersonalRoomService } from 'src/app/services/personal-room.service';
 export class PersonalRoomHistoryCardComponent implements OnInit {
 
   @Input() player: Player;
-  @Input() personalRoomUid: string;
+  @Input() code: string;
   loading: boolean = true;
   personalRecords: PersonalRecord[] = [];
   averages: Average[] = [];
@@ -24,7 +24,7 @@ export class PersonalRoomHistoryCardComponent implements OnInit {
   constructor(private personalRoomSvc: PersonalRoomService) { }
 
   ngOnInit() {
-    this.personalRoomSvc.getHistoryByPlayerUid(this.personalRoomUid, this.player.uid).then((snapshot: QuerySnapshot<PersonalRecord>) => {
+    this.personalRoomSvc.getHistoryByPlayerUid(this.code, this.player.uid).then((snapshot: QuerySnapshot<PersonalRecord>) => {
       this.personalRecords = snapshot.docs.map(doc => { return {...doc.data(), uid: doc.id} })
       this.averageNumbers.forEach(value => this.averages[value] = this.personalRoomSvc.getAverageOf(value, this.personalRecords));
       this.lastRecord = this.personalRecords[this.personalRecords.length - 1]

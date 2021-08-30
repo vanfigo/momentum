@@ -1,5 +1,5 @@
 export class PersonalRoom {
-    uid?: string;
+    code: string;
     name: string;
     hostUid: string;
     creation: number;

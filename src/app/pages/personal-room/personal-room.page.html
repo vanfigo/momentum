@@ -1,5 +1,5 @@
-<ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else personalRoom"></ion-progress-bar>
-<ng-template #personalRoom>
+<ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else showPersonalRoom"></ion-progress-bar>
+<ng-template #showPersonalRoom>
   <ion-header>
     <ion-toolbar color="medium">
       <ion-buttons slot="start">
@@ -10,9 +10,12 @@
   <ion-content>
     <app-scrambler [allowRefresh]="false" [waitingForScramble]="true" (currentScramble)="updateCurrentScramble($event)"></app-scrambler>
     <app-timer (recordObtained)="recordObtained($event)" (recordUpdated)="recordUpdated($event)" [allowDelete]="false"></app-timer>
-    <app-personal-room-records [uid]="uid" (recordUpdated)="recordUpdated($event)"></app-personal-room-records>
+    <app-personal-room-records [code]="personalRoom.code" (recordUpdated)="recordUpdated($event)"></app-personal-room-records>
     <ion-fab horizontal="end" vertical="bottom" slot="fixed" *ngIf="isHost()">
-      <ion-fab-button color="success" (click)="updateScramble()" [disabled]="personalRecord === null">
+      <ion-fab-button color="warning" *ngIf="personalRecord === null">
+        <ion-icon name="hourglass-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button color="success" (click)="updateScramble()" *ngIf="personalRecord !== null">
         <ion-icon name="play-circle"></ion-icon>
       </ion-fab-button>
     </ion-fab>
