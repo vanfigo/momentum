@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "225696889612",
+    "project_id": "momentum-bucketdev",
+    "storage_bucket": "momentum-bucketdev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:225696889612:android:20665678b616ac63b56729",
+        "android_client_info": {
+          "package_name": "com.bucketdev.momentum"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "225696889612-ld3ls0je6l1ulgucmj6243i5cd7somd3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bucketdev.momentum",
+            "certificate_hash": "028f24e6c9e82edb8a495c7d25dab8997d5183f6"
+          }
+        },
+        {
+          "client_id": "225696889612-qmeteb8klvooj98i5bdu6cohgqkjcrti.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-z2QbcCYcxVReRnsN7n4d1m-AZfBqdEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "225696889612-qmeteb8klvooj98i5bdu6cohgqkjcrti.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

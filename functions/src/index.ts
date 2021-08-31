@@ -174,13 +174,13 @@ const generateRegistryForUser = (user: any, opponentUser: any, room: any,
   return admin.firestore().collection("registries").doc().create({
     opponentUid: opponentUser.uid,
     opponentUsername: opponentUser.username,
-    opponentPhotoUrl: opponentUser.photoURL,
+    opponentPhotoURL: opponentUser.photoURL,
     roomType: room.roomType,
     roomUid: room.uid,
     creation: new Date().getTime(),
     userUid: user.uid,
     userUsername: user.username,
-    userPhotoUrl: user.photoURL,
+    userPhotoURL: user.photoURL,
     won, average, opponentAverage, records, opponentRecords,
   });
 };

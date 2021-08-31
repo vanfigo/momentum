@@ -5,7 +5,7 @@ export class Registry {
     uid: string;
     userUid: string;
     userUsername: string;
-    userPhotoUrl: string;
+    userPhotoURL: string;
     roomType: RoomType;
     roomUid: string;
     won: boolean;
@@ -13,7 +13,7 @@ export class Registry {
     opponentAverage: number;
     opponentUid: string;
     opponentUsername: string;
-    opponentPhotoUrl: string;
+    opponentPhotoURL: string;
     records: Record[];
     opponentRecords: Record[];
     creation: number;
