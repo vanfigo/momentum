@@ -2,12 +2,11 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
-import firebase from 'firebase/app';
-import { NavController } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 import { AngularFirestore, AngularFirestoreCollection, QuerySnapshot } from '@angular/fire/firestore';
-import { FriendService } from './friend.service';
-import { Friend } from '../models/friend.class';
 import { MomentumUser } from '../models/momentum-user.class';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+import firebase from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +21,8 @@ export class AuthService {
               private router: Router,
               private route: ActivatedRoute,
               private navController: NavController,
-              private db: AngularFirestore) {
+              private db: AngularFirestore,
+              private platform: Platform) {
     this.collection = this.db.collection('users');
     afAuth.authState.subscribe(user => {
       this.user = user;
@@ -60,4 +60,23 @@ export class AuthService {
   findAllButMe = () => this.collection.ref.where('uid', '!=', this.user.uid).get();
 
   listenCurrentUserChanges = () => this.collection.doc(this.user.uid).snapshotChanges();
+
+  googleSignIn = async () => {
+    if (this.platform.is("android") || this.platform.is("ios")) {
+      GoogleAuth.init();
+      const googleUser = await GoogleAuth.signIn();
+      const credential = firebase.auth.GoogleAuthProvider.credential(googleUser.authentication.idToken);
+      this.afAuth.signInWithCredential(credential);
+    } else {
+      const provider = new firebase.auth.GoogleAuthProvider().setCustomParameters({ prompt: 'select_account' });
+      return this.afAuth.signInWithPopup(provider)
+        .then((credential) => {
+          console.log(credential);
+          // if (credential.additionalUserInfo.isNewUser) {
+          //   this.router.navigateByUrl('');
+          // }
+        })
+        .catch(console.error);
+    }
+  }
 }

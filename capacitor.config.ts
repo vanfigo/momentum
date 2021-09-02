@@ -4,7 +4,14 @@ const config: CapacitorConfig = {
   appId: 'com.bucketdev.momentum',
   appName: 'momentum',
   webDir: 'www',
-  bundledWebRuntime: false
+  bundledWebRuntime: false,
+  plugins: {
+    "GoogleAuth": {
+      "scopes": [ "profile", "email" ],
+      "serverClientId": "225696889612-qmeteb8klvooj98i5bdu6cohgqkjcrti.apps.googleusercontent.com",
+      "forceCodeForRefreshToken": true
+    }
+  }
 };
 
 export default config;

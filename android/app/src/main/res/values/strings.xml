@@ -4,4 +4,5 @@
     <string name="title_activity_main">momentum</string>
     <string name="package_name">com.bucketdev.momentum</string>
     <string name="custom_url_scheme">com.bucketdev.momentum</string>
+    <string name="server_client_id">225696889612-qmeteb8klvooj98i5bdu6cohgqkjcrti.apps.googleusercontent.com</string>
 </resources>

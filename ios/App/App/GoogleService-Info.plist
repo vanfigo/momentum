@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>225696889612-v6pu81vvv9t8pk9johp9ro8i91j1n9ih.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.225696889612-v6pu81vvv9t8pk9johp9ro8i91j1n9ih</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>225696889612-ld3ls0je6l1ulgucmj6243i5cd7somd3.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDdr1-1Q7Doigr8451tU9Nob3_4Vqi8vW0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>225696889612</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.bucketdev.momentum</string>
+	<key>PROJECT_ID</key>
+	<string>momentum-bucketdev</string>
+	<key>STORAGE_BUCKET</key>
+	<string>momentum-bucketdev.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:225696889612:ios:ab41a88e1a6578ceb56729</string>
+</dict>
+</plist>
