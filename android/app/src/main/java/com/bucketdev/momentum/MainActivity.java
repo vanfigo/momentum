@@ -9,6 +9,7 @@ import com.getcapacitor.Plugin;
 
 import java.util.ArrayList;
 import com.codetrixstudio.capacitor.GoogleAuth.GoogleAuth;
+import com.getcapacitor.community.admob.AdMob;
 
 public class MainActivity extends BridgeActivity {
 
@@ -18,6 +19,7 @@ public class MainActivity extends BridgeActivity {
     this.init(savedInstanceState, new ArrayList<Class<? extends Plugin>>() {{
       add(GoogleAuth.class);
       add(StoragePlugin.class);
+      add(AdMob.class);
     }});
   }
 }

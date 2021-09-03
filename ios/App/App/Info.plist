@@ -61,5 +61,19 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+    <key>GADIsAdManagerApp</key>
+    <true/>
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-4713371651982959~8752785192</string>
+    <key>SKAdNetworkItems</key>
+    <array>
+      <dict>
+        <key>SKAdNetworkIdentifier</key>
+        <string>cstr6suwn9.skadnetwork</string>
+      </dict>
+    </array>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>This is only for ads purposing</string>
+
 </dict>
 </plist>

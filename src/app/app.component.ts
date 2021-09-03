@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from './services/auth.service';
+import { AdMob } from '@capacitor-community/admob';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -12,5 +14,8 @@ export class AppComponent {
 
   constructor(private authService: AuthService) {
     this.authService.$userRetrieved.subscribe(() => this.loading = false);
+    AdMob.initialize({
+      initializeForTesting: true // !environment.production
+    });
   }
 }
