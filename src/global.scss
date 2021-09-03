@@ -28,3 +28,8 @@
 .delete-button{
     color: var(--ion-color-danger) !important;
 }
+
+.no-records-display {
+    display: flex;
+    justify-content: center;
+}
