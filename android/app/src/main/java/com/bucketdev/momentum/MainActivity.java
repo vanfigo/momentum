@@ -2,6 +2,8 @@ package com.bucketdev.momentum;
 
 import android.os.Bundle;
 
+import com.capacitorjs.plugins.storage.Storage;
+import com.capacitorjs.plugins.storage.StoragePlugin;
 import com.getcapacitor.BridgeActivity;
 import com.getcapacitor.Plugin;
 
@@ -15,6 +17,7 @@ public class MainActivity extends BridgeActivity {
     super.onCreate(savedInstanceState);
     this.init(savedInstanceState, new ArrayList<Class<? extends Plugin>>() {{
       add(GoogleAuth.class);
+      add(StoragePlugin.class);
     }});
   }
 }

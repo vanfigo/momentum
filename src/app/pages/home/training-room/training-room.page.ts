@@ -12,17 +12,12 @@ import { TrainingRoomService } from 'src/app/services/training-room.service';
 export class TrainingRoomPage {
 
   @ViewChild(ScramblerComponent, {static: false}) scrambler: ScramblerComponent;
-  loading: boolean;
-  popOverOptions: any = {
-    header: 'Selecciona una sesion',
-    mode: 'ios'
-  };
+  loading: boolean = true;
 
   constructor(public trainingRoomSvc: TrainingRoomService,
               private modalCtrl: ModalController) {
-    this.loading = true;
-    this.trainingRoomSvc.initTrainingRoom();
     this.trainingRoomSvc.$session.subscribe(() => this.loading = false);
+    this.trainingRoomSvc.initTrainingRoom();
   }
 
   recordObtained = (record: Record) => {
