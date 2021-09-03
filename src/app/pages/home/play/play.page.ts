@@ -33,7 +33,7 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
   unrankedRoomsSubscription: Subscription;
   unrankedRooms: number;
 
-  constructor(private authSvc: AuthService,
+  constructor(public authSvc: AuthService,
               private lobbySvc: LobbyService,
               private onlineRoomSvc: OnlineRoomService,
               private personalRoomSvc: PersonalRoomService,
