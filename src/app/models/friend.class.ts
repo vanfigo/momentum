@@ -7,6 +7,9 @@ export class Friend {
     photoURL: string;
     username: string;
     email: string;
+    userPhotoURL: string;
+    userUsername: string;
+    userEmail: string;
     creation: number;
     status: FriendStatus;
 }

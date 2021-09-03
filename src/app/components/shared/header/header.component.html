@@ -1,5 +1,10 @@
 <ion-header>
-  <ion-toolbar color="medium">
+  <ion-toolbar color="momentum">
+    <ion-buttons slot="start">
+      <ion-button (click)="showNotifications()">
+        <ion-icon slot="icon-only" [name]="true ? 'notifications-outline' : ''"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title>
       Momentum
     </ion-title>

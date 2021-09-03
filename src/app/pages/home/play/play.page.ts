@@ -20,9 +20,6 @@ import { PersonalRoomService } from 'src/app/services/personal-room.service';
 export class PlayPage implements ViewDidLeave, ViewWillEnter {
 
   RoomType = RoomType;
-  user: MomentumUser;
-  userSnapshot: DocumentSnapshot<MomentumUser>;
-  loading: boolean;
   loadingPublicRooms: boolean = true;
   publicRooms: PersonalRoom[];
   
@@ -54,12 +51,6 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
   }
 
   ionViewWillEnter = async (): Promise<void> => {
-    this.loading = true;
-    this.authSvc.getUserFromDB().then((userSnapshot: DocumentSnapshot<MomentumUser>) => {
-      this.user = {...userSnapshot.data(), uid: userSnapshot.id};
-      this.userSnapshot = userSnapshot;
-      this.loading = false;
-    });
     this.personalRoomSvc.getByPrivate(false)
       .then((roomSnapshot: QuerySnapshot<PersonalRoom>) => {
         this.publicRooms = roomSnapshot.docs.map(doc => {
@@ -101,9 +92,9 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
         });
       }
       // deletes the actual room reference for the room type sent
-      this.userSnapshot.ref.update({rankedRoomUid: null, unrankedRoomUid: null}).then(() => 
+      this.authSvc.update({rankedRoomUid: null, unrankedRoomUid: null}, false).then(() => 
         // adds the user as a player waiting in lobby
-        this.lobbySvc.addPLayer(this.user, roomType).catch(() => console.error('error adding user to lobby'))
+        this.lobbySvc.addPLayer(this.authSvc.user, roomType).catch(() => console.error('error adding user to lobby'))
       ).catch(() => console.error('error updating user room uid'));
 
       loading.onDidDismiss().then((data) => {

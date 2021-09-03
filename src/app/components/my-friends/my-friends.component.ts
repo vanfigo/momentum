@@ -36,9 +36,10 @@ export class MyFriendsComponent {
   }
 
   deleteFriendRequest = (user: Friend) => this.friendSvc.deleteFriendRequest(user).then(() => {
-    this.friendsList.closeSlidingItems();
-    this.friends = this.friends.filter(friend => friend.friendUid !== user.friendUid);
-    this.filteredFriends = [...this.friends];
+    this.friendsList.closeSlidingItems().then(() => {
+      this.friends = this.friends.filter(friend => friend.friendUid !== user.friendUid);
+      this.filteredFriends = [...this.friends];
+    });
   });
 
 }

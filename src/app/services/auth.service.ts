@@ -13,7 +13,7 @@ import firebase from 'firebase/app';
 })
 export class AuthService {
 
-  user: firebase.User;
+  user: MomentumUser;
   $userRetrieved = new ReplaySubject<boolean>(1);
   collection: AngularFirestoreCollection<MomentumUser>;
 
@@ -25,13 +25,15 @@ export class AuthService {
               private platform: Platform) {
     this.collection = this.db.collection('users');
     afAuth.authState.subscribe(user => {
-      this.user = user;
       if (user) {
-        if (this.router.url.startsWith('/login')) {
-          this.navController.navigateForward(['/home'], {relativeTo: route}).then(() => this.$userRetrieved.next(true));
-        } else {
-          this.$userRetrieved.next(true);
-        }
+        this.getUserFromDB(user.uid).then(snapshot => {
+          this.user = {...snapshot.data(), uid: snapshot.id};
+          if (this.router.url.startsWith('/login')) {
+            this.navController.navigateForward(['/home'], {relativeTo: route}).then(() => this.$userRetrieved.next(true));
+          } else {
+            this.$userRetrieved.next(true);
+          }
+        })
       } else {
         this.navController.navigateRoot(['/login'], {relativeTo: route}).then(() => this.$userRetrieved.next(true));
       }
@@ -46,15 +48,17 @@ export class AuthService {
     await this.afAuth.signOut();
   }
 
-  getUserFromDB = (uid: string = undefined) => this.db.collection('users').doc(uid ? uid : this.user.uid).get().toPromise();
+  getUserFromDB = (uid: string) => this.collection.doc(uid).get().toPromise();
 
-  update = (update: any) => {
-    return this.collection.doc(this.user.uid).update({...update}).then(() =>
-      this.db.collection('friends').ref.where('friendUid', '==', this.user.uid).get().then((snapshot: QuerySnapshot<MomentumUser>) => {
+  update = (update: any, reflect: boolean = true) => {
+    return this.collection.doc(this.user.uid).update({...update}).then(() => {
+      this.user = { ...this.user, ...update };
+      reflect && this.db.collection('friends').ref.where('friendUid', '==', this.user.uid).get().then((snapshot: QuerySnapshot<MomentumUser>) => {
         const batch = this.db.firestore.batch();
         snapshot.docs.forEach(doc => batch.update(doc.ref, {...update}));
         return batch.commit();
-      }))
+      })
+    })
   }
 
   findAllButMe = () => this.collection.ref.where('uid', '!=', this.user.uid).get();
@@ -69,14 +73,7 @@ export class AuthService {
       this.afAuth.signInWithCredential(credential);
     } else {
       const provider = new firebase.auth.GoogleAuthProvider().setCustomParameters({ prompt: 'select_account' });
-      return this.afAuth.signInWithPopup(provider)
-        .then((credential) => {
-          console.log(credential);
-          // if (credential.additionalUserInfo.isNewUser) {
-          //   this.router.navigateByUrl('');
-          // }
-        })
-        .catch(console.error);
+      return this.afAuth.signInWithPopup(provider).catch(console.error);
     }
   }
 }

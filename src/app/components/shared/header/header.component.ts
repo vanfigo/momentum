@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -8,8 +10,12 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class HeaderComponent {
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService,
+              private navCtrl: NavController,
+              private route: ActivatedRoute) {}
 
   signOut = () => this.authService.signOut();
+
+  showNotifications = () => this.navCtrl.navigateForward(["/notifications"], { relativeTo: this.route });
 
 }

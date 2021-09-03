@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar color="medium">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text="Salir"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Notificaciones</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else showNotifications"></ion-progress-bar>
+  <ng-template #showNotifications>
+    <ion-list class="ion-no-padding" lines="full">
+      <ion-item *ngIf="notifications.length === 0">
+        <ion-label>No hay notificaciones</ion-label>
+      </ion-item>
+      <div *ngFor="let notification of notifications" class="notification-container">
+        <div class="notification-user">
+          <ion-avatar class="ion-margin">
+            <img [src]="notification.photoURL" alt="">
+          </ion-avatar>
+          <div class="notification-message">
+            <ion-text><strong>{{notification.username}}</strong></ion-text>
+            <ion-text><small>{{notification.message}}</small></ion-text>
+          </div>
+        </div>
+        <div class="notifiaction-buttons" *ngIf="!notification.read && notification.notificationType === NotificationType.FRIENDSHIP">
+          <ion-button size="small" color="danger" (click)="readNotification(notification, false)">Rechazar</ion-button>
+          <ion-button size="small" (click)="readNotification(notification, true)">Aceptar</ion-button>
+        </div>
+        <div class="notifiaction-buttons" *ngIf="!notification.read && notification.notificationType === NotificationType.PERSONAL_ROOM">
+          <ion-button size="small" color="danger" (click)="readNotification(notification, false)">Rechazar</ion-button>
+          <ion-button size="small" (click)="readNotification(notification, true)">Jugar</ion-button>
+        </div>
+      </div>
+    </ion-list>
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadNotifications($event)">
+      <ion-infinite-scroll-content loadingSpinner="dots" loadingText="Cargando mas notificaciones">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ng-template>
+</ion-content>

@@ -115,6 +115,24 @@ exports.roomCompleted = functions.firestore.document("online-rooms/{uid}")
       }
     });
 
+exports.friendshipRequested = functions.firestore.document("friends/{uid}")
+    .onCreate((snapshot) => {
+      const friend: any = {...snapshot.data(), uid: snapshot.id};
+      if (friend.status === 0) { // PENDING
+        admin.firestore().collection("notifications").add({
+          userToUid: friend.friendUid,
+          userFromUid: friend.userUid,
+          photoURL: friend.userPhotoURL,
+          username: friend.userUsername,
+          email: friend.userEmail,
+          message: "Te ha enviado una solicitud de amistad",
+          notificationType: 0,
+          read: false,
+          creation: new Date().getTime(),
+        });
+      }
+    });
+
 const evaluateAverageTime = (time: number|null, opponentTime: number|null,
     userOneRecords: any[], userTwoRecords: any[]) => {
   if (time === null) {

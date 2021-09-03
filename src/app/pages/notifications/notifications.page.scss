@@ -1,0 +1,21 @@
+.notification-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.notification-user {
+    display: flex;
+    align-items: center;
+}
+
+.notification-message > * {
+    display: block;
+}
+
+.notifiaction-buttons {
+    display: flex;
+    justify-content: flex-end;
+    padding: 3px;
+    background-color: var(--ion-color-light);
+}

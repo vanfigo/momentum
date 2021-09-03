@@ -43,7 +43,9 @@ export class FriendPage {
           this.users = snapshot.docs.map(doc => {
             const {uid, photoURL, username, email} = doc.data();
             const friend = this.friends.find(friend => friend.friendUid === uid);
-            return {friendUid: uid, photoURL, username, email, creation: null, userUid: null, status: friend ? friend.status : null};
+            return {friendUid: uid, photoURL, userPhotoURL: this.authSvc.user.photoURL, username,
+              userUsername: this.authSvc.user.username, email, userEmail: this.authSvc.user.email,
+              creation: null, userUid: null, status: friend ? friend.status : null};
           }).filter(friend => friend.status !== FriendStatus.ACCEPTED);
           this.filteredUsers = [...this.users];
           this.loading = false;

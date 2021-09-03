@@ -63,8 +63,7 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
             }
           } else { // public room
             if (playerFound === undefined) { // not in players list
-              const userSnapshot = await this.authSvc.getUserFromDB();
-              const { uid, username, email, photoURL } = {...userSnapshot.data() as MomentumUser, uid: userSnapshot.id};
+              const { uid, username, email, photoURL } = this.authSvc.user;
               this.player = { uid, username, email, photoURL, active: true }
               await this.personalRoomSvc.addPlayer(this.personalRoom.code, this.player);
             } else { // player already in public personal-room

@@ -36,8 +36,7 @@ export class PersonalRoomService {
       const playerCollection = this.collection.doc(personalRoom.code).collection<Player>('players');
       users.forEach(user => batch.set( playerCollection.doc(user.uid).ref, {...user}))
       // add current user as a player
-      const userSnapshot = await this.authSvc.getUserFromDB();
-      const { photoURL, email, username, uid } = {...userSnapshot.data() as MomentumUser, uid: userSnapshot.id};
+      const { photoURL, email, username, uid } = {...this.authSvc.user};
       batch.set(playerCollection.doc(uid).ref, {uid, username, email, photoURL, active: true})
       return batch.commit();
     });
