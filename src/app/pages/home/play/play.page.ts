@@ -161,8 +161,8 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
       adId: 'ca-app-pub-4713371651982959/2478009127',
       adSize: BannerAdSize.BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
-      margin: 100,
-      isTesting: true // !environment.production
+      margin: 56,
+      isTesting: !environment.production
     };
     AdMob.showBanner(options);
 }

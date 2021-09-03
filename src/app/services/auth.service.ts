@@ -76,4 +76,8 @@ export class AuthService {
       return this.afAuth.signInWithPopup(provider).catch(console.error);
     }
   }
+
+  facebookSignIn = () => {
+    
+  }
 }

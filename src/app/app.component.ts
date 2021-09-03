@@ -15,7 +15,7 @@ export class AppComponent {
   constructor(private authService: AuthService) {
     this.authService.$userRetrieved.subscribe(() => this.loading = false);
     AdMob.initialize({
-      initializeForTesting: true // !environment.production
+      initializeForTesting: !environment.production
     });
   }
 }

@@ -15,4 +15,6 @@ export class LoginPage implements OnInit {
 
   googleSignIn = () => this.authSvc.googleSignIn()
 
+  facebookSignIn = () => this.authSvc.facebookSignIn()
+
 }
