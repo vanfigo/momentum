@@ -25,6 +25,10 @@ export class NotificationService {
     const batch = this.db.firestore.batch();
     snapshot.docs.forEach(doc => batch.delete(doc.ref));
     return batch.commit();
-  })
+  });
+
+  listenToNotifications = () => this.db.collection('notifications', ref => ref
+    .where('userToUid', '==', this.authSvc.user.uid)
+    .where('read', '==', false)).valueChanges();
 
 }

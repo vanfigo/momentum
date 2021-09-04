@@ -191,7 +191,7 @@ export class TrainingRoomService {
 
   initTrainingRoom = () => {
     this.storageService.get(this.authSvc.user.uid).then((room: TrainingRoom) => {
-      if (room === undefined) {
+      if (!room) {
         room = new TrainingRoom();
         this.storageService.set(this.authSvc.user.uid, room).then(() => this.initRoom(room));
       } else {

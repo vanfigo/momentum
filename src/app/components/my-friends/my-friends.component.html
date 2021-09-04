@@ -8,7 +8,7 @@
       </ion-item-options>
       <ion-item>
         <ion-avatar slot="start">
-          <img [src]="friend.photoURL | photo" alt="">
+          <img [src]="friend.photoURL | photo: 32" alt="">
         </ion-avatar>
         <ion-label>{{friend.username}}</ion-label>
         <ion-note slot="end" color="warning" *ngIf="friend.status === FriendStatus.PENDING">Pendiente</ion-note>

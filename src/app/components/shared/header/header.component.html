@@ -2,7 +2,8 @@
   <ion-toolbar color="momentum">
     <ion-buttons slot="start">
       <ion-button (click)="showNotifications()">
-        <ion-icon slot="icon-only" [name]="true ? 'notifications-outline' : ''"></ion-icon>
+        <ion-badge *ngIf="notificationsCount" class="badge-one" color="danger">{{notificationsCount}}</ion-badge>
+        <ion-icon [name]="notificationsCount ? 'notifications' : 'notifications-outline'"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title>

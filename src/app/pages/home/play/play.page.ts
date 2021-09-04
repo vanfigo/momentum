@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Action, DocumentChangeAction, DocumentSnapshot, QuerySnapshot } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { AdMob, AdMobBannerSize, BannerAdOptions, BannerAdPluginEvents, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
 import { AlertController, LoadingController, ModalController, NavController, ToastController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Lobby } from 'src/app/models/lobby.class';
@@ -12,7 +11,6 @@ import { AuthService } from 'src/app/services/auth.service';
 import { LobbyService } from 'src/app/services/lobby.service';
 import { OnlineRoomService } from 'src/app/services/online-room.service';
 import { PersonalRoomService } from 'src/app/services/personal-room.service';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-play',
@@ -53,7 +51,6 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
   }
 
   ionViewWillEnter = async (): Promise<void> => {
-    this.showBanner();
     this.personalRoomSvc.getByPrivate(false)
       .then((roomSnapshot: QuerySnapshot<PersonalRoom>) => {
         this.publicRooms = roomSnapshot.docs.map(doc => {
@@ -147,24 +144,5 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
   }
 
   showPersonalRoom = (code: string) => this.navCtrl.navigateForward(["/personal-room", code], {relativeTo: this.route});
-  
-  showBanner = () => {
-    AdMob.addListener(BannerAdPluginEvents.Loaded, () => {
-      // Subscribe Banner Event Listener
-    });
-
-    AdMob.addListener(BannerAdPluginEvents.SizeChanged, (size: AdMobBannerSize) => {
-      // Subscribe Change Banner Size
-    });
-
-    const options: BannerAdOptions = {
-      adId: 'ca-app-pub-4713371651982959/2478009127',
-      adSize: BannerAdSize.BANNER,
-      position: BannerAdPosition.BOTTOM_CENTER,
-      margin: 56,
-      isTesting: !environment.production
-    };
-    AdMob.showBanner(options);
-}
 
 }

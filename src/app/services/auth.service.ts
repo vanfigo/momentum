@@ -7,6 +7,7 @@ import { AngularFirestore, AngularFirestoreCollection, QuerySnapshot } from '@an
 import { MomentumUser } from '../models/momentum-user.class';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import firebase from 'firebase/app';
+import { FacebookLogin, FacebookLoginResponse } from '@capacitor-community/facebook-login';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +46,7 @@ export class AuthService {
   emailSignIn = (email: string, password: string) => this.afAuth.signInWithEmailAndPassword(email, password);
 
   signOut = async () => {
+    this.platform.is('capacitor') && await FacebookLogin.logout();
     await this.afAuth.signOut();
   }
 
@@ -64,20 +66,34 @@ export class AuthService {
   findAllButMe = () => this.collection.ref.where('uid', '!=', this.user.uid).get();
 
   listenCurrentUserChanges = () => this.collection.doc(this.user.uid).snapshotChanges();
-
-  googleSignIn = async () => {
-    if (this.platform.is("android") || this.platform.is("ios")) {
-      GoogleAuth.init();
-      const googleUser = await GoogleAuth.signIn();
-      const credential = firebase.auth.GoogleAuthProvider.credential(googleUser.authentication.idToken);
-      this.afAuth.signInWithCredential(credential);
-    } else {
+  
+  webGoogleSignIn = async (): Promise<boolean> => {
+    try {
       const provider = new firebase.auth.GoogleAuthProvider().setCustomParameters({ prompt: 'select_account' });
-      return this.afAuth.signInWithPopup(provider).catch(console.error);
+      return this.afAuth.signInWithPopup(provider).then(() => true).catch(() => false);
+    } catch (e) {
+      return false;
     }
   }
 
-  facebookSignIn = () => {
-    
+  googleSignIn = async (): Promise<boolean> => {
+    try {
+      GoogleAuth.init();
+      const googleUser = await GoogleAuth.signIn();
+      const credential = firebase.auth.GoogleAuthProvider.credential(googleUser.authentication.idToken);
+      return this.afAuth.signInWithCredential(credential).then(() => true).catch(() => false);
+    } catch(e) {
+      return false;
+    }
+  }
+
+  facebookSignIn = async (): Promise<boolean> => {
+    try {
+      const result = await FacebookLogin.login({ permissions: ['email'] });
+      const credential = firebase.auth.FacebookAuthProvider.credential(result.accessToken.token);
+      return this.afAuth.signInWithCredential(credential).then(() => true).catch(() => false);
+    } catch (e) {
+      return false;
+    }
   }
 }

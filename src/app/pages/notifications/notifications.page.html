@@ -15,8 +15,8 @@
       </div>
       <div *ngFor="let notification of notifications" class="notification-container">
         <div class="notification-user">
-          <ion-avatar class="ion-margin">
-            <img [src]="notification.photoURL" alt="">
+          <ion-avatar class="ion-margin-horizontal">
+            <img [src]="notification.photoURL | photo: 64" alt="">
           </ion-avatar>
           <div class="notification-message">
             <ion-text><strong>{{notification.username}}</strong></ion-text>

@@ -60,6 +60,9 @@ export class CreatePersonalRoomPage implements ViewDidEnter {
       const code: string = await this.personalRoomSvc.getCode();
       this.personalRoomSvc.create({
         hostUid: this.authSvc.user.uid,
+        hostUsername: this.authSvc.user.username,
+        hostPhotoURL: this.authSvc.user.photoURL,
+        hostEmail: this.authSvc.user.email,
         creation: new Date().getTime(),
         currentPersonalSolveUid: null,
         name, isPrivate, code

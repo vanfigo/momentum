@@ -5,5 +5,7 @@
     <string name="package_name">com.bucketdev.momentum</string>
     <string name="custom_url_scheme">com.bucketdev.momentum</string>
     <string name="server_client_id">225696889612-qmeteb8klvooj98i5bdu6cohgqkjcrti.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">2981494405454906</string>
+    <string name="facebook_client_token">cbd69b077062260a678384c59a034bf2</string>
     <string name="admob_app_id">ca-app-pub-4713371651982959~8752785192</string>
 </resources>

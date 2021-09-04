@@ -133,6 +133,31 @@ exports.friendshipRequested = functions.firestore.document("friends/{uid}")
       }
     });
 
+exports.playerAdded = functions.firestore
+    .document("personal-rooms/{personalRoom}/players/{user}")
+    .onCreate((snapshot, context) =>
+      admin.firestore().collection("personal-rooms")
+          .where("code", "==", context.params["personalRoom"])
+          .get().then((roomSnapshot) => {
+            const roomDoc = roomSnapshot.docs.pop();
+            if (roomDoc && roomDoc.data().isPrivate) {
+              const room = roomDoc.data();
+              const player: any = {...snapshot.data(), uid: snapshot.id};
+              return admin.firestore().collection("notifications").add({
+                userToUid: player.uid,
+                userFromUid: room.hostUid,
+                photoURL: room.hostPhotoURL,
+                username: room.hostUsername,
+                email: room.hostEmail,
+                message: "Te ha enviado una invitacion a jugar",
+                notificationType: 1,
+                read: false,
+                creation: new Date().getTime(),
+              });
+            }
+            return null;
+          })
+    );
 const evaluateAverageTime = (time: number|null, opponentTime: number|null,
     userOneRecords: any[], userTwoRecords: any[]) => {
   if (time === null) {
