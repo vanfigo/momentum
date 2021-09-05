@@ -143,17 +143,19 @@ exports.playerAdded = functions.firestore
             if (roomDoc && roomDoc.data().isPrivate) {
               const room = roomDoc.data();
               const player: any = {...snapshot.data(), uid: snapshot.id};
-              return admin.firestore().collection("notifications").add({
-                userToUid: player.uid,
-                userFromUid: room.hostUid,
-                photoURL: room.hostPhotoURL,
-                username: room.hostUsername,
-                email: room.hostEmail,
-                message: "Te ha enviado una invitacion a jugar",
-                notificationType: 1,
-                read: false,
-                creation: new Date().getTime(),
-              });
+              if (player.uid !== room.hostUid) {
+                return admin.firestore().collection("notifications").add({
+                  userToUid: player.uid,
+                  userFromUid: room.hostUid,
+                  photoURL: room.hostPhotoURL,
+                  username: room.hostUsername,
+                  email: room.hostEmail,
+                  message: "Te ha enviado una invitacion a jugar",
+                  notificationType: 1,
+                  read: false,
+                  creation: new Date().getTime(),
+                });
+              }
             }
             return null;
           })

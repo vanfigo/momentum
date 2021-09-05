@@ -13,6 +13,10 @@ export const environment = {
     appId: "1:225696889612:web:5b46aef9601b9c17b56729",
     measurementId: "G-SBPJDFKD8K",
     useEmulators: true
+  },
+  adMob: {
+    bannerID: "ca-app-pub-4713371651982959/2478009127",
+    intersitialID: "ca-app-pub-4713371651982959/3912464000"
   }
 };
 

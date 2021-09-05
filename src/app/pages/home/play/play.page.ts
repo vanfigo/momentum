@@ -1,16 +1,19 @@
 import { Component } from '@angular/core';
 import { Action, DocumentChangeAction, DocumentSnapshot, QuerySnapshot } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
+import { AdLoadInfo, AdMob, AdOptions, InterstitialAdPluginEvents } from '@capacitor-community/admob';
 import { AlertController, LoadingController, ModalController, NavController, ToastController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Lobby } from 'src/app/models/lobby.class';
 import { MomentumUser } from 'src/app/models/momentum-user.class';
 import { PersonalRoom } from 'src/app/models/personal-room.class';
 import { RoomType } from 'src/app/models/room-type.enum';
+import { AdService } from 'src/app/services/ad.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { LobbyService } from 'src/app/services/lobby.service';
 import { OnlineRoomService } from 'src/app/services/online-room.service';
 import { PersonalRoomService } from 'src/app/services/personal-room.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-play',
@@ -42,7 +45,8 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
               private loadingCtrl: LoadingController,
               private modalCtrl: ModalController,
               private alertCtrl: AlertController,
-              private toastCtrl: ToastController) { }
+              private toastCtrl: ToastController,
+              private adSvc: AdService) { }
               
   ionViewDidLeave(): void {
     this.rankedLobbiesSubscription && this.rankedLobbiesSubscription.unsubscribe();
@@ -106,8 +110,6 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
     });
   }
 
-  showCreatePersonalRoom = () => this.navCtrl.navigateForward(["/personal-room"], {relativeTo: this.route});
-
   showEnterPersonalRoom = () => {
     this.alertCtrl.create({
       header: "Ingresa el codigo",
@@ -143,6 +145,10 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
     }).then(alert => alert.present())
   }
 
-  showPersonalRoom = (code: string) => this.navCtrl.navigateForward(["/personal-room", code], {relativeTo: this.route});
+  showPersonalRoom = async (code?: string) => {
+    const params = ["/personal-room"];
+    code && params.push(code);
+    this.adSvc.showInterstitial(() => this.navCtrl.navigateForward(params, {relativeTo: this.route}));
+  }
 
 }
