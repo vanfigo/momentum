@@ -4,10 +4,10 @@ import { ActivatedRoute } from '@angular/router';
 import { IonCheckbox, IonInput, LoadingController, ModalController, NavController, ViewDidEnter } from '@ionic/angular';
 import { FriendStatus } from 'src/app/models/friend-status.enum';
 import { Friend } from 'src/app/models/friend.class';
-import { AdService } from 'src/app/services/ad.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { AdService } from 'src/app/services/shared/ad.service';
+import { AuthService } from 'src/app/services/shared/auth.service';
 import { FriendService } from 'src/app/services/friend.service';
-import { PersonalRoomService } from 'src/app/services/personal-room.service';
+import { PersonalRoomService } from 'src/app/services/playable-rooms/personal-room.service';
 
 @Component({
   selector: 'app-personal-room-create',

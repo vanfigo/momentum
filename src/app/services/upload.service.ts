@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { Upload } from '../models/upload.class';
-import { AuthService } from './auth.service';
+import { AuthService } from './shared/auth.service';
 
 @Injectable({
   providedIn: 'root'

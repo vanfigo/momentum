@@ -3,7 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { ScramblerComponent } from 'src/app/components/shared/scrambler/scrambler.component';
 import { TrainingRoomSettingsComponent } from 'src/app/components/training-room/training-room-settings/training-room-settings.component';
 import { Record } from 'src/app/models/record.class';
-import { TrainingRoomService } from 'src/app/services/training-room.service';
+import { TrainingRoomService } from 'src/app/services/playable-rooms/training-room.service';
 @Component({
   selector: 'app-training-room',
   templateUrl: './training-room.page.html',

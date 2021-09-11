@@ -4,8 +4,8 @@ import { AlertController, NavController, ToastController } from '@ionic/angular'
 import { Subscription } from 'rxjs';
 import { MomentumUser } from 'src/app/models/momentum-user.class';
 import { Record } from 'src/app/models/record.class';
-import { AuthService } from 'src/app/services/auth.service';
-import { OnlineRoomService } from 'src/app/services/online-room.service';
+import { AuthService } from 'src/app/services/shared/auth.service';
+import { OnlineRoomService } from 'src/app/services/playable-rooms/online-room.service';
 
 @Component({
   selector: 'app-online-room-history',

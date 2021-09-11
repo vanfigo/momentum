@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
-import { Average } from '../models/average.class';
-import { Category } from '../models/category.class';
-import { Record } from '../models/record.class';
-import { Session } from '../models/session.class';
-import { TrainingRoom } from '../models/training-room.class';
-import { AuthService } from './auth.service';
-import { StorageService } from './storage.service';
+import { Average } from '../../models/average.class';
+import { Category } from '../../models/category.class';
+import { Record } from '../../models/record.class';
+import { Session } from '../../models/session.class';
+import { TrainingRoom } from '../../models/training-room.class';
+import { AuthService } from '../shared/auth.service';
+import { StorageService } from '../shared/storage.service';
 
 @Injectable({
   providedIn: 'root'

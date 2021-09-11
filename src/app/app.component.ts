@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { AuthService } from './services/auth.service';
-import { AdService } from './services/ad.service';
-import { PushNotificationService } from './services/push-notification.service';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AuthService } from './services/shared/auth.service';
+import { AdService } from './services/shared/ad.service';
+import { PushNotificationService } from './services/shared/push-notification.service';
+import { LoadingController, ViewDidEnter } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -11,11 +12,12 @@ import { PushNotificationService } from './services/push-notification.service';
 export class AppComponent {
 
   loading = true;
-  isUser: boolean = false;
+  isUser: boolean = true;
 
   constructor(private authService: AuthService,
-              private adSvc: AdService,
-              private pushNotificationSvc: PushNotificationService) {
+              private adSvc: AdService
+              // private pushNotificationSvc: PushNotificationService
+              ) {
     this.authService.$userRetrieved.subscribe((isUser: boolean) => {
       if (isUser) {
         this.adSvc.showBanner();

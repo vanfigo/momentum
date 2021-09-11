@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, QuerySnapshot } from '@angular/fire/firestore';
-import { Lobby } from "../models/lobby.class";
-import { MomentumUser } from '../models/momentum-user.class';
-import { RoomType } from '../models/room-type.enum';
-import { AuthService } from './auth.service';
+import { Lobby } from "../../models/lobby.class";
+import { MomentumUser } from '../../models/momentum-user.class';
+import { RoomType } from '../../models/room-type.enum';
+import { AuthService } from '../shared/auth.service';
 
 @Injectable({
   providedIn: 'root'

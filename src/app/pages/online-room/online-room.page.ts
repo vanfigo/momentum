@@ -11,9 +11,9 @@ import { MomentumUser } from 'src/app/models/momentum-user.class';
 import { Record } from 'src/app/models/record.class';
 import { Registry } from 'src/app/models/registry.class';
 import { OnlineRoom } from 'src/app/models/online-room.class';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/services/shared/auth.service';
 import { RegistryService } from 'src/app/services/registry.service';
-import { OnlineRoomService } from 'src/app/services/online-room.service';
+import { OnlineRoomService } from 'src/app/services/playable-rooms/online-room.service';
 
 @Component({
   selector: 'app-online-room',

@@ -8,11 +8,11 @@ import { Lobby } from 'src/app/models/lobby.class';
 import { MomentumUser } from 'src/app/models/momentum-user.class';
 import { PersonalRoom } from 'src/app/models/personal-room.class';
 import { RoomType } from 'src/app/models/room-type.enum';
-import { AdService } from 'src/app/services/ad.service';
-import { AuthService } from 'src/app/services/auth.service';
-import { LobbyService } from 'src/app/services/lobby.service';
-import { OnlineRoomService } from 'src/app/services/online-room.service';
-import { PersonalRoomService } from 'src/app/services/personal-room.service';
+import { AdService } from 'src/app/services/shared/ad.service';
+import { AuthService } from 'src/app/services/shared/auth.service';
+import { LobbyService } from 'src/app/services/playable-rooms/lobby.service';
+import { OnlineRoomService } from 'src/app/services/playable-rooms/online-room.service';
+import { PersonalRoomService } from 'src/app/services/playable-rooms/personal-room.service';
 import { environment } from 'src/environments/environment';
 import { PersonalRoomCreateComponent } from '../../../components/personal-room/personal-room-create/personal-room-create.component';
 

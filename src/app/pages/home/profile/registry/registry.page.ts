@@ -5,7 +5,7 @@ import { ModalController } from '@ionic/angular';
 import { RegistryDetailComponent } from 'src/app/components/shared/registry-detail/registry-detail.component';
 import { Registry } from 'src/app/models/registry.class';
 import { RoomType } from 'src/app/models/room-type.enum';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/services/shared/auth.service';
 import { RegistryService } from 'src/app/services/registry.service';
 
 @Component({

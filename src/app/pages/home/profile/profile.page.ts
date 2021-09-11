@@ -4,7 +4,7 @@ import { AlertController, NavController, ViewDidLeave, ViewWillEnter } from '@io
 import { Subscription } from 'rxjs';
 import { MomentumUser } from 'src/app/models/momentum-user.class';
 import { RoomType } from 'src/app/models/room-type.enum';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/services/shared/auth.service';
 import { UploadService } from 'src/app/services/upload.service';
 import { Upload } from '../../../models/upload.class';
 

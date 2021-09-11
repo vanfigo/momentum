@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, DocumentReference, QuerySnapshot } from '@angular/fire/firestore';
-import { Average } from '../models/average.class';
-import { MomentumUser } from '../models/momentum-user.class';
-import { PersonalRecord } from '../models/personal-record.class';
-import { PersonalRoom } from '../models/personal-room.class';
-import { Player } from '../models/player.class';
-import { Record } from '../models/record.class';
-import { AuthService } from './auth.service';
+import { Average } from '../../models/average.class';
+import { MomentumUser } from '../../models/momentum-user.class';
+import { PersonalRecord } from '../../models/personal-record.class';
+import { PersonalRoom } from '../../models/personal-room.class';
+import { Player } from '../../models/player.class';
+import { Record } from '../../models/record.class';
+import { AuthService } from '../shared/auth.service';
 
 @Injectable({
   providedIn: 'root'

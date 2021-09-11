@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { ScramblerService } from 'src/app/services/scrambler.service';
+import { ScramblerService } from 'src/app/services/shared/scrambler.service';
 
 @Component({
   selector: 'app-scrambler',

@@ -5,9 +5,9 @@ import { FriendStatus } from 'src/app/models/friend-status.enum';
 import { Friend } from 'src/app/models/friend.class';
 import { NotificationType } from 'src/app/models/notification-type.enum';
 import { Notification } from 'src/app/models/notification.class';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/services/shared/auth.service';
 import { FriendService } from 'src/app/services/friend.service';
-import { NotificationService } from 'src/app/services/notification.service';
+import { NotificationService } from 'src/app/services/shared/notification.service';
 
 @Component({
   selector: 'app-notifications',

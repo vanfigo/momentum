@@ -6,8 +6,8 @@ import { MomentumUser } from 'src/app/models/momentum-user.class';
 import { PersonalRecord } from 'src/app/models/personal-record.class';
 import { Player } from 'src/app/models/player.class';
 import { Record } from 'src/app/models/record.class';
-import { AuthService } from 'src/app/services/auth.service';
-import { PersonalRoomService } from 'src/app/services/personal-room.service';
+import { AuthService } from 'src/app/services/shared/auth.service';
+import { PersonalRoomService } from 'src/app/services/playable-rooms/personal-room.service';
 import { PersonalRoomHistoryComponent } from '../personal-room-history/personal-room-history.component';
 
 @Component({

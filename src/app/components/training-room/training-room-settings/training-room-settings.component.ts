@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { CategoryType } from 'src/app/models/category-type.enum';
 import { Session } from 'src/app/models/session.class';
-import { TrainingRoomService } from 'src/app/services/training-room.service';
+import { TrainingRoomService } from 'src/app/services/playable-rooms/training-room.service';
 
 @Component({
   selector: 'app-training-room-settings',

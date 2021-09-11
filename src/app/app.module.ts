@@ -13,6 +13,7 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireFunctionsModule, USE_EMULATOR as USE_FUNCTIONS_EMULATOR } from '@angular/fire/functions';
 import { environment } from 'src/environments/environment';
 import { LoginPageModule } from './pages/login/login.module';
+import { SharedModule } from './components/shared/shared.module';
 
 export function initializeApp(afAuth: AngularFireAuth): () => Promise<void> {
   return () => {
@@ -39,7 +40,8 @@ export function initializeApp(afAuth: AngularFireAuth): () => Promise<void> {
     AngularFireFunctionsModule,
     AngularFireStorageModule,
     AppRoutingModule,
-    LoginPageModule
+    LoginPageModule,
+    SharedModule
   ],
   declarations: [AppComponent],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

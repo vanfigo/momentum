@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } from '@angular/fire/firestore';
-import { Record } from '../models/record.class';
-import { OnlineRoom } from '../models/online-room.class';
-import { AuthService } from './auth.service';
+import { Record } from '../../models/record.class';
+import { OnlineRoom } from '../../models/online-room.class';
+import { AuthService } from '../shared/auth.service';
 import { map } from 'rxjs/operators'
-import { RoomStatus } from '../models/room-status.enum';
-import { RoomType } from '../models/room-type.enum';
+import { RoomStatus } from '../../models/room-status.enum';
+import { RoomType } from '../../models/room-type.enum';
 
 @Injectable({
   providedIn: 'root'

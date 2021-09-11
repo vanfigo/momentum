@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { QuerySnapshot } from '@angular/fire/firestore';
 import { ModalController } from '@ionic/angular';
 import { Player } from 'src/app/models/player.class';
-import { PersonalRoomService } from 'src/app/services/personal-room.service';
+import { PersonalRoomService } from 'src/app/services/playable-rooms/personal-room.service';
 
 @Component({
   selector: 'app-personal-room-history',

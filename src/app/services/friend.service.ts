@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { FriendStatus } from '../models/friend-status.enum';
 import { Friend } from '../models/friend.class';
-import { AuthService } from './auth.service';
-import { NotificationService } from './notification.service';
+import { AuthService } from './shared/auth.service';
+import { NotificationService } from './shared/notification.service';
 
 @Injectable({
   providedIn: 'root'

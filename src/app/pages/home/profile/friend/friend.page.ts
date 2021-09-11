@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { IonList, ToastController } from '@ionic/angular';
 import { FriendStatus } from 'src/app/models/friend-status.enum';
 import { Friend } from 'src/app/models/friend.class';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/services/shared/auth.service';
 import { FriendService } from 'src/app/services/friend.service';
 
 @Component({

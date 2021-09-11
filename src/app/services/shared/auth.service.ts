@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { NavController, Platform } from '@ionic/angular';
 import { AngularFirestore, AngularFirestoreCollection, QuerySnapshot } from '@angular/fire/firestore';
-import { MomentumUser } from '../models/momentum-user.class';
+import { MomentumUser } from '../../models/momentum-user.class';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import firebase from 'firebase/app';
 import { FacebookLogin, FacebookLoginResponse } from '@capacitor-community/facebook-login';

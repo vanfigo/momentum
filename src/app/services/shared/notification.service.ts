@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { Notification } from '../models/notification.class';
+import { Notification } from '../../models/notification.class';
 import { AuthService } from './auth.service';
 
 @Injectable({

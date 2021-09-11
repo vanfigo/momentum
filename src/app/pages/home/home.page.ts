@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonTabs } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/services/shared/auth.service';
 
 @Component({
   selector: 'app-home',
