@@ -29,9 +29,9 @@ export class ScramblerComponent implements OnInit {
   }
 
   updateScramble = () => {
-    const scramble = this.scramblerService.getScramble();
-    this.currentScramble.emit(scramble);
-    return scramble;
+    this.scramble = this.scramblerService.getScramble();
+    this.currentScramble.emit(this.scramble);
+    return this.scramble;
   };
 
   getNextScramble = () => {

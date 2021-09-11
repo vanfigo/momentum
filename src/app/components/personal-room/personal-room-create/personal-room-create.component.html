@@ -1,11 +1,7 @@
 <ion-header>
   <ion-toolbar color="medium">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home" text="Salir">Cerrar</ion-back-button>
-    </ion-buttons>
-    <ion-title>Crea tu sala</ion-title>
     <ion-buttons slot="end">
-      <ion-button color="success" (click)="createRoom()">Crear</ion-button>
+      <ion-button (click)="modalCtrl.dismiss()">Cerrar</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -24,7 +20,7 @@
   </form>
   <div *ngIf="showFriends">
     <ion-searchbar placeHolder="Buscar amigos" [(ngModel)]="searchText" (ionChange)="loadFriends()"></ion-searchbar>
-    <ion-list class="ion-no-padding">
+    <ion-list class="ion-no-padding" lines="full">
       <ion-item *ngFor="let friend of filteredFriends">
         <ion-checkbox slot="start" (ionChange)="selectFriend($event, friend)" [name]="friend.uid"></ion-checkbox>
         <ion-avatar slot="start">
@@ -34,4 +30,9 @@
       </ion-item>
     </ion-list>
   </div>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="success" (click)="createRoom()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

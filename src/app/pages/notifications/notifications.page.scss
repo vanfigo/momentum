@@ -2,13 +2,17 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    background-color: var(--ion-color-light);
-    border-bottom: thin solid var(--ion-color-medium);
 }
 
 .notification-user {
     display: flex;
     align-items: center;
+    border-bottom: thin solid var(--ion-color-light);
+}
+
+.notification-user:hover {
+    cursor: pointer;
+    background-color: var(--ion-color-light);
 }
 
 .notification-message > * {
@@ -19,5 +23,9 @@
     display: flex;
     justify-content: flex-end;
     padding: 3px;
-    background-color: var(--ion-color-medium);
+    background-color: var(--ion-color-light);
+}
+
+ion-avatar {
+    margin: 5px 3px;
 }

@@ -3,7 +3,7 @@
   <ion-content color="light">
     <ion-card>
       <ion-img [src]="user.photoURL | photo: 512" alt="" (click)="fileInput.click()"></ion-img>
-      <ion-card-header color="tertiary">
+      <ion-card-header color="momentum">
         <ion-progress-bar type="indeterminate" color="light" *ngIf="uploading"></ion-progress-bar>
         <ion-card-title class="profile-title" (click)="showEditUsername(user.username)">
           <ion-label>{{user.username}}</ion-label>
@@ -45,7 +45,7 @@
     </ion-card>
     <ion-fab vertical="top" horizontal="end" slot="fixed">
       <ion-fab-button color="light" (click)="navigateToFriends()">
-        <ion-icon name="people-circle"></ion-icon>
+        <ion-icon name="people-circle" color="momentum"></ion-icon>
       </ion-fab-button>
     </ion-fab>
   </ion-content>

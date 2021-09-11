@@ -12,12 +12,12 @@ export class AdService {
     adSize: BannerAdSize.FULL_BANNER,
     position: BannerAdPosition.BOTTOM_CENTER,
     margin: 0,
-    isTesting: !environment.production
+    // isTesting: environment.production
   };
 
   interstitialOptions: AdOptions = {
     adId: environment.adMob.intersitialID,
-    isTesting: !environment.production
+    // isTesting: environment.production
   };
 
   constructor() {
@@ -26,7 +26,7 @@ export class AdService {
 
   initialize = async () => {
     await AdMob.initialize({
-      initializeForTesting: !environment.production
+      // initializeForTesting: environment.production
     });
   }
 
@@ -39,9 +39,18 @@ export class AdService {
   }
 
   showInterstitial = async (after: () => {}) => {
-    AdMob.addListener(InterstitialAdPluginEvents.Dismissed, after);
-    AdMob.addListener(InterstitialAdPluginEvents.FailedToLoad, after);
-    AdMob.addListener(InterstitialAdPluginEvents.FailedToShow, after);
+    AdMob.addListener(InterstitialAdPluginEvents.Dismissed, () => {
+      alert('Dismissed');
+      after();
+    });
+    AdMob.addListener(InterstitialAdPluginEvents.FailedToLoad, () => {
+      alert('FailedToLoad');
+      after();
+    });
+    AdMob.addListener(InterstitialAdPluginEvents.FailedToShow, () => {
+      alert('FailedToShow');
+      after();
+    });
     await AdMob.prepareInterstitial(this.interstitialOptions);
     await AdMob.showInterstitial();
   }

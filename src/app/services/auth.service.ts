@@ -36,7 +36,7 @@ export class AuthService {
           }
         })
       } else {
-        this.navController.navigateRoot(['/login'], {relativeTo: route}).then(() => this.$userRetrieved.next(true));
+        this.navController.navigateRoot(['/login'], {relativeTo: route}).then(() => this.$userRetrieved.next(false));
       }
     });
   }

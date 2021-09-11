@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 3,
-      "versionName": "Google auth fix",
+      "versionCode": 5,
+      "versionName": "Ads and push notifications",
       "outputFile": "app-release.apk"
     }
   ],

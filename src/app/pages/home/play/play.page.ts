@@ -14,6 +14,7 @@ import { LobbyService } from 'src/app/services/lobby.service';
 import { OnlineRoomService } from 'src/app/services/online-room.service';
 import { PersonalRoomService } from 'src/app/services/personal-room.service';
 import { environment } from 'src/environments/environment';
+import { PersonalRoomCreateComponent } from '../../../components/personal-room/personal-room-create/personal-room-create.component';
 
 @Component({
   selector: 'app-play',
@@ -145,10 +146,12 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
     }).then(alert => alert.present())
   }
 
-  showPersonalRoom = async (code?: string) => {
-    const params = ["/personal-room"];
-    code && params.push(code);
-    this.adSvc.showInterstitial(() => this.navCtrl.navigateForward(params, {relativeTo: this.route}));
+  showCreatePersonalRoom = async (code?: string) => {
+    this.modalCtrl.create({
+      component: PersonalRoomCreateComponent
+    }).then(modal => modal.present());
   }
+
+  showPersonalRoom = (code: string) => this.adSvc.showInterstitial(() => this.navCtrl.navigateForward(["/personal-room", code], {relativeTo: this.route}));
 
 }

@@ -1,11 +1,11 @@
-<ion-item>
+<ion-item lines="full">
   <ion-progress-bar type="indeterminate" color="primary" *ngIf="waitingForScramble; else scrambleDisplay"></ion-progress-bar>
   <ng-template #scrambleDisplay>
     <ion-chip slot="start" *ngIf="scrambles" color="primary">{{index + 1}}</ion-chip>
     <div class="room-scramble">
       {{scramble}}
     </div>
-    <ion-button class="ion-no-margin" slot="end" fill="clear" (click)="updateScramble()" *ngIf="!scrambles && allowRefresh">
+    <ion-button color="momentum" class="ion-no-margin" slot="end" fill="clear" (click)="updateScramble()" *ngIf="!scrambles && allowRefresh">
       <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
     </ion-button>
   </ng-template>

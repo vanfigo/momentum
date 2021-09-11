@@ -1,6 +1,6 @@
 <ion-content color="light">
   <ion-card button (click)="addWaitingPlayer(RoomType.RANKED)">
-    <ion-card-header color="warning">
+    <ion-card-header color="momentum">
       <ion-card-title>Ranked</ion-card-title>
       <ion-card-subtitle>
         <ion-label>Tu promedio actual</ion-label>
@@ -23,7 +23,7 @@
     </ion-card-content>
   </ion-card>
   <ion-card button (click)="addWaitingPlayer(RoomType.UNRANKED)">
-    <ion-card-header color="primary">
+    <ion-card-header color="momentum">
       <ion-card-title>Unranked</ion-card-title>
       <ion-card-subtitle>
         <ion-label>Tu promedio actual</ion-label>
@@ -41,16 +41,16 @@
     </ion-card-content>
   </ion-card>
   <ion-card>
-    <ion-card-header color="secondary">
+    <ion-card-header color="momentum">
       <ion-card-title>Salas Personales</ion-card-title>
     </ion-card-header>
     <ion-card-content class="ion-no-padding">
       <ion-grid><ion-row>
           <ion-col>
-            <ion-button fill="clear" color="secondary" expand="full" (click)="showEnterPersonalRoom()" >Entrar</ion-button>
+            <ion-button fill="clear" color="success" expand="full" (click)="showEnterPersonalRoom()" >Entrar</ion-button>
           </ion-col>
           <ion-col>
-            <ion-button color="secondary" expand="full" (click)="showPersonalRoom()">Crear</ion-button>
+            <ion-button color="success" expand="full" (click)="showCreatePersonalRoom()">Crear</ion-button>
           </ion-col>
       </ion-row></ion-grid>
       <ion-progress-bar type="indeterminate" color="primary" *ngIf="loadingPublicRooms"></ion-progress-bar>

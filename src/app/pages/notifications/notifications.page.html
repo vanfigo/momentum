@@ -10,12 +10,12 @@
   <ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else showNotifications"></ion-progress-bar>
   <ng-template #showNotifications>
     <ion-list class="ion-no-padding" lines="full">
-      <div class="no-records-display">
-        <ion-text color="medium" *ngIf="notifications.length === 0">No hay notificaciones</ion-text>
+      <div class="no-records-display" *ngIf="notifications.length === 0">
+        <ion-text color="medium">No hay notificaciones</ion-text>
       </div>
       <div *ngFor="let notification of notifications" class="notification-container">
         <div class="notification-user">
-          <ion-avatar class="ion-margin-horizontal">
+          <ion-avatar>
             <img [src]="notification.photoURL | photo: 64" alt="">
           </ion-avatar>
           <div class="notification-message">

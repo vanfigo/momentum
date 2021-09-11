@@ -1,11 +1,11 @@
-<ion-card color="light">
+<ion-card>
   <ion-card-header class="ion-no-padding">
-    <ion-toolbar color="light">
-      <ion-chip slot="end" color="medium" outline *ngIf="plus || plusEditable">
+    <ion-toolbar>
+      <ion-chip slot="end" color="momentum" outline *ngIf="plus || plusEditable">
         <ion-label>+2</ion-label>
         <ion-icon *ngIf="plusEditable" name="close-circle" (click)="updatePlusRecord(false)"></ion-icon>
       </ion-chip>
-      <ion-chip slot="end" color="medium" outline *ngIf="dnf">
+      <ion-chip slot="end" color="momentum" outline *ngIf="dnf">
         <ion-label>DNF</ion-label>
         <ion-icon *ngIf="editable" name="close-circle" (click)="updateDNFRecord(false)"></ion-icon>
       </ion-chip>
@@ -13,7 +13,7 @@
   </ion-card-header>
   <ion-card-content class="ion-no-padding">
     <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="ready && (!dnf || allowDelete)">
-      <ion-fab-button size="small">
+      <ion-fab-button size="small" color="momentum">
         <ion-icon name="cog-outline"></ion-icon>
       </ion-fab-button>
       <ion-fab-list side="top" *ngIf="!dnf">
@@ -38,7 +38,7 @@
     <div class="timer-record-container" *ngIf="onInspection" #inspectionDisplay>
       <ion-text [color]="getInspectionColor()" class="timer-display inspection-display">{{inspectionTime >= 17 ? 'DNF' : inspectionTime}}</ion-text>
     </div>
-    <ion-item lines="none" color="light">
+    <ion-item lines="none">
       <ion-toggle [disabled]="!ready || forceInspection" [(ngModel)]="inspection"></ion-toggle>
       <ion-label class="ion-margin">Inspección</ion-label>
     </ion-item>

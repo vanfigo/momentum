@@ -1,24 +1,22 @@
-import { AfterContentInit, ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { DocumentReference } from '@angular/fire/firestore';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { IonCheckbox, IonInput, LoadingController, ModalController, NavController, ViewDidEnter } from '@ionic/angular';
 import { FriendStatus } from 'src/app/models/friend-status.enum';
 import { Friend } from 'src/app/models/friend.class';
-import { PersonalRoom } from 'src/app/models/personal-room.class';
+import { AdService } from 'src/app/services/ad.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { FriendService } from 'src/app/services/friend.service';
 import { PersonalRoomService } from 'src/app/services/personal-room.service';
 
 @Component({
-  selector: 'app-create-personal-room',
-  templateUrl: './create-personal-room.page.html',
-  styleUrls: ['./create-personal-room.page.scss'],
+  selector: 'app-personal-room-create',
+  templateUrl: './personal-room-create.component.html',
+  styleUrls: ['./personal-room-create.component.scss'],
 })
-export class CreatePersonalRoomPage implements ViewDidEnter {
+export class PersonalRoomCreateComponent {
   
   personalRoomForm: FormGroup;
-  @ViewChild(IonInput, {static: false}) name: IonInput;
 
   loading: boolean = true;
   friends: Friend[];
@@ -35,7 +33,8 @@ export class CreatePersonalRoomPage implements ViewDidEnter {
               private navCtrl: NavController,
               private route: ActivatedRoute,
               private changeDetector: ChangeDetectorRef,
-              private loadingCtrl: LoadingController) {
+              private loadingCtrl: LoadingController,
+              private adSvc: AdService) {
     this.personalRoomForm = new FormGroup({
       name: new FormControl(''), isPrivate: new FormControl(this.showFriends)
     });
@@ -44,10 +43,6 @@ export class CreatePersonalRoomPage implements ViewDidEnter {
       this.filteredFriends = [...this.friends];
       this.loading = false;
     });
-  }
-
-  ionViewDidEnter() {
-    this.name.setFocus();
   }
 
   createRoom = () => {
@@ -72,8 +67,12 @@ export class CreatePersonalRoomPage implements ViewDidEnter {
         username: friend.username,
         email: friend.email,
         active: false
-      }})).then(() => {
-        this.navCtrl.navigateForward([code], {relativeTo: this.route}).then(() => loading.dismiss());
+      }})).then(async () => {
+        await this.modalCtrl.dismiss();
+        this.adSvc.showInterstitial(async () => {
+          await loading.dismiss();
+          this.navCtrl.navigateForward(["/personal-room", code], {relativeTo: this.route})
+        })
       })
     })
   }

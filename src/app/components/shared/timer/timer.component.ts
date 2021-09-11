@@ -172,6 +172,7 @@ export class TimerComponent implements AfterViewInit, OnInit {
         message: `En realidad quieres borrar el tiempo de ${this.recordDisplayPipe.transform(this.record)}`,
         buttons: ['Cancelar', {
           text: 'Borrar',
+          cssClass: 'delete-button',
           handler: () => {
             this.recordDeleted.emit(this.record);
             this.record = undefined;
