@@ -15,7 +15,7 @@ export class HeaderComponent {
 
   notificationsCount: number = 0;
 
-  constructor(private authService: AuthService,
+  constructor(private authSvc: AuthService,
               private navCtrl: NavController,
               private route: ActivatedRoute,
               private notificationSvc: NotificationService) {
@@ -24,7 +24,7 @@ export class HeaderComponent {
     })
   }
 
-  signOut = () => this.authService.signOut();
+  signOut = () => this.authSvc.signOut();
 
   showNotifications = () => this.navCtrl.navigateForward(["/notifications"], { relativeTo: this.route });
 

@@ -45,39 +45,7 @@ export class PersonalRoomCreateComponent {
     });
   }
 
-  createRoom = () => {
-    this.loadingCtrl.create({
-      message: 'Creando sala...',
-      spinner: 'dots'
-    }).then (async (loading) => {
-      await loading.present()
-      const {name, isPrivate} = this.personalRoomForm.value;
-      const code: string = await this.personalRoomSvc.getCode();
-      this.personalRoomSvc.create({
-        hostUid: this.authSvc.user.uid,
-        hostUsername: this.authSvc.user.username,
-        hostPhotoURL: this.authSvc.user.photoURL,
-        hostEmail: this.authSvc.user.email,
-        creation: new Date().getTime(),
-        currentPersonalSolveUid: null,
-        name, isPrivate, code
-      }, this.selectedFriends.map(friend => { return {
-        uid: friend.friendUid,
-        photoURL: friend.photoURL,
-        username: friend.username,
-        email: friend.email,
-        active: false
-      }})).then(async () => {
-        await this.modalCtrl.dismiss();
-        this.adSvc.showInterstitial(async () => {
-          await loading.dismiss();
-          this.navCtrl.navigateForward(["/personal-room", code], {relativeTo: this.route})
-        })
-      })
-    })
-  }
-
-  loadFriends = () => {
+  searchFriends = () => {
     if (this.searchText.length > 0) {
       this.filteredFriends = this.friends.filter(friend => friend.username.toLowerCase().includes(this.searchText.toLowerCase()))
     } else {
@@ -92,7 +60,6 @@ export class PersonalRoomCreateComponent {
     if (!this.showFriends) {
       this.selectedFriends = [];
     }
-    
   };
   
   selectFriend = (event: any, friend: Friend) => {
@@ -109,6 +76,34 @@ export class PersonalRoomCreateComponent {
     if (this.selectedFriends.find((friend: Friend) => checkBox.name === friend.uid)) {
       checkBox.checked = true;
     }
-  })
+  });
+
+  createRoom = async () => {
+    const loading = await this.loadingCtrl.create({ message: 'Creando sala...', spinner: 'dots', mode: 'ios' });
+    await loading.present();
+    const {name, isPrivate} = this.personalRoomForm.value;
+    const code: string = await this.personalRoomSvc.getCode();
+    this.personalRoomSvc.create({
+      hostUid: this.authSvc.user.uid,
+      hostUsername: this.authSvc.user.username,
+      hostPhotoURL: this.authSvc.user.photoURL,
+      hostEmail: this.authSvc.user.email,
+      creation: new Date().getTime(),
+      currentPersonalSolveUid: null,
+      name, isPrivate, code
+    }, this.selectedFriends.map(friend => {
+      return {
+        uid: friend.friendUid,
+        photoURL: friend.photoURL,
+        username: friend.username,
+        email: friend.email,
+        active: false
+      }
+    })).then(async () => {
+      const modal = await this.modalCtrl.getTop();
+      modal && await modal.dismiss();
+      this.adSvc.showInterstitial(() => this.navCtrl.navigateForward(["/personal-room", code], {relativeTo: this.route}));
+    });
+  }
 
 }

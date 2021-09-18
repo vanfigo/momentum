@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Action, DocumentChangeAction, DocumentSnapshot, QuerySnapshot } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { AdLoadInfo, AdMob, AdOptions, InterstitialAdPluginEvents } from '@capacitor-community/admob';
 import { AlertController, LoadingController, ModalController, NavController, ToastController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Lobby } from 'src/app/models/lobby.class';
@@ -13,7 +12,6 @@ import { AuthService } from 'src/app/services/shared/auth.service';
 import { LobbyService } from 'src/app/services/playable-rooms/lobby.service';
 import { OnlineRoomService } from 'src/app/services/playable-rooms/online-room.service';
 import { PersonalRoomService } from 'src/app/services/playable-rooms/personal-room.service';
-import { environment } from 'src/environments/environment';
 import { PersonalRoomCreateComponent } from '../../../components/personal-room/personal-room-create/personal-room-create.component';
 
 @Component({
@@ -23,6 +21,7 @@ import { PersonalRoomCreateComponent } from '../../../components/personal-room/p
 })
 export class PlayPage implements ViewDidLeave, ViewWillEnter {
 
+  user: MomentumUser;
   RoomType = RoomType;
   loadingPublicRooms: boolean = true;
   publicRooms: PersonalRoom[];
@@ -56,6 +55,7 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
   }
 
   ionViewWillEnter = async (): Promise<void> => {
+    this.authSvc.getUserFromDB().then(user => this.user = user.data());
     this.personalRoomSvc.getByPrivate(false)
       .then((roomSnapshot: QuerySnapshot<PersonalRoom>) => {
         this.publicRooms = roomSnapshot.docs.map(doc => {
@@ -77,38 +77,32 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
     }
   }
 
-  addWaitingPlayer = (roomType: RoomType) => {
-    this.loadingCtrl.create({
-      message: 'Buscando jugadores...',
-      backdropDismiss: true,
-      spinner: 'dots'
-    })
-    .then(loading => {
-      loading.present();
-      // listens for when the user access to a room
-      if (this.userSubscription === undefined || this.userSubscription.closed) {
-        this.userSubscription = this.authSvc.listenCurrentUserChanges().subscribe((action: Action<DocumentSnapshot<MomentumUser>>) => {
-          const user = action.payload.data();
-          if (action.type === 'modified' && ( user.rankedRoomUid || user.unrankedRoomUid)) {
-            const roomType = user.rankedRoomUid ? RoomType.RANKED : RoomType.UNRANKED;
-            const uri = roomType === RoomType.RANKED ? user.rankedRoomUid : user.unrankedRoomUid
-            this.loadingCtrl.dismiss().then(() => this.navCtrl.navigateForward(["/online-room", uri], {relativeTo: this.route}));
-          }
-        });
-      }
-      // deletes the actual room reference for the room type sent
-      this.authSvc.update({rankedRoomUid: null, unrankedRoomUid: null}, false).then(() => 
-        // adds the user as a player waiting in lobby
-        this.lobbySvc.addPLayer(this.authSvc.user, roomType).catch(() => console.error('error adding user to lobby'))
-      ).catch(() => console.error('error updating user room uid'));
-
-      loading.onDidDismiss().then((data) => {
-        this.userSubscription && this.userSubscription.unsubscribe();
-        if (data.role) {
-          this.lobbySvc.removePlayer();
+  addWaitingPlayer = async (roomType: RoomType) => {
+    const loading = await this.loadingCtrl.create({ message: 'Buscando jugadores...', spinner: 'dots', mode: 'ios', backdropDismiss: true });
+    await loading.present();
+    // listens for when the user access to a room
+    if (this.userSubscription === undefined || this.userSubscription.closed) {
+      this.userSubscription = this.authSvc.listenCurrentUserChanges().subscribe((action: Action<DocumentSnapshot<MomentumUser>>) => {
+        const user = action.payload.data();
+        if (action.type === 'modified' && ( user.rankedRoomUid || user.unrankedRoomUid)) {
+          const roomType = user.rankedRoomUid ? RoomType.RANKED : RoomType.UNRANKED;
+          const uri = roomType === RoomType.RANKED ? user.rankedRoomUid : user.unrankedRoomUid
+          this.navCtrl.navigateForward(["/online-room", uri], {relativeTo: this.route});
         }
-      })
-    });
+      });
+    }
+    // deletes the actual room reference for the room type sent
+    this.authSvc.update({rankedRoomUid: null, unrankedRoomUid: null}, false).then(() => 
+      // adds the user as a player waiting in lobby
+      this.lobbySvc.addPLayer(this.authSvc.user, roomType).catch(() => console.error('error adding user to lobby'))
+    ).catch(() => console.error('error updating user room uid'));
+
+    loading.onDidDismiss().then((data) => {
+      this.userSubscription && this.userSubscription.unsubscribe();
+      if (data.role) {
+        this.lobbySvc.removePlayer();
+      }
+    })
   }
 
   showEnterPersonalRoom = () => {
@@ -126,32 +120,29 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
         role: 'cancel'
       }, {
         text: 'Entrar',
-        handler: (data) => {
+        handler: async (data) => {
           let { code } = data;
           if (isNaN(code)) {
             this.toastCtrl.create({message: "El codigo de sala es incorrecto", color: "danger", buttons: ["cerrar"], duration: 3000})
               .then(toast => toast.present());
           } else {
-            this.personalRoomSvc.getByCode(code).then(snapshot => {
-              if (snapshot.exists) {
-                this.showPersonalRoom(code);
-              } else {
-                this.toastCtrl.create({message: "El codigo de sala no existe", buttons: ["cerrar"], duration: 3000})
-                  .then(toast => toast.present());
-              }
-            })
+            this.showPersonalRoom(code);
           }
         }
       }]
     }).then(alert => alert.present())
   }
 
-  showCreatePersonalRoom = async (code?: string) => {
+  showCreatePersonalRoom = () => {
     this.modalCtrl.create({
       component: PersonalRoomCreateComponent
     }).then(modal => modal.present());
   }
 
-  showPersonalRoom = (code: string) => this.adSvc.showInterstitial(() => this.navCtrl.navigateForward(["/personal-room", code], {relativeTo: this.route}));
+  showPersonalRoom = async (code: string) => {
+    const loading = await this.loadingCtrl.create({ message: 'Uniendose...', spinner: 'dots', mode: 'ios' });
+    await loading.present();
+    this.adSvc.showInterstitial(() => this.navCtrl.navigateForward(["/personal-room", code], {relativeTo: this.route}));
+  }
 
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { Notification } from '../../models/notification.class';
 import { AuthService } from './auth.service';
 
@@ -15,11 +15,20 @@ export class NotificationService {
     this.collection = this.db.collection('notifications');
   }
 
-  getByUserToUid = (uid?: string) => this.collection.ref
-    .where('userToUid', '==', uid ? uid : this.authSvc.user.uid)
-    .orderBy('creation', 'desc').get();
+  getByUserToUid = (lastNotification: QueryDocumentSnapshot<Notification>, uid?: string) => {
+    let query = this.collection.ref
+      .where('userToUid', '==', uid ? uid : this.authSvc.user.uid)
+      .orderBy('creation', 'desc');
+    if (lastNotification) {
+      query = query.startAfter(lastNotification);
+    }
+    query = query.limit(20);
+    return query.get();
+  }
 
   read = (uid: string) => this.collection.doc(uid).update({ read: true });
+
+  solve = (uid: string) => this.collection.doc(uid).update({ solved: true });
   
   deleteFrom = (userFromUid: string) => this.collection.ref.where('userFromUid', '==', userFromUid).get().then((snapshot) => {
     const batch = this.db.firestore.batch();

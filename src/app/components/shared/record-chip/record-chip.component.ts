@@ -33,7 +33,7 @@ export class RecordChipComponent implements OnInit {
       if (this.canDelete) {
         buttons.unshift({
           text: 'Borrar',
-          cssClass: 'delete-button',
+          cssClass: 'danger-button',
           handler: this.deleteRecord,
         })
       }

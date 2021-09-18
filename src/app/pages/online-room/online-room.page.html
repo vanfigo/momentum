@@ -1,16 +1,13 @@
-<ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else rankedRoom"></ion-progress-bar>
-<ng-template #rankedRoom>
-  <ion-header>
-    <ion-toolbar color="medium">
-      <ion-buttons slot="start">
-        <ion-back-button text="Salir" defaultHref="/home/dashboard"></ion-back-button>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content>
-    <app-scrambler (lastScramble)="lastScramble()" [scrambles]="room.scrambles"></app-scrambler>
-    <app-timer (recordObtained)="recordObtained($event)" (recordUpdated)="recordUpdated($event)" [forceInspection]="room.roomType === 2" [allowDelete]="false"></app-timer>
-    <app-online-room-history [scramblesToComplete]="room.scrambles.length" [opponent]="opponent" [user]="user"
-      (recordUpdated)="recordUpdated($event)" (gameCompleted)="gameCompleted()"></app-online-room-history>
-  </ion-content>
-</ng-template>
+<ion-header>
+  <ion-toolbar color="medium">
+    <ion-buttons slot="start">
+      <ion-back-button text="Salir" defaultHref="/home/dashboard"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content *ngIf="!isLoading">
+  <app-scrambler (lastScramble)="lastScramble()" [scrambles]="room.scrambles"></app-scrambler>
+  <app-timer (recordObtained)="recordObtained($event)" (recordUpdated)="recordUpdated($event)" [forceInspection]="room.roomType === 2" [allowDelete]="false"></app-timer>
+  <app-online-room-history [scramblesToComplete]="room.scrambles.length" [opponent]="opponent" [user]="user"
+    (recordUpdated)="recordUpdated($event)" (gameCompleted)="gameCompleted()"></app-online-room-history>
+</ion-content>

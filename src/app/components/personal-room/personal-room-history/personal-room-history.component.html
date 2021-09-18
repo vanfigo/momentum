@@ -6,8 +6,16 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else showCards"></ion-progress-bar>
-  <ng-template #showCards>
+  <ion-card *ngIf="isLoading; else historyCards">
+    <ion-card-header color="light">
+      <ion-card-title><ion-skeleton-text style="width: 70%;" animated></ion-skeleton-text></ion-card-title>
+      <ion-card-subtitle><ion-skeleton-text style="width: 40%;" animated></ion-skeleton-text></ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content class="ion-no-padding">
+      <app-skeleton-list></app-skeleton-list>
+    </ion-card-content>
+  </ion-card>
+  <ng-template #historyCards>
     <app-personal-room-history-card *ngFor="let player of players" [player]="player" [code]="code"></app-personal-room-history-card>
   </ng-template>
 </ion-content>

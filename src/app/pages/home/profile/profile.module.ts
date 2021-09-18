@@ -8,6 +8,7 @@ import { ProfilePageRoutingModule } from './profile-routing.module';
 
 import { ProfilePage } from './profile.page';
 import { PipesModule } from 'src/app/pipes/pipes.module';
+import { SharedModule } from 'src/app/components/shared/shared.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     FormsModule,
     IonicModule,
     ProfilePageRoutingModule,
-    PipesModule
+    PipesModule,
+    SharedModule
   ],
   declarations: [ProfilePage]
 })

@@ -50,7 +50,7 @@ export class AuthService {
     await this.afAuth.signOut();
   }
 
-  getUserFromDB = (uid: string) => this.collection.doc(uid).get().toPromise();
+  getUserFromDB = (uid?: string) => this.collection.doc(uid ? uid : this.user.uid).get().toPromise();
 
   update = (update: any, reflect: boolean = true) => {
     return this.collection.doc(this.user.uid).update({...update}).then(() => {

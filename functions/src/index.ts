@@ -126,8 +126,9 @@ exports.friendshipRequested = functions.firestore.document("friends/{uid}")
           username: friend.userUsername,
           email: friend.userEmail,
           message: "Te ha enviado una solicitud de amistad",
-          notificationType: 0,
+          type: 0,
           read: false,
+          solved: false,
           creation: new Date().getTime(),
         });
       }
@@ -151,8 +152,12 @@ exports.playerAdded = functions.firestore
                   username: room.hostUsername,
                   email: room.hostEmail,
                   message: "Te ha enviado una invitacion a jugar",
-                  notificationType: 1,
+                  type: 1,
                   read: false,
+                  solved: false,
+                  metadata: {
+                    personalRoomCode: context.params["personalRoom"],
+                  },
                   creation: new Date().getTime(),
                 });
               }
@@ -160,6 +165,11 @@ exports.playerAdded = functions.firestore
             return null;
           })
     );
+
+exports.deletePersonalRoom = functions.https.onCall(async (data, context) =>
+  admin.firestore().recursiveDelete(
+      admin.firestore().collection("personal-rooms").doc(data.code)));
+
 const evaluateAverageTime = (time: number|null, opponentTime: number|null,
     userOneRecords: any[], userTwoRecords: any[]) => {
   if (time === null) {

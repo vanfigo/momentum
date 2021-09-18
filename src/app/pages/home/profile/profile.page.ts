@@ -15,7 +15,7 @@ import { Upload } from '../../../models/upload.class';
 })
 export class ProfilePage implements ViewWillEnter, ViewDidLeave {
 
-  loading: boolean = true;
+  isLoading: boolean = true;
   uploading: boolean;
   user: MomentumUser;
   upload: Upload;
@@ -25,8 +25,7 @@ export class ProfilePage implements ViewWillEnter, ViewDidLeave {
   constructor(private authSvc: AuthService,
               private uploadSvc: UploadService,
               private alertCtrl: AlertController,
-              private navCtrl: NavController) {
-  }
+              private navCtrl: NavController) { }
 
   fileSelected = (inputFile: HTMLInputElement) => {
     let file = inputFile.files.item(0);
@@ -66,10 +65,10 @@ export class ProfilePage implements ViewWillEnter, ViewDidLeave {
   }
 
   ionViewWillEnter = async () => {
-    this.loading = true;
+    this.isLoading = true;
     this.userSubscription = this.authSvc.listenCurrentUserChanges().subscribe((action: Action<DocumentSnapshot<MomentumUser>>) => {
       this.user = action.payload.data();
-      this.loading = false;
+      this.isLoading = false;
     });
   }
               

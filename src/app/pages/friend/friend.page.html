@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar color="medium">
+    <ion-buttons>
+      <ion-back-button defaultHref="/home" text="Salir"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-segment [(ngModel)]="segment" (ionChange)="loadUsers($event)" color="momentum">
+    <ion-segment-button value="friends">
+      <ion-label>Mis amigos</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="users">
+      <ion-label>Agregar amigos</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <div *ngIf="segment === 'friends'; else allUsers">
+    <ion-searchbar placeHolder="Buscar amigos" [(ngModel)]="friendSearchText" (ionChange)="filterFriends()"></ion-searchbar>
+    <app-skeleton-list *ngIf="isLoading"></app-skeleton-list>
+    <div *ngIf="!isLoading">
+      <ion-list class="ion-no-padding">
+        <ion-item *ngFor="let friend of filteredFriends">
+          <ion-avatar slot="start">
+            <img [src]="friend.photoURL | photo: 32" alt="">
+          </ion-avatar>
+          <ion-label>{{friend.username}}</ion-label>
+          <ion-icon slot="end" color="warning" name="hourglass" *ngIf="friend.status === FriendStatus.PENDING"></ion-icon>
+          <ion-button slot="end" fill="clear" color="momentum" (click)="showFriendDetail(friend)">
+            <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+      <div class="no-records-display">
+        <ion-text *ngIf="!searchText && filteredFriends.length === 0">Intenta agregar un nuevo amigo</ion-text>
+        <ion-text *ngIf="searchText && filteredFriends.length === 0">Intenta una nueva busqueda</ion-text>
+      </div>
+    </div>
+  </div>
+  <ng-template #allUsers>
+    <ion-searchbar placeholder="Buscar usuarios" (ionChange)="filterUsers()" [(ngModel)]="searchText"></ion-searchbar>
+    <app-skeleton-list *ngIf="isLoading"></app-skeleton-list>
+    <div *ngIf="!isLoading">
+      <ion-list class="ion-no-padding" #ionListUsers>
+        <ion-item *ngFor="let user of filteredUsers">
+          <ion-avatar slot="start">
+            <img [src]="user.photoURL | photo: 32" alt="">
+          </ion-avatar>
+          <ion-label>{{user.username}}</ion-label>
+          <ion-icon slot="end" color="warning" name="hourglass" *ngIf="user.status === FriendStatus.PENDING"></ion-icon>
+          <ion-icon slot="end" color="danger" name="ban" *ngIf="user.status === FriendStatus.BLOCKED"></ion-icon>
+          <ion-button slot="end" fill="clear" color="momentum" (click)="showUserDetail(user)">
+            <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+      <div class="no-records-display">
+        <ion-text color="medium" *ngIf="!searchText && filteredUsers.length === 0">No hay usuarios en la plataforma</ion-text>
+        <ion-text color="medium" *ngIf="searchText && filteredUsers.length === 0">Intenta una nueva busqueda</ion-text>
+      </div>
+    </div>
+  </ng-template>
+</ion-content>

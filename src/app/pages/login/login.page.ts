@@ -18,29 +18,26 @@ export class LoginPage implements OnInit {
   }
 
   googleSignIn = () => {
-    this.loadingCtrl.create({
-      message: "Ingresando...",
-      spinner: "dots"
-    }).then(loading => {
-      loading.present();
-      if (!this.platform.is('capacitor')) {
-        this.authSvc.webGoogleSignIn()
-        .then(success => {
-          loading.dismiss();
-          if (!success) {
-            this.toastCtrl.create({message: "Ocurrio un error, intenta mas tarde", color: "danger", duration: 3000}).then(toast => toast.present());
-          }
-        });
-      } else {
-        this.authSvc.googleSignIn()
-        .then(success => {
-          loading.dismiss();
-          if (!success) {
-            this.toastCtrl.create({message: "Ocurrio un error, intenta mas tarde", color: "danger", duration: 3000}).then(toast => toast.present());
-          }
-        });
-      }
-    })
+    this.loadingCtrl.create({ message: 'Ingresando...', spinner: 'dots', mode: 'ios' }).then(loading => loading.present());
+    if (!this.platform.is('capacitor')) {
+      this.authSvc.webGoogleSignIn()
+      .then(async (success) => {
+        if (!success) {
+          this.toastCtrl.create({message: "Ocurrio un error, intenta mas tarde", color: "danger", duration: 3000}).then(toast => toast.present());
+          const loading = await this.loadingCtrl.getTop();
+          loading && await loading.dismiss();
+        }
+      });
+    } else {
+      this.authSvc.googleSignIn()
+      .then(async (success) => {
+        if (!success) {
+          this.toastCtrl.create({message: "Ocurrio un error, intenta mas tarde", color: "danger", duration: 3000}).then(toast => toast.present());
+          const loading = await this.loadingCtrl.getTop();
+          loading && await loading.dismiss();
+        }
+      });
+    }
   }
 
   facebookSignIn = () => {

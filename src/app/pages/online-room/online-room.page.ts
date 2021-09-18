@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { DocumentChangeAction, DocumentData, DocumentReference } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingController, ModalController, NavController, ViewDidLeave } from '@ionic/angular';
+import { LoadingController, ModalController, NavController, ViewDidEnter, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { OnlineRoomHistoryComponent } from 'src/app/components/online-room/online-room-history/online-room-history.component';
 import { RegistryDetailComponent } from 'src/app/components/shared/registry-detail/registry-detail.component';
@@ -20,13 +20,13 @@ import { OnlineRoomService } from 'src/app/services/playable-rooms/online-room.s
   templateUrl: './online-room.page.html',
   styleUrls: ['./online-room.page.scss'],
 })
-export class OnlineRoomPage implements ViewDidLeave {
+export class OnlineRoomPage implements ViewDidLeave, ViewDidEnter {
 
   @ViewChild(ScramblerComponent, {static: false}) scramblerCmpt: ScramblerComponent;
   @ViewChild(OnlineRoomHistoryComponent, {static: false}) historyCmpt: OnlineRoomHistoryComponent;
   @ViewChild(TimerComponent, {static: false}) timerComponent: TimerComponent;
 
-  loading = true;
+  isLoading = true;
   roomUid: string;
   opponent: MomentumUser;
   user: MomentumUser;
@@ -42,12 +42,16 @@ export class OnlineRoomPage implements ViewDidLeave {
               private modalCtrl: ModalController,
               private navCtrl: NavController) {
     this.roomUid = route.snapshot.params['uid'];
+  }
+  ionViewDidEnter() {
     this.onlineRoomSvc.geByUid(this.roomUid).toPromise()
-    .then(room => {
+    .then(async (room: OnlineRoom) => {
       this.room = room;
       this.opponent = this.room.users.find(user => user.uid !== this.authSvc.user.uid);
       this.user = this.room.users.find(user => user.uid === this.authSvc.user.uid);
-      this.loading = false;
+      const loading = await this.loadingCtrl.getTop();
+      loading && await loading.dismiss();
+      this.isLoading = false;
     });
   }
 
@@ -104,6 +108,7 @@ export class OnlineRoomPage implements ViewDidLeave {
 
   ionViewDidLeave(): void {
     this.registrySubscription && this.registrySubscription.unsubscribe();
+    // TODO mark game as incompleted
   }
 
 }

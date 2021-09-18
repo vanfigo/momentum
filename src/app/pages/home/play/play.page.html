@@ -4,7 +4,7 @@
       <ion-card-title>Ranked</ion-card-title>
       <ion-card-subtitle>
         <ion-label>Tu promedio actual</ion-label>
-        <ion-chip>{{this.authSvc.user?.rankedAverage | timeDisplay}}</ion-chip>
+        <ion-chip>{{this.user?.rankedAverage | timeDisplay}}</ion-chip>
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content class="ion-no-padding">
@@ -27,7 +27,7 @@
       <ion-card-title>Unranked</ion-card-title>
       <ion-card-subtitle>
         <ion-label>Tu promedio actual</ion-label>
-        <ion-chip>{{this.authSvc.user?.unrankedAverage | timeDisplay}}</ion-chip>
+        <ion-chip>{{this.user?.unrankedAverage | timeDisplay}}</ion-chip>
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content class="ion-no-padding">

@@ -1,4 +1,3 @@
-<ion-app [ngClass]="{'ad-margin': isUser}">
-  <ion-progress-bar type="indeterminate" color="primary" *ngIf="loading"></ion-progress-bar>
-  <ion-router-outlet *ngIf="!loading"></ion-router-outlet>
+<ion-app [ngClass]="{'ad-margin': isAdDisplayed}">
+  <ion-router-outlet *ngIf="!isLoading"></ion-router-outlet>
 </ion-app>

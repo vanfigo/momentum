@@ -1,53 +1,58 @@
-<ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else profile"></ion-progress-bar>
-<ng-template #profile>
-  <ion-content color="light">
-    <ion-card>
-      <ion-img [src]="user.photoURL | photo: 512" alt="" (click)="fileInput.click()"></ion-img>
-      <ion-card-header color="momentum">
-        <ion-progress-bar type="indeterminate" color="light" *ngIf="uploading"></ion-progress-bar>
-        <ion-card-title class="profile-title" (click)="showEditUsername(user.username)">
-          <ion-label>{{user.username}}</ion-label>
-        </ion-card-title>
-        <ion-card-subtitle>
-          <ion-label>{{user.email}}</ion-label>
-        </ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content class="ion-no-padding">
-        <ion-list lines="full" class="ion-no-padding">
-          <ion-item detail button (click)="navigateToRegistries(RoomType.RANKED)">
-            <img [src]="null | photo: 32: 'laurel-wreath--v1'" slot="start"/>
-            <ion-label>Partidas con ranking</ion-label>
-            <ion-note slot="end">{{user.rankedGames}}</ion-note>
-          </ion-item>
-          <ion-item>
-            <ion-label>Partidas ganadas</ion-label>
-            <ion-note slot="end">{{user.rankedGamesWon}}</ion-note>
-          </ion-item>
-          <ion-item>
-            <ion-label>Promedio ultimas 10 partidas</ion-label>
-            <ion-note slot="end">{{user.rankedAverage | timeDisplay}}</ion-note>
-          </ion-item>
-          <ion-item detail button (click)="navigateToRegistries(RoomType.UNRANKED)">
-            <img [src]="null | photo: 32: 'laurel-wreath--v2'" slot="start"/>
-            <ion-label>Partidas sin ranking</ion-label>
-            <ion-note slot="end">{{user.unrankedGames}}</ion-note>
-          </ion-item>
-          <ion-item>
-            <ion-label>Partidas ganadas</ion-label>
-            <ion-note slot="end">{{user.unrankedGamesWon}}</ion-note>
-          </ion-item>
-          <ion-item>
-            <ion-label>Promedio ultimas 10 partidas</ion-label>
-            <ion-note slot="end">{{user.unrankedAverage | timeDisplay}}</ion-note>
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>
-    <ion-fab vertical="top" horizontal="end" slot="fixed">
-      <ion-fab-button color="light" (click)="navigateToFriends()">
-        <ion-icon name="people-circle" color="momentum"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
-  </ion-content>
+<ion-content color="light">
+  <ion-card *ngIf="isLoading">
+    <ion-card-content>
+      <ion-avatar slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-avatar>
+      <app-skeleton-list *ngIf="isLoading"></app-skeleton-list>
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngIf="!isLoading">
+    <ion-img [src]="user.photoURL | photo: 512" alt="" (click)="fileInput.click()"></ion-img>
+    <ion-card-header color="momentum">
+      <ion-progress-bar type="indeterminate" color="light" *ngIf="uploading"></ion-progress-bar>
+      <ion-card-title class="profile-title" (click)="showEditUsername(user.username)">
+        <ion-label>{{user.username}}</ion-label>
+      </ion-card-title>
+      <ion-card-subtitle>
+        <ion-label>{{user.email}}</ion-label>
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content class="ion-no-padding">
+      <ion-list lines="full" class="ion-no-padding">
+        <ion-item [detail]="user.rankedGames > 0" [button]="user.rankedGames > 0" (click)="navigateToRegistries(RoomType.RANKED)">
+          <img [src]="null | photo: 32: 'laurel-wreath--v1'" slot="start"/>
+          <ion-label>Partidas con ranking</ion-label>
+          <ion-note slot="end">{{user.rankedGames}}</ion-note>
+        </ion-item>
+        <ion-item>
+          <ion-label>Partidas ganadas</ion-label>
+          <ion-note slot="end">{{user.rankedGamesWon}}</ion-note>
+        </ion-item>
+        <ion-item>
+          <ion-label>Promedio ultimas 10 partidas</ion-label>
+          <ion-note slot="end">{{user.rankedAverage | timeDisplay}}</ion-note>
+        </ion-item>
+        <ion-item [detail]="user.unrankedGames > 0" [button]="user.unrankedGames > 0" (click)="navigateToRegistries(RoomType.UNRANKED)">
+          <img [src]="null | photo: 32: 'laurel-wreath--v2'" slot="start"/>
+          <ion-label>Partidas sin ranking</ion-label>
+          <ion-note slot="end">{{user.unrankedGames}}</ion-note>
+        </ion-item>
+        <ion-item>
+          <ion-label>Partidas ganadas</ion-label>
+          <ion-note slot="end">{{user.unrankedGamesWon}}</ion-note>
+        </ion-item>
+        <ion-item>
+          <ion-label>Promedio ultimas 10 partidas</ion-label>
+          <ion-note slot="end">{{user.unrankedAverage | timeDisplay}}</ion-note>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  <ion-fab vertical="top" horizontal="end" slot="fixed">
+    <ion-fab-button color="light" (click)="navigateToFriends()">
+      <ion-icon name="people-circle" color="momentum"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
   <input type="file" style="display: none" #fileInput (change)="fileSelected(fileInput)">
-</ng-template>
+</ion-content>

@@ -22,6 +22,7 @@ export class OnlineRoomHistoryComponent implements OnInit, OnDestroy {
 
   opponentPlayerSubscription: Subscription;
   opponentFinished: boolean = false;
+  readNotification: boolean = false;
   validatingLastSolve: boolean = false;
   solveValidated: boolean = false;
   waiting: boolean = false;
@@ -113,13 +114,14 @@ export class OnlineRoomHistoryComponent implements OnInit, OnDestroy {
                   backdropDismiss: false,
                   header: "Felicidades!",
                   subHeader: "Has completado todos los solves",
-                  message: "Tu oponente aun no termina, deseas esperar o continuar jugando?",
+                  message: "Tu oponente aun no termina, deseas esperar o salir al menu de juego?",
                   buttons: [{
                     text: 'Esperar',
+                    role: 'cancel',
                     handler: () => this.waiting = true
                   }, {
                     text: 'Salir',
-                    role: 'cancel',
+                    cssClass: 'danger-button',
                     handler: () => {
                       this.navCtrl.navigateBack(["/home", "play"], { relativeTo: this.route });
                     }
@@ -138,10 +140,13 @@ export class OnlineRoomHistoryComponent implements OnInit, OnDestroy {
           }
         }
       } else if (this.opponentRecords.length === this.scramblesToComplete) {
-        this.toastCtrl.getTop()
+        !this.readNotification && this.toastCtrl.getTop()
           .then(toast => {
             if (!toast) {
-              this.toastCtrl.create({ message: 'Tu oponente ha terminado', color: 'primary', buttons: [{ text: 'Entendido' }] }).then(toast => toast.present())
+              this.toastCtrl.create({ message: 'Tu oponente ha terminado', color: 'primary', buttons: [{
+                text: 'Entendido',
+                handler: () => this.readNotification = true
+              }] }).then(toast => toast.present())
             }
           });
       }

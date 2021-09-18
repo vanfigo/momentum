@@ -25,7 +25,7 @@ export class RegistryService {
     if (lastRegistry) {
       query = query.startAfter(lastRegistry);
     }
-    query = query.limit(15);
+    query = query.limit(20);
     return query.get();
   }
 

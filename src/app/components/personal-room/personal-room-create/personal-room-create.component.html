@@ -19,7 +19,7 @@
     </ion-list>
   </form>
   <div *ngIf="showFriends">
-    <ion-searchbar placeHolder="Buscar amigos" [(ngModel)]="searchText" (ionChange)="loadFriends()"></ion-searchbar>
+    <ion-searchbar placeHolder="Buscar amigos" [(ngModel)]="searchText" (ionChange)="searchFriends()"></ion-searchbar>
     <ion-list class="ion-no-padding" lines="full">
       <ion-item *ngFor="let friend of filteredFriends">
         <ion-checkbox slot="start" (ionChange)="selectFriend($event, friend)" [name]="friend.uid"></ion-checkbox>

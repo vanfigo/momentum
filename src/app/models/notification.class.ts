@@ -8,7 +8,9 @@ export class Notification {
     username: string;
     email: string;
     message: string;
-    notificationType: NotificationType
+    type: NotificationType;
     read: boolean;
+    solved: boolean;
+    metadata?: any;
     creation: number;
 }

@@ -2,7 +2,7 @@ import { Route } from '@angular/compiler/src/core';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Action, DocumentData, DocumentSnapshot, QuerySnapshot } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { AlertController, NavController } from '@ionic/angular';
+import { AlertController, LoadingController, NavController, ViewDidEnter } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { PersonalRoomRecordsComponent } from 'src/app/components/personal-room/personal-room-records/personal-room-records.component';
 import { ScramblerComponent } from 'src/app/components/shared/scrambler/scrambler.component';
@@ -19,9 +19,10 @@ import { PersonalRoomService } from 'src/app/services/playable-rooms/personal-ro
   templateUrl: './personal-room.page.html',
   styleUrls: ['./personal-room.page.scss'],
 })
-export class PersonalRoomPage implements OnInit, OnDestroy {
+export class PersonalRoomPage implements ViewDidEnter, OnDestroy {
 
   personalRoom: PersonalRoom;
+  isRoomDeleted: boolean = false;
   player: Player;
   personalRecord: PersonalRecord = null;
   listenToUpdates: boolean = true;
@@ -34,9 +35,10 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
               private authSvc: AuthService,
               private personalRoomSvc: PersonalRoomService,
               private alertCtrl: AlertController,
-              private navCtrl: NavController) { }
+              private navCtrl: NavController,
+              private loadingCtrl: LoadingController) { }
 
-  ngOnInit() {
+  ionViewDidEnter() {
     // get personal-room info
     this.personalRoomSvc.getByCode(this.route.snapshot.params['code'])
       .then(async (snapshot) => {
@@ -46,6 +48,7 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
           const playersSnapshot = await this.personalRoomSvc.getPlayers(this.personalRoom.code);
           const playerFound = playersSnapshot.docs.find(snapshot => snapshot.data().uid === this.authSvc.user.uid)
           if (this.personalRoom.isPrivate) {
+            this.hideLoadingMessage()
             if (playerFound !== undefined) {
               await this.personalRoomSvc.setActive(this.personalRoom.code, true);
               this.player = {...playerFound.data() as Player, active: true};
@@ -57,7 +60,7 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
                 buttons: [{
                   text: "Aceptar",
                   role: "cancel",
-                  handler: () => this.navCtrl.navigateForward(["/home"], {relativeTo: this.route})
+                  handler: () => this.navCtrl.navigateBack(["/home"], {relativeTo: this.route})
                 }]
               }).then(alert => alert.present());
             }
@@ -66,9 +69,11 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
               const { uid, username, email, photoURL } = this.authSvc.user;
               this.player = { uid, username, email, photoURL, active: true }
               await this.personalRoomSvc.addPlayer(this.personalRoom.code, this.player);
+              this.hideLoadingMessage()
             } else { // player already in public personal-room
               // This piece of code should never be called, but is better to have it, since a public player will be pop from players list once it exits
               await this.personalRoomSvc.setActive(this.personalRoom.code, true);
+              this.hideLoadingMessage()
               this.player = {...playerFound.data() as Player, active: true};
             }
           }
@@ -81,6 +86,7 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
                 currentPersonalSolveUid && this.listenToSolves(currentPersonalSolveUid)
                 break;
               case 'removed':
+                this.isRoomDeleted = true;
                 this.showNonExistantRoom(true);
                 break;
             }
@@ -90,10 +96,17 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
           });
           window.addEventListener('beforeunload', this.exitPersonalRoom);
         } else {
+          this.hideLoadingMessage();
           this.showNonExistantRoom(false);
         }
       });
   }
+
+  hideLoadingMessage = async () => {
+    const loading = await this.loadingCtrl.getTop();
+    loading && await loading.dismiss();
+  }
+
   showNonExistantRoom = (deleted: boolean = false) => this.alertCtrl.create({
     header: "Oops :(",
     subHeader: deleted ? "El host abandono la sala" : "Esta sala ya no existe",
@@ -102,7 +115,7 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
     buttons: [{
       text: "Cerrar",
       role: "cancel",
-      handler: () => this.navCtrl.navigateForward(["/home"], {relativeTo: this.route})
+      handler: () => this.navCtrl.navigateBack(["/home"], {relativeTo: this.route})
     }]
   }).then(alert => alert.present());
 
@@ -112,18 +125,21 @@ export class PersonalRoomPage implements OnInit, OnDestroy {
   }
 
   exitPersonalRoom = () => {
-    if (this.isHost()) {
-      this.personalRoomSvc.deletePersonalRoomByCode(this.personalRoom.code);
-    } else {
-      if (this.personalRoom.isPrivate) {
-        this.personalRoomSvc.setActive(this.personalRoom.code, false);
+    if (this.personalRoom && !this.isRoomDeleted) {
+      if (this.isHost()) {
+        const deleteSubscription = this.personalRoomSvc.deletePersonalRoomByCode(
+          this.personalRoom.code).subscribe(() => deleteSubscription.unsubscribe());
       } else {
-        this.personalRoomSvc.removePlayer(this.personalRoom.code);
+        if (this.personalRoom.isPrivate) {
+          this.personalRoomSvc.setActive(this.personalRoom.code, false);
+        } else {
+          this.personalRoomSvc.removePlayer(this.personalRoom.code);
+        }
       }
     }
   }
 
-  isHost = () => this.authSvc.user.uid === this.personalRoom.hostUid;
+  isHost = () => this.personalRoom && this.authSvc.user.uid === this.personalRoom.hostUid;
 
   updateScramble = () => {
     this.scramblerCmpt.updateScramble();

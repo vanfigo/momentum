@@ -1,8 +1,7 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AuthService } from './services/shared/auth.service';
 import { AdService } from './services/shared/ad.service';
-import { PushNotificationService } from './services/shared/push-notification.service';
-import { LoadingController, ViewDidEnter } from '@ionic/angular';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -11,21 +10,28 @@ import { LoadingController, ViewDidEnter } from '@ionic/angular';
 })
 export class AppComponent {
 
-  loading = true;
-  isUser: boolean = true;
+  isLoading: boolean = true;
+  isAdDisplayed: boolean = false;
 
   constructor(private authService: AuthService,
-              private adSvc: AdService
+              private adSvc: AdService,
+              private loadingCtrl: LoadingController,
               // private pushNotificationSvc: PushNotificationService
               ) {
-    this.authService.$userRetrieved.subscribe((isUser: boolean) => {
-      if (isUser) {
+    this.loadingCtrl.create({ message: 'Iniciando...', spinner: 'dots', mode: 'ios' }).then(loading => loading.present());
+    this.adSvc.$adLoaded.subscribe((loaded: boolean) => {
+      this.isAdDisplayed = loaded;
+    })
+    this.authService.$userRetrieved.subscribe(async (hasUser: boolean) => {
+      if (hasUser) {
         this.adSvc.showBanner();
       } else {
         this.adSvc.removeBanner();
       }
-      this.isUser = isUser;
-      this.loading = false;
+      const loading = await this.loadingCtrl.getTop();
+      loading && await loading.dismiss();
+      this.isLoading = false;
     });
   }
+
 }

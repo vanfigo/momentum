@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
-import { AdMob, AdOptions, BannerAdOptions, BannerAdPosition, BannerAdSize, InterstitialAdPluginEvents } from '@capacitor-community/admob';
+import { AdMob, AdOptions, BannerAdOptions, BannerAdPluginEvents, BannerAdPosition, BannerAdSize, InterstitialAdPluginEvents } from '@capacitor-community/admob';
+import { Platform } from '@ionic/angular';
+import { ReplaySubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdService {
+
+  $adLoaded: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
   bannerOptions: BannerAdOptions = {
     adId: environment.adMob.bannerID,
@@ -20,22 +24,21 @@ export class AdService {
     // isTesting: environment.production
   };
 
-  constructor() {
-    this.initialize();
-  }
-
-  initialize = async () => {
-    await AdMob.initialize({
+  constructor(private platform: Platform) {
+    AdMob.initialize({
       // initializeForTesting: environment.production
     });
   }
 
-  showBanner = () => {
+  showBanner = async () => {
+    AdMob.addListener(BannerAdPluginEvents.FailedToLoad, () => this.$adLoaded.next(false));
+    AdMob.addListener(BannerAdPluginEvents.Loaded, () => this.$adLoaded.next(true));
     AdMob.showBanner(this.bannerOptions);
   }
 
   removeBanner = () => {
     AdMob.removeBanner();
+    this.$adLoaded.next(false);
   }
 
   showInterstitial = async (after: () => {}) => {
@@ -51,7 +54,11 @@ export class AdService {
       alert('FailedToShow');
       after();
     });
-    await AdMob.prepareInterstitial(this.interstitialOptions);
-    await AdMob.showInterstitial();
+    if (this.platform.is("capacitor")) {
+      await AdMob.prepareInterstitial(this.interstitialOptions);
+      await AdMob.showInterstitial();
+    } else {
+      after();
+    }
   }
 }
