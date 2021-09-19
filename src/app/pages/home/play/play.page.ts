@@ -28,13 +28,11 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
   
   userSubscription: Subscription;
 
-  rankedLobbiesSubscription: Subscription;
-  rankedRoomsSubscription: Subscription;
   rankedLobbies: number;
   rankedRooms: number;
-
-  unrankedRoomsSubscription: Subscription;
   unrankedRooms: number;
+
+  subscriptions: Subscription[] = [];
 
   constructor(public authSvc: AuthService,
               private lobbySvc: LobbyService,
@@ -49,32 +47,30 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
               private adSvc: AdService) { }
               
   ionViewDidLeave(): void {
-    this.rankedLobbiesSubscription && this.rankedLobbiesSubscription.unsubscribe();
-    this.rankedRoomsSubscription && this.rankedRoomsSubscription.unsubscribe();
-    this.unrankedRoomsSubscription && this.unrankedRoomsSubscription.unsubscribe();
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions = [];
   }
 
   ionViewWillEnter = async (): Promise<void> => {
+    this.publicRooms = [];
     this.authSvc.getUserFromDB().then(user => this.user = user.data());
-    this.personalRoomSvc.getByPrivate(false)
-      .then((roomSnapshot: QuerySnapshot<PersonalRoom>) => {
-        this.publicRooms = roomSnapshot.docs.map(doc => {
-          return { ...doc.data(), uid: doc.id };
-        });
+      this.subscriptions.push(this.personalRoomSvc.getByPrivate(false).subscribe((actions: DocumentChangeAction<PersonalRoom>[]) => {
+        actions.forEach((action: DocumentChangeAction<PersonalRoom>) => {
+          if (action.type === 'added') {
+            this.publicRooms.push(action.payload.doc.data());
+          }
+        })
+        if (actions.length < this.publicRooms.length) {
+          this.publicRooms = this.publicRooms.filter(room => actions.find(action => action.payload.doc.data().code === room.code));
+        }
         this.loadingPublicRooms = false;
-      });
-    if (this.rankedLobbiesSubscription === undefined || this.rankedLobbiesSubscription.closed) {
-      this.rankedLobbiesSubscription = this.lobbySvc.countLobbiesByRoomType(RoomType.RANKED).subscribe((changeActions: DocumentChangeAction<Lobby>[]) =>
-        this.rankedLobbies = changeActions.reduce((prev, current) => current.type === "added" || "modified" ? prev + 1 : prev, 0));
-    }
-    if (this.rankedRoomsSubscription === undefined || this.rankedRoomsSubscription.closed) {
-      this.onlineRoomSvc.countRoomsActiveByRoomType(RoomType.RANKED).subscribe((changeActions: DocumentChangeAction<Lobby>[]) => 
-      this.rankedRooms = changeActions.reduce((prev, current) => current.type === "added" || "modified" ? prev + 1 : prev, 0));
-    }
-    if (this.unrankedRoomsSubscription === undefined || this.unrankedRoomsSubscription.closed) {
-      this.onlineRoomSvc.countRoomsActiveByRoomType(RoomType.UNRANKED).subscribe((changeActions: DocumentChangeAction<Lobby>[]) => 
-      this.unrankedRooms = changeActions.reduce((prev, current) => current.type === "added" || "modified" ? prev + 1 : prev, 0));
-    }
+      }));
+    this.subscriptions.push(this.lobbySvc.countLobbiesByRoomType(RoomType.RANKED).subscribe((changeActions: DocumentChangeAction<Lobby>[]) =>
+      this.rankedLobbies = changeActions.reduce((prev, current) => current.type === "added" || "modified" ? prev + 1 : prev, 0)));
+    this.subscriptions.push(this.onlineRoomSvc.countRoomsActiveByRoomType(RoomType.RANKED).subscribe((changeActions: DocumentChangeAction<Lobby>[]) => 
+      this.rankedRooms = changeActions.reduce((prev, current) => current.type === "added" || "modified" ? prev + 1 : prev, 0)));
+    this.subscriptions.push(this.onlineRoomSvc.countRoomsActiveByRoomType(RoomType.UNRANKED).subscribe((changeActions: DocumentChangeAction<Lobby>[]) => 
+      this.unrankedRooms = changeActions.reduce((prev, current) => current.type === "added" || "modified" ? prev + 1 : prev, 0)));
   }
 
   addWaitingPlayer = async (roomType: RoomType) => {
@@ -82,14 +78,14 @@ export class PlayPage implements ViewDidLeave, ViewWillEnter {
     await loading.present();
     // listens for when the user access to a room
     if (this.userSubscription === undefined || this.userSubscription.closed) {
-      this.userSubscription = this.authSvc.listenCurrentUserChanges().subscribe((action: Action<DocumentSnapshot<MomentumUser>>) => {
+      this.subscriptions.push(this.authSvc.listenCurrentUserChanges().subscribe((action: Action<DocumentSnapshot<MomentumUser>>) => {
         const user = action.payload.data();
         if (action.type === 'modified' && ( user.rankedRoomUid || user.unrankedRoomUid)) {
           const roomType = user.rankedRoomUid ? RoomType.RANKED : RoomType.UNRANKED;
           const uri = roomType === RoomType.RANKED ? user.rankedRoomUid : user.unrankedRoomUid
           this.navCtrl.navigateForward(["/online-room", uri], {relativeTo: this.route});
         }
-      });
+      }));
     }
     // deletes the actual room reference for the room type sent
     this.authSvc.update({rankedRoomUid: null, unrankedRoomUid: null}, false).then(() => 

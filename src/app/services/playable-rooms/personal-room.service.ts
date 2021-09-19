@@ -68,7 +68,8 @@ export class PersonalRoomService {
   getPlayers = (code: string) => this.collection.doc(code)
     .collection('players').get().toPromise();
 
-  getByPrivate = (isPrivate: boolean) => this.collection.ref.where("isPrivate", "==", isPrivate).orderBy("creation", "asc").get()
+  getByPrivate = (isPrivate: boolean) => this.db.collection('personal-rooms', ref => ref.where("isPrivate", "==", isPrivate)
+    .orderBy("creation", "asc")).snapshotChanges();
 
   getHistoryByPlayerUid = (code: string, playerUid: string) => this.collection.doc(code)
     .collection('players').doc(playerUid)

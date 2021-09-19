@@ -35,7 +35,7 @@
         <ion-item>
           <ion-icon slot="start" name="people-circle"></ion-icon>
           <ion-label>Compitiendo</ion-label>
-          <ion-note slot="end">{{unrankedRooms * 2}}</ion-note>
+          <ion-note slot="end">{{unrankedRooms >= 0 ? unrankedRooms * 2 : '-'}}</ion-note>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -53,11 +53,11 @@
             <ion-button color="success" expand="full" (click)="showCreatePersonalRoom()">Crear</ion-button>
           </ion-col>
       </ion-row></ion-grid>
-      <ion-progress-bar type="indeterminate" color="primary" *ngIf="loadingPublicRooms"></ion-progress-bar>
+      <app-skeleton-list *ngIf="loadingPublicRooms"></app-skeleton-list>
       <ion-list lines="full" class="ion-no-padding">
         <ion-item detail button *ngFor="let personalRoom of publicRooms" (click)="showPersonalRoom(personalRoom.code)">
-          <ion-label>{{personalRoom.name}}</ion-label>
-          <ion-note slot="end">{{personalRoom.creation | date}}</ion-note>
+          <app-avatar [photoURL]="personalRoom.hostPhotoURL" [username]="personalRoom.hostUsername"></app-avatar>
+          <ion-note slot="end">{{personalRoom.code}}</ion-note>
         </ion-item>
       </ion-list>
     </ion-card-content>

@@ -41,10 +41,7 @@ export class LoginPage implements OnInit {
   }
 
   facebookSignIn = () => {
-    this.loadingCtrl.create({
-      message: "Ingresando...",
-      spinner: "dots"
-    }).then(loading => {
+    this.loadingCtrl.create({ message: 'Ingresando...', spinner: 'dots', mode: 'ios' }).then(loading => {
       loading.present();
       this.authSvc.facebookSignIn()
         .then(success => {

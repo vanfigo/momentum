@@ -81,9 +81,7 @@ export class OnlineRoomPage implements ViewDidLeave, ViewDidEnter {
   }
 
   gameCompleted = () => {
-    this.loadingCtrl.create({
-      message: 'Finalizando partida...',
-      spinner: 'dots'
+    this.loadingCtrl.create({message: 'Finalizando partida...', spinner: 'dots', mode: 'ios'
     }).then(loading => {
       loading.present();
       this.onlineRoomSvc.completeRoom(this.roomUid);

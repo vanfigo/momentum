@@ -8,6 +8,7 @@ import { PlayPageRoutingModule } from './play-routing.module';
 
 import { PlayPage } from './play.page';
 import { PipesModule } from 'src/app/pipes/pipes.module';
+import { SharedModule } from 'src/app/components/shared/shared.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     FormsModule,
     IonicModule,
     PlayPageRoutingModule,
-    PipesModule
+    PipesModule,
+    SharedModule
   ],
   declarations: [PlayPage],
   providers: [DatePipe]

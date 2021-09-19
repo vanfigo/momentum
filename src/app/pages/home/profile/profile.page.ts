@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Action, DocumentSnapshot } from '@angular/fire/firestore';
-import { AlertController, NavController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
+import { AlertController, NavController, ToastController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { MomentumUser } from 'src/app/models/momentum-user.class';
 import { RoomType } from 'src/app/models/room-type.enum';
@@ -22,10 +22,11 @@ export class ProfilePage implements ViewWillEnter, ViewDidLeave {
   userSubscription: Subscription;
   RoomType = RoomType;
 
-  constructor(private authSvc: AuthService,
+  constructor(public authSvc: AuthService,
               private uploadSvc: UploadService,
               private alertCtrl: AlertController,
-              private navCtrl: NavController) { }
+              private navCtrl: NavController,
+              private toastCtrl: ToastController) { }
 
   fileSelected = (inputFile: HTMLInputElement) => {
     let file = inputFile.files.item(0);
@@ -58,7 +59,14 @@ export class ProfilePage implements ViewWillEnter, ViewDidLeave {
         text: "Guardar",
         handler: (data) => {
           let { username } = data;
-          this.authSvc.update({username})
+          if (username.length > 0 && username.length <= 15) {
+            this.authSvc.update({username})
+          } else {
+            this.toastCtrl.create({
+              message: "Tu nombre debe contener de 1 a 15 letras",
+              duration: 3000,
+              buttons: ['Entendido'] }).then(toast => toast.present());
+          }
         }
       }]
     }).then(alert => alert.present());

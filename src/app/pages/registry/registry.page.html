@@ -12,7 +12,7 @@
       <ion-item *ngFor="let registry of registries; let index = index" detail button (click)="showDetail(registry)">
         <ion-note [color]="registry.won ? 'success' : 'danger'" slot="">{{index + 1}}</ion-note>
         <app-avatar [photoURL]="registry.opponentPhotoURL" [username]="registry.opponentUsername"></app-avatar>
-        <ion-note slot="end">{{registry.creation | date: 'medium'}}</ion-note>
+        <ion-note mode="md" slot="end">{{registry.creation | date: 'medium'}}</ion-note>
       </ion-item>
     </ion-list>
     <ion-infinite-scroll threshold="100px" (ionInfinite)="loadRegistries($event)">

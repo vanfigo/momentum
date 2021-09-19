@@ -18,7 +18,7 @@ export class AppComponent {
               private loadingCtrl: LoadingController,
               // private pushNotificationSvc: PushNotificationService
               ) {
-    this.loadingCtrl.create({ message: 'Iniciando...', spinner: 'dots', mode: 'ios' }).then(loading => loading.present());
+    this.loadingCtrl.create({ message: 'Iniciando...', spinner: 'dots', mode: 'ios', backdropDismiss: true }).then(loading => loading.present());
     this.adSvc.$adLoaded.subscribe((loaded: boolean) => {
       this.isAdDisplayed = loaded;
     })

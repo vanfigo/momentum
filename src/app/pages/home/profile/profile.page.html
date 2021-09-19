@@ -1,25 +1,18 @@
 <ion-content color="light">
-  <ion-card *ngIf="isLoading">
-    <ion-card-content>
-      <ion-avatar slot="start">
-        <ion-skeleton-text animated></ion-skeleton-text>
-      </ion-avatar>
-      <app-skeleton-list *ngIf="isLoading"></app-skeleton-list>
-    </ion-card-content>
-  </ion-card>
-  <ion-card *ngIf="!isLoading">
-    <ion-img [src]="user.photoURL | photo: 512" alt="" (click)="fileInput.click()"></ion-img>
+  <ion-card>
+    <ion-img [src]="authSvc.user.photoURL | photo: 512" alt="" (click)="fileInput.click()"></ion-img>
     <ion-card-header color="momentum">
       <ion-progress-bar type="indeterminate" color="light" *ngIf="uploading"></ion-progress-bar>
       <ion-card-title class="profile-title" (click)="showEditUsername(user.username)">
-        <ion-label>{{user.username}}</ion-label>
+        <ion-label>{{authSvc.user.username}}</ion-label>
       </ion-card-title>
       <ion-card-subtitle>
-        <ion-label>{{user.email}}</ion-label>
+        <ion-label>{{authSvc.user.email}}</ion-label>
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content class="ion-no-padding">
-      <ion-list lines="full" class="ion-no-padding">
+      <app-skeleton-list *ngIf="isLoading"></app-skeleton-list>
+      <ion-list lines="full" class="ion-no-padding" *ngIf="!isLoading">
         <ion-item [detail]="user.rankedGames > 0" [button]="user.rankedGames > 0" (click)="navigateToRegistries(RoomType.RANKED)">
           <img [src]="null | photo: 32: 'laurel-wreath--v1'" slot="start"/>
           <ion-label>Partidas con ranking</ion-label>

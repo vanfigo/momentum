@@ -6,7 +6,7 @@
     <ion-card-subtitle>Conteo: {{personalRecords.length}}</ion-card-subtitle>
   </ion-card-header>
   <ion-card-content class="ion-no-padding">
-    <ion-progress-bar type="indeterminate" color="primary" *ngIf="loading; else showAverages"></ion-progress-bar>
+    <ion-progress-bar type="indeterminate" color="momentum" *ngIf="loading; else showAverages"></ion-progress-bar>
     <ng-template #showAverages>
       <ion-list class="ion-no-padding" lines="full">
         <ion-item>
