@@ -8,7 +8,8 @@ exports.createUser = functions.auth.user().onCreate((userRecord) => {
   return admin.firestore().doc(`/users/${userRecord.uid}`).set({
     uid: userRecord.uid,
     email: userRecord.email,
-    username: userRecord.displayName || userRecord.email,
+    username: userRecord.displayName
+        ?.substr(0, functions.config().username.length) || userRecord.email,
     photoURL: userRecord.photoURL || "",
     rankedGames: 0,
     unrankedGames: 0,
