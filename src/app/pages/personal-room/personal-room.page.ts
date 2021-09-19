@@ -43,58 +43,75 @@ export class PersonalRoomPage implements ViewDidEnter, OnDestroy {
     this.personalRoomSvc.getByCode(this.route.snapshot.params['code'])
       .then(async (snapshot) => {
         if (snapshot.exists) {
-          this.personalRoom = {...snapshot.data()};
+          const tempPersonalRoom = {...snapshot.data()};
           // get players added (isPriavte ? friends added : people accessed this public room)
-          const playersSnapshot = await this.personalRoomSvc.getPlayers(this.personalRoom.code);
-          const playerFound = playersSnapshot.docs.find(snapshot => snapshot.data().uid === this.authSvc.user.uid)
-          if (this.personalRoom.isPrivate) {
-            this.hideLoadingMessage()
-            if (playerFound !== undefined) {
-              await this.personalRoomSvc.setActive(this.personalRoom.code, true);
-              this.player = {...playerFound.data() as Player, active: true};
-            } else {
-              this.alertCtrl.create({
-                header: "Oops :(",
-                subHeader: "No estas en la lista",
-                message: "Para acceder a esta sala privada debes de estar en la lista de jugadores invitados",
-                buttons: [{
-                  text: "Aceptar",
-                  role: "cancel",
-                  handler: () => this.navCtrl.navigateBack(["/home"], {relativeTo: this.route})
-                }]
-              }).then(alert => alert.present());
-            }
-          } else { // public room
-            if (playerFound === undefined) { // not in players list
-              const { uid, username, email, photoURL } = this.authSvc.user;
-              this.player = { uid, username, email, photoURL, active: true }
-              await this.personalRoomSvc.addPlayer(this.personalRoom.code, this.player);
+          const playersSnapshot = await this.personalRoomSvc.getPlayers(tempPersonalRoom.code);
+          // validation to allow only 5 public players
+          // the validation is in this spot to avoid displaying/listening to other player's information
+          if (!tempPersonalRoom.isPrivate && playersSnapshot.docs.length >= 5) {
+            this.alertCtrl.create({
+              header: "Oops :(",
+              subHeader: "Maximo numero de jugadores",
+              message: "Cada sala publica solo acepta 5 jugadores en total, intenta entrar a una nueva sala",
+              buttons: [{
+                text: "Aceptar",
+                role: "cancel",
+                handler: () => this.navCtrl.navigateBack(["/home"], {relativeTo: this.route})
+              }]
+            }).then(alert => alert.present());
+            this.hideLoadingMessage();
+          } else { //not public or not 5 players already
+            this.personalRoom = tempPersonalRoom;
+            const playerFound = playersSnapshot.docs.find(snapshot => snapshot.data().uid === this.authSvc.user.uid)
+            if (this.personalRoom.isPrivate) {
               this.hideLoadingMessage()
-            } else { // player already in public personal-room
-              // This piece of code should never be called, but is better to have it, since a public player will be pop from players list once it exits
-              await this.personalRoomSvc.setActive(this.personalRoom.code, true);
-              this.hideLoadingMessage()
-              this.player = {...playerFound.data() as Player, active: true};
+              if (playerFound !== undefined) {
+                await this.personalRoomSvc.setActive(this.personalRoom.code, true);
+                this.player = {...playerFound.data() as Player, active: true};
+              } else {
+                this.alertCtrl.create({
+                  header: "Oops :(",
+                  subHeader: "No estas en la lista",
+                  message: "Para acceder a esta sala privada debes de estar en la lista de jugadores invitados",
+                  buttons: [{
+                    text: "Aceptar",
+                    role: "cancel",
+                    handler: () => this.navCtrl.navigateBack(["/home"], {relativeTo: this.route})
+                  }]
+                }).then(alert => alert.present());
+              }
+            } else { // public room
+              if (playerFound === undefined) { // not in players list
+                const { uid, username, email, photoURL } = this.authSvc.user;
+                this.player = { uid, username, email, photoURL, active: true }
+                await this.personalRoomSvc.addPlayer(this.personalRoom.code, this.player);
+                this.hideLoadingMessage();
+              } else { // player already in public personal-room
+                // This piece of code should never be called, but is better to have it, since a public player will be pop from players list once it exits
+                await this.personalRoomSvc.setActive(this.personalRoom.code, true);
+                this.hideLoadingMessage()
+                this.player = {...playerFound.data() as Player, active: true};
+              }
             }
+            this.personalRoomSubscription && this.personalRoomSubscription.unsubscribe();
+            this.personalRoomSubscription = this.personalRoomSvc.listenToPersonalRoom(this.personalRoom.code).subscribe((action: Action<DocumentSnapshot<PersonalRoom>>) => {
+              switch(action.type) {
+                case 'added':
+                case 'modified':
+                  const { currentPersonalSolveUid } = action.payload.data();
+                  currentPersonalSolveUid && this.listenToSolves(currentPersonalSolveUid)
+                  break;
+                case 'removed':
+                  this.isRoomDeleted = true;
+                  this.showNonExistantRoom(true);
+                  break;
+              }
+              this.loading = false;
+              this.personalRoomSvc.getHistoryCount(this.personalRoom.code).then((snapshot: QuerySnapshot<PersonalRecord>) =>
+                this.recordsCmpt.setPersonalSolveCount(snapshot.docs.length));
+            });
+            window.addEventListener('beforeunload', this.exitPersonalRoom);
           }
-          this.personalRoomSubscription && this.personalRoomSubscription.unsubscribe();
-          this.personalRoomSubscription = this.personalRoomSvc.listenToPersonalRoom(this.personalRoom.code).subscribe((action: Action<DocumentSnapshot<PersonalRoom>>) => {
-            switch(action.type) {
-              case 'added':
-              case 'modified':
-                const { currentPersonalSolveUid } = action.payload.data();
-                currentPersonalSolveUid && this.listenToSolves(currentPersonalSolveUid)
-                break;
-              case 'removed':
-                this.isRoomDeleted = true;
-                this.showNonExistantRoom(true);
-                break;
-            }
-            this.loading = false;
-            this.personalRoomSvc.getHistoryCount(this.personalRoom.code).then((snapshot: QuerySnapshot<PersonalRecord>) =>
-              this.recordsCmpt.setPersonalSolveCount(snapshot.docs.length));
-          });
-          window.addEventListener('beforeunload', this.exitPersonalRoom);
         } else {
           this.hideLoadingMessage();
           this.showNonExistantRoom(false);

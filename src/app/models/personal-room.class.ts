@@ -1,6 +1,5 @@
 export class PersonalRoom {
     code: string;
-    name: string;
     hostUid: string;
     hostUsername: string;
     hostPhotoURL: string;

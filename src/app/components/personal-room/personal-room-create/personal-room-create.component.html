@@ -9,12 +9,9 @@
   <form [formGroup]="personalRoomForm">
     <ion-list lines="full" class="ion-no-padding">
       <ion-item>
-        <ion-label position="floating">Nombre</ion-label>
-        <ion-input formControlName="name"></ion-input>
-      </ion-item>
-      <ion-item>
         <ion-label>Privado</ion-label>
-        <ion-checkbox formControlName="isPrivate" slot="end" (ionChange)="toggleHideFriends($event)"></ion-checkbox>
+        <ion-toggle formControlName="isPrivate" slot="end" (ionChange)="toggleHideFriends($event)"></ion-toggle>
+        <!-- <ion-checkbox formControlName="isPrivate" slot="end" (ionChange)="toggleHideFriends($event)"></ion-checkbox> -->
       </ion-item>
     </ion-list>
   </form>

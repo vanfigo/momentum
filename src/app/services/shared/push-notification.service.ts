@@ -35,6 +35,7 @@ export class PushNotificationService {
         PushNotifications.register();
       } else {
         // Show some error
+        alert('requestPermissions: ' + JSON.stringify(result))
       }
     });
   }

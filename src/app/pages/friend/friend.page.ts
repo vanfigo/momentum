@@ -147,6 +147,7 @@ export class FriendPage implements OnInit {
       loading && await loading.dismiss();
       if (status !== FriendStatus.BLOCKED) {
         user.status = status;
+        user.creation = new Date().getTime();
       } else {
         this.toastCtrl.create({message: 'No fue posible enviar la solicitud', duration: 3000}).then(toast => toast.present())
       }
@@ -159,7 +160,8 @@ export class FriendPage implements OnInit {
     this.friendSvc.sendBlockRequest(user).then(async () => {
       const loading = await this.loadingCtrl.getTop();
       loading && await loading.dismiss();
-      user.status = FriendStatus.BLOCKED;
+      user.status = FriendStatus.BLOCKED;;
+      user.creation = new Date().getTime();
     });
   }
 

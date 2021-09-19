@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from './services/shared/auth.service';
 import { AdService } from './services/shared/ad.service';
 import { LoadingController } from '@ionic/angular';
+import { PushNotificationService } from './services/shared/push-notification.service';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,7 @@ export class AppComponent {
   constructor(private authService: AuthService,
               private adSvc: AdService,
               private loadingCtrl: LoadingController,
-              // private pushNotificationSvc: PushNotificationService
+              private pushNotificationSvc: PushNotificationService
               ) {
     this.loadingCtrl.create({ message: 'Iniciando...', spinner: 'dots', mode: 'ios', backdropDismiss: true }).then(loading => loading.present());
     this.adSvc.$adLoaded.subscribe((loaded: boolean) => {

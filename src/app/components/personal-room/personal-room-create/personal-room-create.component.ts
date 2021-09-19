@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { IonCheckbox, IonInput, LoadingController, ModalController, NavController, ViewDidEnter } from '@ionic/angular';
+import { IonCheckbox, IonInput, LoadingController, ModalController, NavController, ToastController, ViewDidEnter } from '@ionic/angular';
 import { FriendStatus } from 'src/app/models/friend-status.enum';
 import { Friend } from 'src/app/models/friend.class';
 import { AdService } from 'src/app/services/shared/ad.service';
@@ -34,10 +34,9 @@ export class PersonalRoomCreateComponent {
               private route: ActivatedRoute,
               private changeDetector: ChangeDetectorRef,
               private loadingCtrl: LoadingController,
-              private adSvc: AdService) {
-    this.personalRoomForm = new FormGroup({
-      name: new FormControl(''), isPrivate: new FormControl(this.showFriends)
-    });
+              private adSvc: AdService,
+              private toastCtrl: ToastController) {
+    this.personalRoomForm = new FormGroup({ isPrivate: new FormControl(this.showFriends) });
     this.friendSvc.getAllFriendsBut(FriendStatus.BLOCKED, FriendStatus.PENDING).then((snapshot) => {
       this.friends = snapshot.docs.map(doc => {return {...doc.data(), uid: doc.id}});
       this.filteredFriends = [...this.friends];
@@ -64,8 +63,20 @@ export class PersonalRoomCreateComponent {
   
   selectFriend = (event: any, friend: Friend) => {
     if (event.detail.checked) {
-      if (!this.selectedFriends.find(selectedFriend => selectedFriend.uid === friend.uid)) {
-        this.selectedFriends.push({...friend});
+      if (this.selectedFriends.length < 4) {
+        if (!this.selectedFriends.find(selectedFriend => selectedFriend.uid === friend.uid)) {
+          this.selectedFriends.push({...friend});
+        }
+      } else {
+        this.friendCheckbox.forEach((checkBox: IonCheckbox) => {
+          if (checkBox.name === friend.uid) {
+            checkBox.checked = false;
+          }
+        })
+        this.toastCtrl.create({
+          message: "Solo puedes agregar 4 amigos por sala",
+          buttons: ["Entendido"],
+          duration: 3000 }).then(toast => toast.present());
       }
     } else {
       this.selectedFriends = this.selectedFriends.filter(_friend => _friend.uid !== friend.uid);
@@ -79,31 +90,33 @@ export class PersonalRoomCreateComponent {
   });
 
   createRoom = async () => {
-    const loading = await this.loadingCtrl.create({ message: 'Creando sala...', spinner: 'dots', mode: 'ios' });
-    await loading.present();
-    const {name, isPrivate} = this.personalRoomForm.value;
-    const code: string = await this.personalRoomSvc.getCode();
-    this.personalRoomSvc.create({
-      hostUid: this.authSvc.user.uid,
-      hostUsername: this.authSvc.user.username,
-      hostPhotoURL: this.authSvc.user.photoURL,
-      hostEmail: this.authSvc.user.email,
-      creation: new Date().getTime(),
-      currentPersonalSolveUid: null,
-      name, isPrivate, code
-    }, this.selectedFriends.map(friend => {
-      return {
-        uid: friend.friendUid,
-        photoURL: friend.photoURL,
-        username: friend.username,
-        email: friend.email,
-        active: false
-      }
-    })).then(async () => {
-      const modal = await this.modalCtrl.getTop();
-      modal && await modal.dismiss();
-      this.adSvc.showInterstitial(() => this.navCtrl.navigateForward(["/personal-room", code], {relativeTo: this.route}));
-    });
+    const { isPrivate } = this.personalRoomForm.value;
+    this.adSvc.showInterstitial(async () => {
+      const loading = await this.loadingCtrl.create({ message: 'Creando sala...', spinner: 'dots', mode: 'ios' });
+      await loading.present();
+      const code: string = await this.personalRoomSvc.getCode();
+      this.personalRoomSvc.create({
+        hostUid: this.authSvc.user.uid,
+        hostUsername: this.authSvc.user.username,
+        hostPhotoURL: this.authSvc.user.photoURL,
+        hostEmail: this.authSvc.user.email,
+        creation: new Date().getTime(),
+        currentPersonalSolveUid: null,
+        isPrivate, code
+      }, this.selectedFriends.map(friend => {
+        return {
+          uid: friend.friendUid,
+          photoURL: friend.photoURL,
+          username: friend.username,
+          email: friend.email,
+          active: false
+        }
+      })).then(async () => {
+        const modal = await this.modalCtrl.getTop();
+        modal && await modal.dismiss();
+        this.navCtrl.navigateForward(["/personal-room", code], {relativeTo: this.route});
+      });
+    })
   }
 
 }
